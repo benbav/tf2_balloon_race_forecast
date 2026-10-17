@@ -36,7 +36,7 @@ To favorite one: Steam → View → Game Servers → Favorites → **+** and pas
 - `generate_report.py` runs once a day. It turns the log into the website's charts, retrains the lobby forecast, rewrites the top servers table, and pushes the README and log to `main`. Everything in `site/` goes to the `site` branch as a single commit that's replaced daily, so ~16MB of charts a day doesn't pile up in the history. The log lives in `main` so its history is never lost.
 - `main.py` also pushes the current server list to the `live` branch every check, the same single-commit way, for the website's "who's on now" list.
 - `balloon/` is the code both scripts share: reading the log (`log.py`), which servers are dedicated (`servers.py`) and the lobby forecast model (`forecast.py`).
-- `data/` holds the log (tracked in git) plus runtime files that aren't: the trained model, the Discord ping state and the cached unemployment data.
+- `data/` holds the log (tracked in git) plus runtime files that aren't: the trained model, the Discord ping state and the cached unemployment and earthquake data.
 
 ### First-time setup
 

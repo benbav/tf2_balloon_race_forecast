@@ -10,6 +10,7 @@ from balloon.log import LOG_TIMEZONE, parse_log
 from balloon.servers import is_dedicated
 import subprocess
 import json
+import io
 import re
 import os
 import sys
@@ -28,6 +29,11 @@ FORECAST_MODEL_PATH = os.path.join(DATA_DIR, 'forecast_model.joblib')
 # BLS v1 has a tight daily request limit, so the series is cached and refetched at most once a day
 BLS_URL = 'https://api.bls.gov/publicAPI/v1/timeseries/data/LNS14000000'
 BLS_CACHE_PATH = os.path.join(DATA_DIR, 'bls_unemployment.json')
+# Every earthquake USGS knows of worldwide, counted per hour and cached so only recent hours are refetched
+USGS_URL = 'https://earthquake.usgs.gov/fdsnws/event/1/query'
+QUAKE_CACHE_PATH = os.path.join(DATA_DIR, 'earthquakes_hourly.json')
+# Late reports keep trickling in, so this much of the end of the cache is refetched each run
+QUAKE_REFETCH = pd.Timedelta(days=2)
 
 # Charts are shown in these zones (the log itself is in LOG_TIMEZONE).
 # The first zone is the default (README, all charts); the rest only redraw the charts that depend on the hour.
@@ -497,6 +503,90 @@ def generate_unemployment_plot(df, unemployment, variant=ALL_SERVERS):
     save(fig, 'unemployment.png', variant)
 
 
+# Earthquakes worldwide per UTC hour from `start` up to the last full hour, as a Series indexed by hour
+def load_earthquakes(start):
+    counts = {}
+    if os.path.exists(QUAKE_CACHE_PATH):
+        with open(QUAKE_CACHE_PATH, encoding='utf-8') as f:
+            counts = json.load(f)
+    start = start.tz_convert('UTC').floor('h')
+    end = pd.Timestamp.now(tz='UTC').floor('h')
+    fetch_from = max(start, pd.Timestamp(max(counts)) - QUAKE_REFETCH) if counts else start
+    try:
+        # In two-week chunks to stay well under USGS's 20,000 events per request
+        while fetch_from < end:
+            chunk_end = min(fetch_from + pd.Timedelta(days=14), end)
+            r = requests.get(USGS_URL, timeout=60, params={
+                'format': 'csv', 'eventtype': 'earthquake', 'orderby': 'time-asc',
+                'starttime': fetch_from.strftime('%Y-%m-%dT%H:%M:%S'),
+                'endtime': chunk_end.strftime('%Y-%m-%dT%H:%M:%S'),
+            })
+            r.raise_for_status()
+            times = pd.read_csv(io.StringIO(r.text), usecols=['time'])['time'] if r.text.strip() else pd.Series()
+            per_hour = pd.to_datetime(times, utc=True).dt.floor('h').value_counts()
+            # Hours with no earthquakes count as 0
+            for hour in pd.date_range(fetch_from, chunk_end, freq='h', inclusive='left'):
+                counts[hour.isoformat()] = int(per_hour.get(hour, 0))
+            fetch_from = chunk_end
+    except Exception as e:
+        print(f'Error fetching USGS earthquake data: {e}')
+    with open(QUAKE_CACHE_PATH, 'w', encoding='utf-8') as f:
+        json.dump(counts, f)
+    quakes = pd.Series(list(counts.values()), index=pd.to_datetime(list(counts), utc=True), dtype=float).sort_index()
+    return quakes[quakes.index >= start]
+
+
+# Balloon Race players against something that has nothing to do with them,
+# with a dotted least-squares line and Pearson's r to prove it
+def generate_correlation_plot(x, y, title, subtitle, x_title, y_title, filename, variant=ALL_SERVERS, x_suffix=''):
+    pairs = pd.DataFrame({'x': x, 'y': y}).dropna()
+    fits = len(pairs) >= 3 and pairs['x'].nunique() > 1 and pairs['y'].nunique() > 1
+    r = np.corrcoef(pairs['x'], pairs['y'])[0, 1] if fits else None
+
+    fig = go.Figure(go.Scatter(
+        x=pairs['x'], y=pairs['y'], mode='markers',
+        marker=dict(color=BAR, size=9, opacity=0.45, line=dict(width=0)),
+    ))
+    if fits:
+        slope, intercept = np.polyfit(pairs['x'], pairs['y'], 1)
+        ends = np.array([pairs['x'].min(), pairs['x'].max()])
+        fig.add_trace(go.Scatter(x=ends, y=slope * ends + intercept, mode='lines',
+                                 line=dict(color=SERIES[1], width=3, dash='dot')))
+        fig.add_annotation(x=ends[1], y=slope * ends[1] + intercept, text=f'<b>r = {r:+.2f}</b>',
+                           showarrow=False, xanchor='left', xshift=10, font=dict(color=TEXT_PRIMARY, size=15))
+    fig.update_layout(base_layout(
+        f"{title} (r = {f'{r:+.2f}' if fits else 'undefined'})",
+        f"{subtitle} · {len(pairs):,} points" + ('' if fits else f' · {x_title.lower()} hasn\'t moved yet'),
+        variant=variant, margin=dict(l=24, r=90, t=96, b=48),
+    ))
+    if not len(pairs):
+        empty_state(fig)
+    fig.update_xaxes(title=x_title, showgrid=False, zeroline=False, ticksuffix=x_suffix)
+    fig.update_yaxes(title=y_title, showgrid=True, gridcolor=GRID, zeroline=False, rangemode='tozero')
+    save(fig, filename, variant)
+
+
+def generate_earthquake_correlation_plot(df, quakes, variant=ALL_SERVERS):
+    hourly_peak = df.groupby(df['ts'].dt.tz_convert('UTC').dt.floor('h'))['online_players'].max()
+    generate_correlation_plot(
+        quakes, hourly_peak, 'Earthquakes vs Balloon Race players',
+        'Each dot is one hour: earthquakes worldwide (USGS) vs most Balloon Race players seen at once',
+        'Earthquakes that hour', 'Peak players that hour', 'earthquake_correlation.png', variant,
+    )
+
+
+def generate_unemployment_correlation_plot(df, unemployment, variant=ALL_SERVERS):
+    daily_peak = df.groupby(df['ts'].dt.date)['online_players'].max()
+    daily_peak.index = pd.to_datetime(daily_peak.index)
+    # Each day gets the latest rate BLS had published for it, since the current month comes out a month late
+    rate = unemployment.reindex(daily_peak.index, method='ffill') if len(unemployment) else daily_peak * np.nan
+    generate_correlation_plot(
+        rate, daily_peak, 'Unemployment vs Balloon Race players',
+        'Each dot is one day: US unemployment rate (BLS) vs most Balloon Race players seen at once',
+        'Unemployment rate', 'Peak players that day', 'unemployment_correlation.png', variant, x_suffix='%',
+    )
+
+
 # US holidays plus a few unofficial gaming days and school-break periods
 def holiday_calendar(years):
     rename = {"Washington's Birthday": "Presidents' Day",
@@ -778,6 +868,7 @@ if __name__ == "__main__":
     os.makedirs(OUTPUT_FOLDER, exist_ok=True)
     graph_df, server_df = load_and_preprocess_data(log_path)
     unemployment = load_unemployment()
+    earthquakes = load_earthquakes(graph_df['ts'].min())
     stats_by_zone = {}
     windows = {}
     for DISPLAY_TIMEZONE, TZ_LABEL, ZONE_SUFFIX in ZONES:
@@ -809,6 +900,8 @@ if __name__ == "__main__":
                 generate_monthly_avg_plot(df, variant)
                 generate_holiday_table(df, variant)
                 generate_unemployment_plot(df, unemployment, variant)
+                generate_earthquake_correlation_plot(df, earthquakes, variant)
+                generate_unemployment_correlation_plot(df, unemployment, variant)
     DISPLAY_TIMEZONE, TZ_LABEL, ZONE_SUFFIX = ZONES[0]
     stats = stats_by_zone[(TZ_LABEL.lower(), 'all')][0][:TOP_SERVER_COUNT]
     years = range(graph_df['ts'].min().year, graph_df['ts'].max().year + 2)
