@@ -47,9 +47,11 @@ def notify_discord(servers):
     for s in busy:
         if s['addr'] in already_notified:
             continue
-        content = (f"**PEOPLE ON BALLOON RACE:** {clean_name(s['name'])} has {s['players']}"
+        content = (f"**PEOPLE ON BALLOON RACE:** {s['players']}"
                    f"{'/' + str(s['max_players']) if s.get('max_players') else ''} players\n"
-                   f"`connect {s['addr']}`")
+                   f"Server: **{clean_name(s['name'])}**\n"
+                   f"IP: `{s['addr']}`\n"
+                   f"Console: `connect {s['addr']}`")
         try:
             requests.post(webhook_url, json={'content': content}, timeout=15).raise_for_status()
             logging.info(f"Sent Discord notification for {s['name']}")

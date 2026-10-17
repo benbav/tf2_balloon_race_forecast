@@ -427,7 +427,7 @@
   function setAlarm(server) {
     $('#live').classList.toggle('alarm', !!server);
     $('#alarm-banner').innerHTML = server
-      ? `People are active on Balloon Race right now<small>${server.players} players on ${esc(server.name)}</small>`
+      ? `People are active on Balloon Race right now<small>${server.players} players on ${esc(server.name)} · ${esc(server.addr)}</small>`
       : '';
     document.title = server ? `🚨 ${server.players} ON NOW · ${PAGE_TITLE}` : PAGE_TITLE;
     setChaos(server);
@@ -460,7 +460,7 @@
     $('#chaos-ticker').textContent = on ? msg.repeat(8) : '';
     // While testing there may be no busy lobby, so name whichever server is busiest
     const top = server ?? liveData?.servers.reduce((a, b) => (b.players > a.players ? b : a), liveData.servers[0]);
-    $('#chaos-server').textContent = on && top ? `${top.players} players on ${top.name}` : '';
+    $('#chaos-server').textContent = on && top ? `${top.players} players on ${top.name} · ${top.addr}` : '';
     const animate = on && !reducedMotion.matches;
     if (animate && !balloonTimer) balloonTimer = setInterval(spawnBalloon, 200);
     if (!animate && balloonTimer) {
