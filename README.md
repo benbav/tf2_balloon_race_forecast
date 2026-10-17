@@ -18,8 +18,8 @@ Ranked by how often they have people on. Favorite these so they're one click awa
 <!-- TOP_SERVERS_START -->
 | # | Server | Connect (paste in TF2 console) | Best time | Best day | Has players | Avg players when on | Peak |
 |---|---|---|---|---|---|---|---|
-| 1 | Balloon Race 24/7 | `connect 45.88.229.19:27024` | Tue · 11 AM – 1 PM MT (96%) | Sunday | 48% of checks | 1.2 | 6 |
-| 2 | Server hosted by Physgun.com | `connect 45.45.238.134:27105` | Fri · 6 PM – 8 PM MT (83%) | Friday | 3% of checks | 21.8 | 23 |
+| 1 | Balloon Race 24/7 | `connect 45.88.229.19:27024` | Tue · 11 AM – 1 PM MT (96%) | Sunday | 49% of checks | 1.2 | 6 |
+| 2 | Server hosted by Physgun.com | `connect 45.45.238.134:27105` | Fri · 6 PM – 8 PM MT (83%) | Friday | 2% of checks | 21.8 | 23 |
 | 3 | Wacky Races | `connect 169.254.226.130:52208` | Thu · 9 PM – 11 PM MT (75%) | Thursday | 1% of checks | 4.0 | 4 |
 | 4 | [TR]  Türk Ninjalar sunucusu | `connect 88.233.138.82:27017` | Sun · 5 AM – 7 AM MT (100%) | Sunday | 1% of checks | 13.1 | 18 |
 | 5 | shounic trenches (USA Chicago) | `connect 193.243.190.25:27015` | Fri · 2 PM – 4 PM MT (12%) | Friday | 1% of checks | 15.4 | 48 |
