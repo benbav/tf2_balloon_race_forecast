@@ -16,13 +16,13 @@ Example of the live lobby forecast (a static screenshot - on the website it upda
 Ranked by how often they have a lobby going (as many players as the Discord ping), then by how often anyone's on. Favorite these so they're one click away.
 
 <!-- TOP_SERVERS_START -->
-| # | Server | Connect (paste in TF2 console) | Best time | Best day | Has players | Avg players when on | Peak |
-|---|---|---|---|---|---|---|---|
-| 1 | Balloon Race 24/7 | `connect 45.88.229.19:27024` | Tue · 11 AM – 1 PM MT (96%) | Thursday | 51% of checks | 1.2 | 6 |
-| 2 | shounic trenches (USA Chicago) | `connect 193.243.190.25:27015` | Fri · 2 PM – 4 PM MT (12%) | Friday | 1% of checks | 22.9 | 84 |
-| 3 | Server hosted by Physgun.com | `connect 45.45.238.134:27105` | Fri · 6 PM – 8 PM MT (83%) | Friday | 1% of checks | 21.8 | 23 |
-| 4 | [TR]  Türk Ninjalar sunucusu | `connect 88.233.138.82:27017` | Sun · 6 AM – 8 AM MT (24%) | Sunday | 1% of checks | 13.1 | 18 |
-| 5 | Wacky Races | `connect 169.254.226.130:52208` | Thu · 9 PM – 11 PM MT (75%) | Thursday | 1% of checks | 4.0 | 4 |
+| # | Server | Connect (paste in TF2 console) | Best time for a 10+ lobby | Best day | Has 10+ players | Has players | Avg players when on | Peak |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Server hosted by Physgun.com | `connect 45.45.238.134:27105` | Fri · 6 PM – 8 PM MT (83%) | Friday | 1% of checks | 1% of checks | 21.8 | 23 |
+| 2 | [TR]  Türk Ninjalar sunucusu | `connect 88.233.138.82:27017` | Sun · 6 AM – 8 AM MT (24%) | Sunday | 1% of checks | 1% of checks | 13.1 | 18 |
+| 3 | shounic trenches (USA Chicago) | `connect 193.243.190.25:27015` | Mon · 5 PM – 7 PM MT (8%) | Friday | 0% of checks | 1% of checks | 22.9 | 84 |
+| 4 | Aar's Server \| Map Testing \| Virginia | `connect 169.254.112.56:12184` | Sat · 2 PM – 4 PM MT (18%) | Saturday | 0% of checks | 0% of checks | 24.7 | 26 |
+| 5 | Server Testing | `connect 69.41.182.173:27015` | Sat · 6 PM – 8 PM MT (4%) | Saturday | 0% of checks | 0% of checks | 4.8 | 12 |
 
 To favorite one: Steam → View → Game Servers → Favorites → **+** and paste the address.
 <!-- TOP_SERVERS_END -->
