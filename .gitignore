@@ -7,6 +7,4 @@ site/charts/
 # Runtime state (the log in data/ is tracked)
 data/*
 !data/tf2_balloon_log.txt
-!data/rotation_log.csv
 !data/rotation_players.jsonl
-!data/rotation_snapshots.jsonl

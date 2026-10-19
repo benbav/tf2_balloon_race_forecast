@@ -8,9 +8,6 @@ from balloon.rotation import BALLOON_MAP
 # lists players doesn't give SteamIDs - so a player who changes their name starts over.
 VOTER_LOG_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data',
                               'rotation_players.jsonl')
-# Who's on each tracked server every 5 minutes, so the voters on at any past check can be counted later
-# (e.g. as an input to the lobby forecast). Empty or offline servers aren't written.
-SNAPSHOT_LOG_PATH = os.path.join(os.path.dirname(VOTER_LOG_PATH), 'rotation_snapshots.jsonl')
 # Map changes a player has to have been there for, to Balloon Race and to anything else, before they're scored
 MIN_BALLOON_CHANGES = 3
 MIN_OTHER_CHANGES = 3
@@ -19,7 +16,7 @@ VOTER_MIN_SCORE = 0.25
 LEADERBOARD_SIZE = 10
 
 
-# Every map change logged so far: {ts, addr, from_map, to_map, before: [names], after: [names]}
+# Every map change logged so far: {ts, addr, from_map, to_map, before: [names], stayed: [names]}
 def read_changes(path=VOTER_LOG_PATH):
     try:
         with open(path, encoding='utf-8') as f:
@@ -33,11 +30,11 @@ def player_scores(changes):
     # name -> [Balloon Race stays, Balloon Race changes, other stays, other changes]
     tally = {}
     for c in changes:
-        after = set(c['after'])
+        stayed = set(c['stayed'])
         i = 0 if c['to_map'] == BALLOON_MAP else 2
         for name in set(c['before']):
             t = tally.setdefault(name, [0, 0, 0, 0])
-            t[i] += name in after
+            t[i] += name in stayed
             t[i + 1] += 1
     scores = []
     for name, (balloon_stays, balloon_changes, other_stays, other_changes) in tally.items():

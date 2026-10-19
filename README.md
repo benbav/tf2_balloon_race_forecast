@@ -38,10 +38,9 @@ To favorite one: Steam → View → Game Servers → Favorites → **+** and pas
 - `rotation_tracker.py` runs all the time as a systemd service (`balloon-rotation.service`), separately from everything else. Every 30 seconds it looks up the rotating servers that have had a 10+ player lobby on Balloon Race (fixed addresses only):
   - It logs whichever map each one is on, plus its `sm_nextmap` when the server shares it, to `data/rotation_log.csv` (every 5 minutes and on every map change), so we can see whether Balloon Race comes up at a fixed spot in their map cycles.
   - At every map change it logs who was on right before and who was still there a few minutes later to `data/rotation_players.jsonl`, from the server's own player list (names only, no SteamIDs). Players who stay for Balloon Race far more often than for other maps are probably voting for it (`balloon/voters.py`).
-  - Every 5 minutes it logs who's on each one to `data/rotation_snapshots.jsonl`, so how many voters were on at any past check can be counted later, for the lobby forecast.
   - `generate_report.py` summarizes both logs daily (`balloon/rotation.py`, `balloon/voters.py`) into the "Map rotation tracker" section and the top 10 voter leaderboard at the bottom of the website.
 - `balloon/` is the code both scripts share: reading the log (`log.py`), which servers are dedicated (`servers.py`) and the lobby forecast model (`forecast.py`).
-- `data/` holds the log, the rotation log and the voter and player snapshot logs (tracked in git) plus runtime files that aren't: the trained model, the Discord ping state and the cached unemployment and earthquake data.
+- `data/` holds the log and the voter log (tracked in git) plus files that aren't: the rotation log (it grows too fast for git, so it stays on the server), the trained model, the Discord ping state and the cached unemployment and earthquake data.
 
 ### First-time setup
 

@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from balloon.log import LINE_RE, SERVER_RE
 from balloon.rotation import ROTATION_COLUMNS, ROTATION_LOG_PATH
 from balloon.servers import clean_name, is_dedicated
-from balloon.voters import SNAPSHOT_LOG_PATH, VOTER_LOG_PATH
+from balloon.voters import VOTER_LOG_PATH
 import requests
 import socket
 import struct
@@ -18,8 +18,6 @@ import os
 # - logs the map to data/rotation_log.csv, to see if their map cycles are fixed
 # - at every map change, logs who was on right before and who stayed, to data/rotation_players.jsonl,
 #   to find the players who vote for Balloon Race (balloon/voters.py)
-# - every 5 minutes, logs who's on each one to data/rotation_snapshots.jsonl, so how many voters were on
-#   at any past check can be worked out once we know who the voters are
 # `python rotation_tracker.py --once` does a single check, for testing.
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 LOG_PATH = os.path.join(SCRIPT_DIR, 'data', 'tf2_balloon_log.txt')
@@ -31,7 +29,6 @@ A2S_TIMEOUT = 2
 CHECK_SECONDS = 30
 # A map is logged at least this often per server, plus on every map change
 MAP_LOG_SECONDS = 300
-SNAPSHOT_SECONDS = 300
 # Who stayed after a map change: anyone seen this many seconds after it, once they've had time to load in
 AFTER_WINDOW = (60, 240)
 # A map change across a longer gap than this (server offline, tracker down) isn't used for voters
@@ -147,7 +144,7 @@ class Tracker:
             return
         now = time.time()
         st = self.servers.setdefault(addr, {'map': None, 'since': now, 'seen': 0, 'players': set(),
-                                            'logged_map': None, 'logged_at': 0, 'snapshot_at': 0, 'change': None})
+                                            'logged_map': None, 'logged_at': 0, 'change': None})
         current = s.get('map', '') if s else ''
         humans = s['players'] - s.get('bots', 0) if s else 0
         names = (player_names(addr) if humans else set()) if s else None
@@ -178,12 +175,6 @@ class Tracker:
             self.log_map(addr, s, current, humans)
             st['logged_map'], st['logged_at'] = current, now
 
-        if names and now - st['snapshot_at'] >= SNAPSHOT_SECONDS:
-            append_jsonl(SNAPSHOT_LOG_PATH, {
-                'ts': datetime.fromtimestamp(now, timezone.utc).strftime('%Y-%m-%d %H:%M:%S'),
-                'addr': addr, 'map': current, 'players': sorted(names)})
-            st['snapshot_at'] = now
-
     def finish_change(self, change):
         # Nobody seen after it (empty server, or it went offline) says nothing about who stayed
         if not change['after']:
@@ -191,7 +182,8 @@ class Tracker:
         append_jsonl(VOTER_LOG_PATH, {
             'ts': datetime.fromtimestamp(change['at'], timezone.utc).strftime('%Y-%m-%d %H:%M:%S'),
             'addr': change['addr'], 'from_map': change['from_map'], 'to_map': change['to_map'],
-            'before': change['before'], 'after': sorted(change['after'])})
+            # Only who stayed: anyone who joined after the change says nothing about voting
+            'before': change['before'], 'stayed': sorted(change['after'] & set(change['before']))})
 
     def log_map(self, addr, s, current, humans):
         row = {'ts': datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S'), 'addr': addr,

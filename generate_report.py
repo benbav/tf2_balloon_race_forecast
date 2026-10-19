@@ -839,10 +839,8 @@ def write_rotation_data():
 def push_to_github():
     os.chdir(SCRIPT_DIR)
     os.system("git add README.md data/tf2_balloon_log.txt")
-    # On their own, so a missing rotation log can't stop the main log from being added
-    os.system("git add data/rotation_log.csv")
+    # On their own, so a missing voter log can't stop the main log from being added
     os.system("git add data/rotation_players.jsonl")
-    os.system("git add data/rotation_snapshots.jsonl")
     os.system("git commit -m 'update log'")
     os.system("git push origin main")
     publish_site()
