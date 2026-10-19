@@ -7,6 +7,8 @@ import numpy as np
 import pandas as pd
 from balloon.forecast import train_lobby_forecast
 from balloon.log import LOG_TIMEZONE, parse_log
+from balloon.rotation import rotation_summary
+from balloon.voters import voter_summary
 from balloon.servers import is_dedicated
 import subprocess
 import json
@@ -824,10 +826,23 @@ def write_site_data(stats_by_zone, windows, forecast):
         json.dump(data, f, ensure_ascii=False, indent=1)
 
 
+# The map rotation tracker's own section of the website (with the voter leaderboard), from its own logs
+def write_rotation_data():
+    summary = rotation_summary()
+    with open(os.path.join(OUTPUT_FOLDER, 'rotation.json'), 'w', encoding='utf-8') as f:
+        json.dump(dict(summary or {}, voters=voter_summary(),
+                       updated=dt.datetime.now(dt.timezone.utc).isoformat(timespec='seconds')),
+                  f, ensure_ascii=False, indent=1)
+
+
 # Push the log and README to main, and the website (page + charts) to its own branch
 def push_to_github():
     os.chdir(SCRIPT_DIR)
     os.system("git add README.md data/tf2_balloon_log.txt")
+    # On their own, so a missing rotation log can't stop the main log from being added
+    os.system("git add data/rotation_log.csv")
+    os.system("git add data/rotation_players.jsonl")
+    os.system("git add data/rotation_snapshots.jsonl")
     os.system("git commit -m 'update log'")
     os.system("git push origin main")
     publish_site()
@@ -910,6 +925,7 @@ if __name__ == "__main__":
                                          ZONES[0][0], FORECAST_MODEL_PATH)
     generate_forecast_regression(fit, BUSY_THRESHOLD)
     write_site_data(stats_by_zone, windows, forecast)
+    write_rotation_data()
     if '--no-readme' not in sys.argv:
         update_readme(stats)
     if '--no-push' not in sys.argv:

@@ -35,8 +35,13 @@ To favorite one: Steam → View → Game Servers → Favorites → **+** and pas
 - `site/index.html` is the website, served free by GitHub Pages. It shows the charts, the top servers from `site/charts/site_data.json`, and the live server list.
 - `generate_report.py` runs once a day. It turns the log into the website's charts, retrains the lobby forecast, rewrites the top servers table, and pushes the README and log to `main`. Everything in `site/` goes to the `site` branch as a single commit that's replaced daily, so ~16MB of charts a day doesn't pile up in the history. The log lives in `main` so its history is never lost.
 - `main.py` also pushes the current server list to the `live` branch every check, the same single-commit way, for the website's "who's on now" list.
+- `rotation_tracker.py` runs all the time as a systemd service (`balloon-rotation.service`), separately from everything else. Every 30 seconds it looks up the rotating servers that have had a 10+ player lobby on Balloon Race (fixed addresses only):
+  - It logs whichever map each one is on, plus its `sm_nextmap` when the server shares it, to `data/rotation_log.csv` (every 5 minutes and on every map change), so we can see whether Balloon Race comes up at a fixed spot in their map cycles.
+  - At every map change it logs who was on right before and who was still there a few minutes later to `data/rotation_players.jsonl`, from the server's own player list (names only, no SteamIDs). Players who stay for Balloon Race far more often than for other maps are probably voting for it (`balloon/voters.py`).
+  - Every 5 minutes it logs who's on each one to `data/rotation_snapshots.jsonl`, so how many voters were on at any past check can be counted later, for the lobby forecast.
+  - `generate_report.py` summarizes both logs daily (`balloon/rotation.py`, `balloon/voters.py`) into the "Map rotation tracker" section and the top 10 voter leaderboard at the bottom of the website.
 - `balloon/` is the code both scripts share: reading the log (`log.py`), which servers are dedicated (`servers.py`) and the lobby forecast model (`forecast.py`).
-- `data/` holds the log (tracked in git) plus runtime files that aren't: the trained model, the Discord ping state and the cached unemployment and earthquake data.
+- `data/` holds the log, the rotation log and the voter and player snapshot logs (tracked in git) plus runtime files that aren't: the trained model, the Discord ping state and the cached unemployment and earthquake data.
 
 ### First-time setup
 
@@ -81,6 +86,13 @@ Where to get each value:
 0 6 * * * cd /path/to/tf2_balloon_race_forecast && .venv/bin/python generate_report.py >> cron.log 2>&1
 ```
 
+Then start the rotation tracker, which runs all the time rather than from cron (edit the paths and user in the file first if yours differ):
+
+```bash
+sudo cp balloon-rotation.service /etc/systemd/system/ && sudo systemctl enable --now balloon-rotation
+journalctl -u balloon-rotation -f   # its output
+```
+
 The daily report pushes to GitHub, so the repo remote needs to use SSH (`git remote set-url origin git@github.com:benbav/tf2_balloon_race_forecast.git`) with a key added to your GitHub account.
 
 **5. Turn on the website**: on GitHub, go to **Settings → Pages → Build and deployment → Deploy from a branch**, pick the `site` branch and `/ (root)` (the branch appears after the first `generate_report.py` run), and save. Free Pages needs a public repo. The site is live at `https://<user>.github.io/tf2_balloon_race_forecast/` a minute later.
@@ -91,4 +103,6 @@ The daily report pushes to GitHub, so the repo remote needs to use SSH (`git rem
 - `balloon/servers.py`: `DEDICATED_NAME_RE` / `DEDICATED_ADDRS` (which servers count as dedicated 24/7)
 - `balloon/log.py`: `LOG_TIMEZONE` (clock the log was written in)
 - `balloon/forecast.py`: `FORECAST_MINUTES` and the model's other settings
+- `rotation_tracker.py`: `PROVEN_PLAYERS`, `CHECK_SECONDS`
+- `balloon/voters.py`: `MIN_BALLOON_CHANGES`, `MIN_OTHER_CHANGES`, `VOTER_MIN_SCORE`, `LEADERBOARD_SIZE`
 - `generate_report.py`: `ZONES` (chart timezones; the first is the default), `MIN_DAYS_FOR_SCORECARD`, `SCORECARD_RECENT_DAYS`, `BUSY_THRESHOLD`, `TOP_SERVER_COUNT`

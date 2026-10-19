@@ -252,6 +252,24 @@
   .bar-label { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
   .bar-label b { color: var(--text); font-weight: 600; }
 
+  /* Map rotation tracker */
+  .note { color: var(--muted); margin: -8px 0 16px; max-width: 80ch; }
+  td .map { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; overflow-wrap: anywhere; }
+  td .sub { color: var(--muted); font-size: 12px; }
+  .tag.fixed { color: var(--live); background: #e3f4ea; }
+  .tag.varies { color: var(--muted); background: #f0efeb; }
+  .tag.waiting { color: var(--dedicated); background: #e7f0fb; }
+  .tag.verdict { margin-left: 0; }
+  .timelines { display: flex; flex-direction: column; gap: 12px; }
+  .timeline { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; }
+  .timeline h3 { font-size: 14px; margin: 0 0 10px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; font-size: 12px; color: var(--muted); }
+  .chip b { display: block; color: var(--text); font-weight: 600; font-family: ui-monospace, Menlo, Consolas, monospace; overflow-wrap: anywhere; }
+  .chip.balloon { background: #fdece4; border-color: var(--rotating); }
+  .chip.offline { border-style: dashed; }
+  .chip.offline b { color: var(--muted); font-weight: 500; }
+
   footer { color: var(--muted); font-size: 13px; margin-top: 48px; border-top: 1px solid var(--line); padding-top: 16px; }
 
   @media (max-width: 1200px) {
@@ -321,6 +339,8 @@
   </div>
 
   <div id="charts"></div>
+
+  <section id="rotation" hidden></section>
 
   <footer>
     Dedicated = runs Balloon Race all day. Rotating = lands on the map now and then as part of a map cycle.
@@ -668,6 +688,83 @@
       </div>`).join('');
   }
 
+  // Map rotation tracker: its own log and section, so it doesn't follow the server type filter
+  let rotationData = null;
+  const mapName = (m) => (m ? esc(m) : 'offline');
+
+  function rotationTime(iso) {
+    return new Intl.DateTimeFormat('en-US', { timeZone: ZONES[zone].tz, weekday: 'short', hour: 'numeric', minute: '2-digit' })
+      .format(new Date(iso));
+  }
+
+  function minutesLabel(mins) {
+    return mins < 60 ? `${mins} min` : `${Math.floor(mins / 60)} hr ${mins % 60} min`;
+  }
+
+  function renderRotation() {
+    const box = $('#rotation');
+    const r = rotationData;
+    box.hidden = !r;
+    if (!r) return;
+    const intro = `<h2>Map rotation tracker</h2>
+      <p class="note">Rotating servers that have had a 10+ player lobby on Balloon Race, checked every 30 seconds
+        for whatever map they're on, to see if Balloon Race always comes up at the same spot in their map cycle.
+        "Next map" is what the server itself says is next, when it shares that.
+        ${r.since ? `Tracking since ${esc(rotationTime(r.since))} ${zone.toUpperCase()}.` : ''}</p>`;
+    if (!r.servers?.length) {
+      box.innerHTML = `${intro}<p class="empty">No map history yet.</p>${renderVoters(r.voters)}`;
+      return;
+    }
+    const counts = (list) => (list.length
+      ? list.map(([m, n]) => `<div><span class="map">${esc(m)}</span> <span class="sub">×${n}</span></div>`).join('')
+      : '<span class="sub">–</span>');
+    const rows = r.servers.map((s) => `<tr>
+      <td><strong>${esc(s.name)}</strong><div class="addr">${esc(s.addr)}</div></td>
+      <td><div class="map">${mapName(s.current.map)}</div>
+        <div class="sub">${s.current.map ? `${s.current.players} players · ` : ''}since ${esc(rotationTime(s.current.since))}</div></td>
+      <td>${s.current.next_map ? `<span class="map">${esc(s.current.next_map)}</span>` : '<span class="sub">not shared</span>'}</td>
+      <td class="num">${s.visits}</td>
+      <td>${counts(s.before)}</td>
+      <td>${counts(s.after)}</td>
+      <td>${s.gaps.length
+        ? s.gaps.map((g) => `<div>${g.hours} hr <span class="sub">· ${g.maps_between} map${g.maps_between === 1 ? '' : 's'}</span></div>`).join('')
+        : '<span class="sub">–</span>'}</td>
+      <td><span class="tag verdict ${esc(s.verdict)}">${esc(s.verdict)}</span><div class="sub">${esc(s.verdict_text)}</div></td>
+    </tr>`).join('');
+    const timelines = r.servers.map((s) => `<div class="timeline">
+      <h3>${esc(s.name)} · recent maps, oldest first (${zone.toUpperCase()})</h3>
+      <div class="chips">${s.recent.map((m) => `<span class="chip${m.map === r.balloon_map ? ' balloon' : ''}${m.map ? '' : ' offline'}"
+        title="${m.map ? `Peak ${m.peak} players${m.next_map ? ` · next map: ${esc(m.next_map)}` : ''}` : 'Not listed on Steam'}">
+        <b>${mapName(m.map)}</b>${esc(rotationTime(m.start))} · ${minutesLabel(m.minutes)}</span>`).join('')}</div>
+    </div>`).join('');
+    box.innerHTML = `${intro}
+      <div class="table-wrap"><table>
+        <thead><tr><th>Server</th><th>Last seen on</th><th>Next map</th><th class="num">Balloon Race visits</th>
+          <th>Map before Balloon Race</th><th>Map after</th><th>Time between visits</th><th>Fixed cycle?</th></tr></thead>
+        <tbody>${rows}</tbody></table></div>
+      <div class="timelines">${timelines}</div>
+      ${renderVoters(r.voters)}`;
+  }
+
+  // Players who stay on when the vote goes Balloon Race, far more than when it goes anywhere else
+  function renderVoters(v) {
+    if (!v) return '';
+    const intro = `<h2>Balloon Race's most devoted voters</h2>
+      <p class="note">At every map change on these servers we note who was on right before and who was still there
+        a few minutes later. These players stay for Balloon Race much more often than for other maps, so they're
+        probably the ones voting for it. A player shows up here after being around for ${v.min_balloon_changes}
+        changes to Balloon Race and ${v.min_other_changes} to other maps.
+        ${v.changes} map change${v.changes === 1 ? '' : 's'} watched so far, ${v.balloon_changes} to Balloon Race.</p>`;
+    if (!v.top.length) return `${intro}<p class="empty">No one yet, check back once a few more Balloon Race votes have happened.</p>`;
+    const rate = (stays, n) => `${Math.round((100 * stays) / n)}% <span class="sub">(${stays} of ${n})</span>`;
+    return `${intro}<div class="table-wrap"><table>
+      <thead><tr><th class="num">#</th><th>Player</th><th class="num">Stayed for Balloon Race</th>
+        <th class="num">Stayed for other maps</th><th class="num">Score</th></tr></thead>
+      <tbody>${v.top.map((p, i) => `<tr><td class="num">${i + 1}</td><td><strong>${esc(p.name)}</strong></td>
+        <td class="num">${rate(p.balloon_stays, p.balloon_changes)}</td><td class="num">${rate(p.other_stays, p.other_changes)}</td>
+        <td class="num">+${Math.round(100 * p.score)}</td></tr>`).join('')}</tbody></table></div>`;
+  }
+
   // Choices live in the URL (?server=dedicated&tz=et) so filtered links can be shared
   function setView({ server = filter, tz = zone } = {}, push = true) {
     filter = FILTERS[server] ? server : 'all';
@@ -683,6 +780,7 @@
     renderLive();
     renderNextLobby();
     renderCharts();
+    renderRotation();
   }
 
   function viewFromUrl() {
@@ -719,6 +817,11 @@
       $('#updated').textContent = `· Charts updated ${new Date(siteData.updated).toLocaleString()}`;
     }
     renderCharts();
+    try {
+      const res = await fetch('charts/rotation.json', { cache: 'no-cache' });
+      if (res.ok) rotationData = await res.json();
+    } catch { /* the section just stays hidden */ }
+    renderRotation();
     loadLive();
     setInterval(loadLive, LIVE_REFRESH_MS);
   }

@@ -1,0 +1,22 @@
+# Runs rotation_tracker.py all the time. Install:
+#   sudo cp balloon-rotation.service /etc/systemd/system/ && sudo systemctl enable --now balloon-rotation
+# Logs: journalctl -u balloon-rotation
+[Unit]
+Description=TF2 Balloon Race map rotation and voter tracker
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/tf2_balloon_race_emailer
+ExecStart=/home/ubuntu/tf2_balloon_race_emailer/.venv/bin/python rotation_tracker.py
+Environment=PYTHONUNBUFFERED=1
+Restart=always
+RestartSec=30
+# It idles at ~30MB and a few seconds of CPU a minute; these keep it from ever crowding out the box
+MemoryMax=150M
+CPUQuota=25%
+Nice=10
+
+[Install]
+WantedBy=multi-user.target

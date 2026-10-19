@@ -1,5 +1,4 @@
 import re
-import pandas as pd
 from balloon.servers import clean_name
 
 # Log timestamps are written in the server's clock (UTC)
@@ -13,6 +12,8 @@ PLAYERS_RE = re.compile(r'^(.*) : (\d+)$')
 # One row per 5-minute check (busiest server and its count), plus one row per active server per check.
 # Timestamps are left as logged strings.
 def parse_log(lines):
+    # Imported here so rotation_tracker.py, which runs all the time and only needs the regexes, stays small
+    import pandas as pd
     checks, servers = [], []
     for line in lines:
         m = LINE_RE.match(line.rstrip('\n'))
