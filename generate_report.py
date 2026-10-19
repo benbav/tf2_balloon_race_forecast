@@ -5,6 +5,7 @@ import requests
 import plotly.graph_objects as go
 import numpy as np
 import pandas as pd
+from balloon.config import LOBBY_PLAYERS
 from balloon.forecast import train_lobby_forecast
 from balloon.log import LOG_TIMEZONE, parse_log
 from balloon.rotation import rotation_summary
@@ -52,8 +53,6 @@ DISPLAY_TIMEZONE, TZ_LABEL, ZONE_SUFFIX = ZONES[0]
 MIN_DAYS_FOR_SCORECARD = 7
 # Scorecard looks at this many recent days so it follows changing habits
 SCORECARD_RECENT_DAYS = 28
-# A lobby with at least this many human players counts as "busy"
-BUSY_THRESHOLD = 10
 TOP_SERVER_COUNT = 5
 # Windows the website's "next likely lobby" countdown picks from
 LOBBY_WINDOW_COUNT = 5
@@ -199,22 +198,22 @@ def recent_checks(df):
     return df[df['ts'] >= df['ts'].max() - pd.Timedelta(days=SCORECARD_RECENT_DAYS)] if len(df) else df
 
 
-# The website's "next likely lobby" countdown: the best 2-hour windows for a BUSY_THRESHOLD+ lobby,
+# The website's "next likely lobby" countdown: the best 2-hour windows for a LOBBY_PLAYERS+ lobby,
 # as hours of the week in the current DISPLAY_TIMEZONE
 def lobby_windows(df):
     if days_of_data(df) < MIN_DAYS_FOR_SCORECARD:
         return []
     recent = recent_checks(df)
-    window = window_rates(recent, recent['online_players'] >= BUSY_THRESHOLD)
+    window = window_rates(recent, recent['online_players'] >= LOBBY_PLAYERS)
     return [{'start': p, 'pct': round(float(window.loc[p, 'pct']), 3)} for p in top_windows(window, LOBBY_WINDOW_COUNT)]
 
 
-# Big scorecard: the single 2-hour window of the week most likely to have a BUSY_THRESHOLD+ lobby
+# Big scorecard: the single 2-hour window of the week most likely to have a LOBBY_PLAYERS+ lobby
 def generate_scorecard(df, variant=ALL_SERVERS):
     total_days = days_of_data(df)
     recent = recent_checks(df)
-    window = window_rates(recent, recent['online_players'] >= BUSY_THRESHOLD)
-    all_time = window_rates(df, df['online_players'] >= BUSY_THRESHOLD)
+    window = window_rates(recent, recent['online_players'] >= LOBBY_PLAYERS)
+    all_time = window_rates(df, df['online_players'] >= LOBBY_PLAYERS)
 
     fig = go.Figure()
     fig.update_layout(base_layout('', height=480), xaxis=dict(visible=False), yaxis=dict(visible=False))
@@ -226,20 +225,20 @@ def generate_scorecard(df, variant=ALL_SERVERS):
             text=f"<b>{s}</b>" if bold else s, font=dict(size=size, color=color, family=FONT),
         )
 
-    text(0.88, f'BEST TIME FOR A {BUSY_THRESHOLD}+ PLAYER BALLOON RACE LOBBY', 16, TEXT_SECONDARY, bold=True)
+    text(0.88, f'BEST TIME FOR A {LOBBY_PLAYERS}+ PLAYER BALLOON RACE LOBBY', 16, TEXT_SECONDARY, bold=True)
     if variant[1]:
         text(0.77, variant[1].upper(), 14, variant[2], bold=True)
     if total_days < MIN_DAYS_FOR_SCORECARD:
         text(0.55, 'Not enough data yet', 56, TEXT_PRIMARY, bold=True)
         text(0.28, f'{total_days} of {MIN_DAYS_FOR_SCORECARD} days of checks collected', 18, TEXT_SECONDARY)
     elif window['sum'].max() == 0:
-        text(0.55, f'No {BUSY_THRESHOLD}+ lobbies yet', 56, TEXT_PRIMARY, bold=True)
+        text(0.55, f'No {LOBBY_PLAYERS}+ lobbies yet', 56, TEXT_PRIMARY, bold=True)
         text(0.28, f'None seen in the last {min(SCORECARD_RECENT_DAYS, total_days)} days', 18, TEXT_SECONDARY)
     else:
         best = int(window['pct'].idxmax())
         all_time_best = int(all_time['pct'].idxmax())
         text(0.62, f"{window_label(best)} {TZ_LABEL}", 60, TEXT_PRIMARY, bold=True)
-        text(0.4, f"<b>{window.loc[best, 'pct']:.0%}</b> chance a server has {BUSY_THRESHOLD}+ players", 30, TEXT_PRIMARY)
+        text(0.4, f"<b>{window.loc[best, 'pct']:.0%}</b> chance a server has {LOBBY_PLAYERS}+ players", 30, TEXT_PRIMARY)
         text(0.24, f"Based on checks in this window over the last {min(SCORECARD_RECENT_DAYS, total_days)} days",
              16, TEXT_SECONDARY)
         text(0.1, f"All-time best: {window_label(all_time_best)} ({all_time.loc[all_time_best, 'pct']:.0%}) "
@@ -289,7 +288,7 @@ def generate_forecast_regression(fit, threshold):
 
 # Ranked bars: the 5 best non-overlapping 2-hour windows
 def generate_top_windows_plot(df, variant=ALL_SERVERS):
-    window = window_rates(df, df['online_players'] >= BUSY_THRESHOLD)
+    window = window_rates(df, df['online_players'] >= LOBBY_PLAYERS)
     picked = top_windows(window, 5) if days_of_data(df) >= MIN_DAYS_FOR_SCORECARD else []
     picked = picked[::-1]
     pcts = [window.loc[p, 'pct'] * 100 for p in picked]
@@ -301,7 +300,7 @@ def generate_top_windows_plot(df, variant=ALL_SERVERS):
     ))
     fig.update_layout(base_layout(
         'Top 5 times to play',
-        f'Best 2-hour windows (no overlaps) · % of checks with a server at {BUSY_THRESHOLD}+ players',
+        f'Best 2-hour windows (no overlaps) · % of checks with a server at {LOBBY_PLAYERS}+ players',
         height=480, barcornerradius=4, bargap=0.35,
         variant=variant,
     ))
@@ -350,9 +349,9 @@ def generate_heatmap(df, active, title, subtitle, filename, variant=ALL_SERVERS)
     save(fig, filename, variant)
 
 
-# How long people stick around once they show up
+# How long a lobby keeps going once it fills up
 def generate_session_length_plot(df, variant=ALL_SERVERS):
-    active = (df.sort_values('ts')['online_players'] > 0).values
+    active = (df.sort_values('ts')['online_players'] >= LOBBY_PLAYERS).values
     ts = df.sort_values('ts')['ts'].values
     sessions, run = [], 0
     for i, a in enumerate(active):
@@ -375,14 +374,14 @@ def generate_session_length_plot(df, variant=ALL_SERVERS):
         x=[b[0] for b in buckets], y=counts, marker_color=BAR,
         text=counts, textposition='outside', cliponaxis=False, textfont=dict(color=TEXT_PRIMARY),
     ))
-    subtitle = 'A session = back-to-back 5-minute checks with at least one player on'
+    subtitle = f'A lobby = back-to-back 5-minute checks with a server at {LOBBY_PLAYERS}+ players'
     if median is not None:
-        subtitle += f' · median session: {median:.0f} min'
-    fig.update_layout(base_layout('How long sessions last', subtitle,
+        subtitle += f' · median lobby: {median:.0f} min'
+    fig.update_layout(base_layout(f'How long {LOBBY_PLAYERS}+ player lobbies last', subtitle,
                                   barcornerradius=4, bargap=0.4, variant=variant))
     if not sessions:
-        empty_state(fig, 'No sessions seen yet')
-    fig.update_yaxes(showgrid=True, gridcolor=GRID, zeroline=False, title='Sessions', rangemode='tozero')
+        empty_state(fig, f'No {LOBBY_PLAYERS}+ player lobbies seen yet')
+    fig.update_yaxes(showgrid=True, gridcolor=GRID, zeroline=False, title='Lobbies', rangemode='tozero')
     fig.update_xaxes(showgrid=False, ticks='')
     save(fig, 'session_length.png', variant)
 
@@ -390,7 +389,7 @@ def generate_session_length_plot(df, variant=ALL_SERVERS):
 # Weekly trend: is the scene growing or dying?
 def generate_weekly_trend_plot(df, variant=ALL_SERVERS):
     week = df['ts'].dt.tz_localize(None).dt.to_period('W-SUN').dt.start_time
-    grouped = (df['online_players'] > 0).groupby(week)
+    grouped = (df['online_players'] >= LOBBY_PLAYERS).groupby(week)
     # Skip weeks with under 3 days of checks (e.g. the week logging started) so they don't skew the line
     min_checks = 3 * 24 * 60 // CHECK_MINUTES
     keep = grouped.size() >= min_checks
@@ -403,11 +402,11 @@ def generate_weekly_trend_plot(df, variant=ALL_SERVERS):
         line=dict(color=BAR, width=2), marker=dict(size=8, color=BAR, line=dict(color=SURFACE, width=2)),
     ))
     if len(weekly):
-        fig.add_annotation(x=weekly.index[-1], y=weekly.values[-1], text=f"<b>{weekly.values[-1]:.0f}%</b>",
+        fig.add_annotation(x=weekly.index[-1], y=weekly.values[-1], text=f"<b>{weekly.values[-1]:.{0 if weekly.values[-1] >= 10 else 1}f}%</b>",
                            yshift=16, showarrow=False, font=dict(color=TEXT_PRIMARY))
     fig.update_layout(base_layout(
         'Weekly trend',
-        '% of checks each week with at least one player · latest week may be partial',
+        f'% of checks each week with a server at {LOBBY_PLAYERS}+ players · latest week may be partial',
         variant=variant,
     ))
     if len(weekly) < 2:
@@ -463,46 +462,6 @@ def load_unemployment():
             for d in cached or []
             if d['period'].startswith('M') and d['period'] != 'M13' and d['value'] != '-']  # '-' = not published
     return pd.Series(dict(rows), dtype=float).sort_index()
-
-
-# Two lines on two axes: the US unemployment rate vs Balloon Race's daily peak players
-def generate_unemployment_plot(df, unemployment, variant=ALL_SERVERS):
-    daily_peak = df.groupby(df['ts'].dt.date)['online_players'].max()
-    daily_peak.index = pd.to_datetime(daily_peak.index)
-    end = daily_peak.index.max() if len(daily_peak) else pd.Timestamp.now()
-    rate = unemployment[unemployment.index >= end - pd.DateOffset(months=12)]
-
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(
-        x=rate.index, y=rate.values, name='US unemployment rate', mode='lines+markers',
-        line=dict(color=SERIES[0], width=2, shape='spline'), marker=dict(size=8),
-    ))
-    fig.add_trace(go.Scatter(
-        x=daily_peak.index, y=daily_peak.values, name='Balloon Race daily peak players', yaxis='y2',
-        mode='lines+markers', line=dict(color=SERIES[1], width=2, shape='spline'), marker=dict(size=8),
-    ))
-    # Direct labels at the end of each line, in text ink
-    for series, axis, label in [(rate, 'y', f"Unemployment {rate.iloc[-1]:.1f}%" if len(rate) else None),
-                                (daily_peak, 'y2', f"Players {daily_peak.iloc[-1]}" if len(daily_peak) else None)]:
-        if label:
-            fig.add_annotation(x=series.index[-1], y=series.iloc[-1], yref=axis, text=f"<b>{label}</b>",
-                               showarrow=False, xanchor='left', xshift=10, font=dict(color=TEXT_PRIMARY))
-    fig.update_layout(base_layout(
-        'Unemployment vs Balloon Race players',
-        'US unemployment rate (BLS, monthly, seasonally adjusted) · most Balloon Race players seen at once each day',
-        variant=variant, showlegend=True,
-        legend=dict(orientation='h', x=0, y=1.02, yanchor='bottom'),
-        margin=dict(l=24, r=24, t=130, b=48),
-        yaxis=dict(title=dict(text='Unemployment rate', font=dict(color=TEXT_PRIMARY)), ticksuffix='%',
-                   tickformat='.1f', dtick=0.1, showgrid=True, gridcolor=GRID, zeroline=False),
-        yaxis2=dict(title=dict(text='Daily peak players', font=dict(color=TEXT_PRIMARY)), overlaying='y',
-                    side='right', showgrid=False, zeroline=False, tickformat='d', tickmode='auto',
-                    range=[0, max(float(daily_peak.max()) if len(daily_peak) else 0, 1) * 1.1]),
-        xaxis=dict(showgrid=False, ticks='', tickformat='%b %Y'),
-    ))
-    if not len(rate) and not len(daily_peak):
-        empty_state(fig)
-    save(fig, 'unemployment.png', variant)
 
 
 # Earthquakes worldwide per UTC hour from `start` up to the last full hour, as a Series indexed by hour
@@ -612,7 +571,7 @@ def holiday_calendar(years):
 # Table: how much busier each holiday is than a normal day of the same weekday
 def generate_holiday_table(df, variant=ALL_SERVERS):
     daily = (
-        df.assign(active=df['online_players'] > 0, date=df['ts'].dt.date)
+        df.assign(active=df['online_players'] >= LOBBY_PLAYERS, date=df['ts'].dt.date)
         .groupby('date')
         .agg(rate=('active', 'mean'), checks=('active', 'size'), peak=('online_players', 'max'))
     )
@@ -670,7 +629,7 @@ def generate_holiday_table(df, variant=ALL_SERVERS):
         fig.add_trace(go.Table(
             columnwidth=[3.2, 1.6, 1.4, 1.4, 1.3, 0.9],
             header=dict(
-                values=['<b>Holiday</b>', '<b>Last seen</b>', '<b>Players on</b>', '<b>Normal day</b>',
+                values=['<b>Holiday</b>', '<b>Last seen</b>', f'<b>{LOBBY_PLAYERS}+ lobby</b>', '<b>Normal day</b>',
                         '<b>vs normal</b>', '<b>Peak</b>'],
                 fill_color=SURFACE, line_color=GRID, align=['left'] + ['right'] * 5, height=40,
                 font=dict(size=14, color=TEXT_SECONDARY, family=FONT),
@@ -679,8 +638,8 @@ def generate_holiday_table(df, variant=ALL_SERVERS):
                 values=[
                     [f"<b>{r['name']}</b>" for r in rows],
                     [r['last'].strftime('%b %d, %Y') for r in rows],
-                    [f"{r['rate']:.0%}" for r in rows],
-                    [f"{r['base']:.0%}" for r in rows],
+                    [f"{r['rate']:.1%}" for r in rows],
+                    [f"{r['base']:.1%}" for r in rows],
                     [lift_text(r) for r in rows],
                     [r['peak'] for r in rows],
                 ],
@@ -691,7 +650,8 @@ def generate_holiday_table(df, variant=ALL_SERVERS):
         ))
     fig.update_layout(base_layout(
         'Holidays vs normal days',
-        '"Players on" = % of checks with at least one player · compared with non-holiday days of the same weekday'
+        f'"{LOBBY_PLAYERS}+ lobby" = % of checks with a server at {LOBBY_PLAYERS}+ players'
+        ' · compared with non-holiday days of the same weekday'
         + f'<br>Next up: {next_up}',
         height=max(600, 200 + 38 * len(rows)),  # at least as tall as the chart beside it on the site
         margin=dict(l=24, r=24, t=130, b=16),
@@ -703,32 +663,35 @@ def generate_holiday_table(df, variant=ALL_SERVERS):
     save(fig, 'holidays.png', variant)
 
 
-# Rank servers by how often they have people on, with each one's best times
+# Rank servers by how often they have a LOBBY_PLAYERS+ lobby (then by how often anyone's on), with each one's
+# best times for a lobby. A server that's never had one has no best time or day.
 def top_server_stats(df, server_df):
     stats = []
     for addr, rows in server_df.groupby('addr'):
         # Only count checks since the server was first seen, so new servers aren't penalized
         checks = df[df['ts'] >= rows['ts'].min()]
         active_ts = set(rows.loc[rows['players'] > 0, 'ts'])
-        busy_ts = set(rows.loc[rows['players'] >= BUSY_THRESHOLD, 'ts'])
+        busy_ts = set(rows.loc[rows['players'] >= LOBBY_PLAYERS, 'ts'])
         active = checks['ts'].isin(active_ts)
-        window = window_rates(checks, active)
-        best = int(window['pct'].idxmax())
-        by_day = active.groupby(checks['day_of_week'], observed=False).mean()
+        busy = checks['ts'].isin(busy_ts)
+        window = window_rates(checks, busy)
+        best = int(window['pct'].idxmax()) if busy.any() else None
+        by_day = busy.groupby(checks['day_of_week'], observed=False).mean()
         stats.append({
             'addr': addr,
             'name': rows.sort_values('ts')['name'].iloc[-1],
             'pct_active': active.mean(),
+            'pct_busy': busy.mean(),
             'best_window': best,
-            'best_window_pct': window.loc[best, 'pct'],
-            'best_day': by_day.idxmax(),
+            'best_window_pct': window.loc[best, 'pct'] if busy.any() else 0.0,
+            'best_day': by_day.idxmax() if busy.any() else None,
             'avg_players': rows.loc[rows['players'] > 0, 'players'].mean(),
             'peak': rows['players'].max(),
             'checks': checks,
             'active': active,
-            'busy': checks['ts'].isin(busy_ts),
+            'busy': busy,
         })
-    stats.sort(key=lambda s: s['pct_active'], reverse=True)
+    stats.sort(key=lambda s: (s['pct_busy'], s['pct_active']), reverse=True)
     return stats
 
 
@@ -766,7 +729,7 @@ def generate_server_heatmaps(stats, variant=ALL_SERVERS):
 
     fig.update_layout(base_layout(
         'When the top servers are busy',
-        f'% of checks each server had {BUSY_THRESHOLD}+ human players · times in {TZ_LABEL}',
+        f'% of checks each server had {LOBBY_PLAYERS}+ human players · times in {TZ_LABEL}',
         height=170 + 260 * len(stats),
         variant=variant,
     ))
@@ -781,15 +744,17 @@ def generate_server_heatmaps(stats, variant=ALL_SERVERS):
 def update_readme(stats):
     if stats:
         lines = [
-            '| # | Server | Connect (paste in TF2 console) | Best time | Best day | Has players | Avg players when on | Peak |',
-            '|---|---|---|---|---|---|---|---|',
+            f'| # | Server | Connect (paste in TF2 console) | Best time for a {LOBBY_PLAYERS}+ lobby | Best day '
+            f'| Has {LOBBY_PLAYERS}+ players | Has players | Avg players when on | Peak |',
+            '|---|---|---|---|---|---|---|---|---|',
         ]
         for i, s in enumerate(stats):
             name = s['name'].replace('|', '\\|')
+            best = ('–' if s['best_window'] is None
+                    else f"{window_label(s['best_window'], short=True)} {TZ_LABEL} ({s['best_window_pct']:.0%})")
             lines.append(
-                f"| {i + 1} | {name} | `connect {s['addr']}` "
-                f"| {window_label(s['best_window'], short=True)} {TZ_LABEL} ({s['best_window_pct']:.0%}) "
-                f"| {s['best_day']} | {s['pct_active']:.0%} of checks | {s['avg_players']:.1f} | {s['peak']} |"
+                f"| {i + 1} | {name} | `connect {s['addr']}` | {best} | {s['best_day'] or '–'} "
+                f"| {s['pct_busy']:.0%} of checks | {s['pct_active']:.0%} of checks | {s['avg_players']:.1f} | {s['peak']} |"
             )
         lines.append('')
         lines.append('To favorite one: Steam → View → Game Servers → Favorites → **+** and paste the address.')
@@ -803,21 +768,24 @@ def update_readme(stats):
     if not pattern.search(readme):
         print('README markers not found; skipping top servers table')
         return
+    readme = re.sub(r'pinged when a \d+\+ player', f'pinged when a {LOBBY_PLAYERS}+ player', readme)
     with open(README_PATH, 'w', encoding='utf-8') as f:
         f.write(pattern.sub(lambda _: section, readme))
 
 
 # Top servers for each timezone and filter on the website
 def write_site_data(stats_by_zone, windows, forecast):
-    data = {'updated': dt.datetime.now(dt.timezone.utc).isoformat(timespec='seconds'), 'top_servers': {},
+    data = {'updated': dt.datetime.now(dt.timezone.utc).isoformat(timespec='seconds'), 'lobby_players': LOBBY_PLAYERS,
+            'top_servers': {},
             'lobby_windows': {'timezone': ZONES[0][0], **windows}, 'forecast': forecast}
     for (zone_key, key), (stats, label) in stats_by_zone.items():
         data['top_servers'].setdefault(zone_key, {})[key] = [{
             'name': s['name'],
             'addr': s['addr'],
-            'best_time': f"{window_label(s['best_window'], short=True)} {label}",
+            'best_time': None if s['best_window'] is None else f"{window_label(s['best_window'], short=True)} {label}",
             'best_time_pct': round(float(s['best_window_pct']), 3),
             'best_day': s['best_day'],
+            'pct_busy': round(float(s['pct_busy']), 3),
             'pct_active': round(float(s['pct_active']), 3),
             'avg_players': round(float(s['avg_players']), 1),
             'peak': int(s['peak']),
@@ -896,9 +864,9 @@ if __name__ == "__main__":
             generate_scorecard(df, variant)
             generate_top_windows_plot(df, variant)
             generate_heatmap(
-                df, df['online_players'] >= BUSY_THRESHOLD,
-                f'How often there is a busy lobby ({BUSY_THRESHOLD}+ players)',
-                f'% of 5-minute checks with a server at {BUSY_THRESHOLD}+ human players · times in {TZ_LABEL}',
+                df, df['online_players'] >= LOBBY_PLAYERS,
+                f'How often there is a busy lobby ({LOBBY_PLAYERS}+ players)',
+                f'% of 5-minute checks with a server at {LOBBY_PLAYERS}+ human players · times in {TZ_LABEL}',
                 'busy_heatmap.png', variant,
             )
             all_server_stats = top_server_stats(zone_df, servers)
@@ -912,16 +880,15 @@ if __name__ == "__main__":
                 generate_weekly_trend_plot(df, variant)
                 generate_monthly_avg_plot(df, variant)
                 generate_holiday_table(df, variant)
-                generate_unemployment_plot(df, unemployment, variant)
                 generate_earthquake_correlation_plot(df, earthquakes, variant)
                 generate_unemployment_correlation_plot(df, unemployment, variant)
     DISPLAY_TIMEZONE, TZ_LABEL, ZONE_SUFFIX = ZONES[0]
     stats = stats_by_zone[(TZ_LABEL.lower(), 'all')][0][:TOP_SERVER_COUNT]
     years = range(graph_df['ts'].min().year, graph_df['ts'].max().year + 2)
     holiday_dates = {d for dates in holiday_calendar(years).values() for d in dates}
-    forecast, fit = train_lobby_forecast(graph_df, server_df, holiday_dates, BUSY_THRESHOLD, CHECK_MINUTES,
+    forecast, fit = train_lobby_forecast(graph_df, server_df, holiday_dates, LOBBY_PLAYERS, CHECK_MINUTES,
                                          ZONES[0][0], FORECAST_MODEL_PATH)
-    generate_forecast_regression(fit, BUSY_THRESHOLD)
+    generate_forecast_regression(fit, LOBBY_PLAYERS)
     write_site_data(stats_by_zone, windows, forecast)
     write_rotation_data()
     if '--no-readme' not in sys.argv:

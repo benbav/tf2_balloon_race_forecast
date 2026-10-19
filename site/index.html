@@ -295,7 +295,7 @@
 <main>
   <h1>WHEN ARE PEOPLE PLAYING BALLOON RACE????</h1>
   <p class="lede">Every TF2 server on <code>balloon_race_v2b</code> is checked every 5 minutes. Charts update daily.</p>
-  <p class="discord">Get pinged when a 10+ player server is going: <a href="https://discord.gg/gdDVEeH7Y">join the Discord</a></p>
+  <p class="discord">Get pinged when a <span class="lobby-players">10</span>+ player server is going: <a href="https://discord.gg/gdDVEeH7Y">join the Discord</a></p>
 
   <div class="filter-bar">
     <div class="row">
@@ -361,8 +361,9 @@
   const LIVE_REFRESH_MS = 60 * 1000;
   // A check older than this means the tracker has stopped
   const STALE_MINUTES = 15;
-  // One server with at least this many players sets off the alarm
-  const ALARM_PLAYERS = 10;
+  // One server with at least this many players is a lobby and sets off the alarm. The daily report sends the
+  // real number (LOBBY_PLAYERS in balloon/config.py) in site_data.json; this is only used until that loads.
+  const DEFAULT_LOBBY_PLAYERS = 10;
   // Set to true to keep chaos mode on all the time, for testing
   const FORCE_CHAOS = false;
   const CHAOS_EMOJI = ['🎈', '🎈', '🎈', '🚨', '🔥', '💥', '🎉', '🫃', '🤰'];
@@ -401,23 +402,22 @@
 
   const SECTIONS = [
     { title: 'When to play', charts: [
-      ['best_time', 'Best time for a 10+ player lobby', true],
+      ['best_time', 'Best time for a {N}+ player lobby', true],
       ['top_windows', 'Top 5 times to play', true],
-      ['busy_heatmap', 'How often there is a busy lobby', true, true],
+      ['busy_heatmap', 'How often there is a {N}+ player lobby', true, true],
     ]},
     { title: 'Servers', table: true, charts: [
       ['server_heatmaps', 'When the top servers are busy', true, true],
     ]},
     { title: 'Trends', charts: [
       ['weekly_trend', 'Weekly trend'],
-      ['session_length', 'How long sessions last'],
+      ['session_length', 'How long {N}+ player lobbies last'],
       ['holidays', 'Holidays vs normal days'],
       ['monthly_avg', 'Max players by month'],
     ]},
     { title: 'Totally unrelated', charts: [
       ['earthquake_correlation', 'Earthquakes vs Balloon Race players'],
       ['unemployment_correlation', 'Unemployment vs Balloon Race players, correlated'],
-      ['unemployment', 'Unemployment vs Balloon Race players'],
     ]},
   ];
 
@@ -426,6 +426,7 @@
   let siteData = null;
   let liveData = null;
 
+  const lobbyPlayers = () => siteData?.lobby_players ?? DEFAULT_LOBBY_PLAYERS;
   const $ = (sel) => document.querySelector(sel);
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const matches = (dedicated) => filter === 'all' || (filter === 'dedicated') === dedicated;
@@ -512,7 +513,7 @@
       .sort((a, b) => b.players - a.players);
     const playing = servers.filter((s) => s.players > 0);
     dot.classList.toggle('on', playing.length > 0 && !stale);
-    setAlarm(!stale && servers[0]?.players >= ALARM_PLAYERS ? servers[0] : null);
+    setAlarm(!stale && servers[0]?.players >= lobbyPlayers() ? servers[0] : null);
 
     if (!servers.length) {
       const which = filter === 'all' ? '' : ` ${FILTERS[filter].label.toLowerCase()}`;
@@ -580,7 +581,7 @@
   function renderNextLobby() {
     const box = $('#next-lobby');
     const data = siteData?.lobby_windows;
-    const threshold = siteData?.forecast?.threshold ?? ALARM_PLAYERS;
+    const threshold = siteData?.forecast?.threshold ?? lobbyPlayers();
     if (!data?.[filter]) {
       box.textContent = '';
       return;
@@ -607,7 +608,7 @@
     const f = siteData?.forecast;
     const pct = $('#forecast-pct');
     const note = $('#forecast-note');
-    $('#forecast-title').textContent = `Chance of a ${f?.threshold ?? ALARM_PLAYERS}+ player lobby in the next hour`;
+    $('#forecast-title').textContent = `Chance of a ${f?.threshold ?? lobbyPlayers()}+ player lobby in the next hour`;
     $('#forecast-metrics').textContent = f?.ready ? forecastMetrics(f) : '';
     renderNextLobby();
     // Redrawn with each daily update; versioned like the other charts
@@ -654,14 +655,16 @@
     if (!rows.length) return '<p class="empty">No server data yet.</p>';
     const maxPeak = Math.max(1, ...rows.map((s) => s.peak));
     return `<div class="table-wrap"><table>
-      <thead><tr><th>#</th><th>Server</th><th>Best time</th><th>Best day</th><th class="num">Has players</th>
+      <thead><tr><th>#</th><th>Server</th><th>Best time for ${lobbyPlayers()}+</th><th>Best day</th>
+        <th class="num">Has ${lobbyPlayers()}+</th><th class="num">Has players</th>
         <th class="players">Players when on<span class="key"><i class="avg"></i>avg</span><span class="key"><i class="peak"></i>peak</span></th>
         <th></th></tr></thead>
       <tbody>${rows.map((s, i) => `<tr>
         <td>${i + 1}</td>
         <td><strong>${esc(s.name)}</strong><div class="addr">${esc(s.addr)}</div></td>
-        <td>${esc(s.best_time)} (${Math.round(s.best_time_pct * 100)}%)</td>
-        <td>${esc(s.best_day)}</td>
+        <td>${s.best_time ? `${esc(s.best_time)} (${Math.round(s.best_time_pct * 100)}%)` : '<span class="sub">never</span>'}</td>
+        <td>${s.best_day ? esc(s.best_day) : '<span class="sub">–</span>'}</td>
+        <td class="num">${Math.round((s.pct_busy ?? 0) * 100)}%</td>
         <td class="num">${Math.round(s.pct_active * 100)}%</td>
         <td class="players">
           <div class="bar"><span class="peak" style="width:${(s.peak / maxPeak) * 100}%"></span><span class="avg" style="width:${(s.avg_players / maxPeak) * 100}%"></span></div>
@@ -683,7 +686,7 @@
         const src = `charts/${file}${suffix}${timed ? ZONES[zone].suffix : ''}.png${v}`;
         const zoneNote = timed ? `, ${ZONES[zone].label}` : '';
         return `<figure class="chart${wide ? ' wide' : ''}"><a href="${src}" target="_blank" rel="noopener">
-          <img src="${src}" alt="${esc(alt)} (${label}${zoneNote})" loading="lazy"></a></figure>`;
+          <img src="${src}" alt="${esc(alt.replace('{N}', lobbyPlayers()))} (${label}${zoneNote})" loading="lazy"></a></figure>`;
       }).join('')}
       </div>`).join('');
   }
@@ -707,7 +710,7 @@
     box.hidden = !r;
     if (!r) return;
     const intro = `<h2>Map rotation tracker</h2>
-      <p class="note">Rotating servers that have had a 10+ player lobby on Balloon Race, checked every 30 seconds
+      <p class="note">Rotating servers that have had a ${lobbyPlayers()}+ player lobby on Balloon Race, checked every 30 seconds
         for whatever map they're on, to see if Balloon Race always comes up at the same spot in their map cycle.
         "Next map" is what the server itself says is next, when it shares that.
         ${r.since ? `Tracking since ${esc(rotationTime(r.since))} ${zone.toUpperCase()}.` : ''}</p>`;
@@ -813,6 +816,7 @@
       const res = await fetch('charts/site_data.json', { cache: 'no-cache' });
       if (res.ok) siteData = await res.json();
     } catch { /* charts still render without the table */ }
+    document.querySelectorAll('.lobby-players').forEach((el) => { el.textContent = lobbyPlayers(); });
     if (siteData) {
       $('#updated').textContent = `· Charts updated ${new Date(siteData.updated).toLocaleString()}`;
     }

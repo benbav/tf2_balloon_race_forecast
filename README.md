@@ -13,7 +13,7 @@ Example of the live lobby forecast (a static screenshot - on the website it upda
 
 ### Top 5 Balloon Race servers
 
-Ranked by how often they have people on. Favorite these so they're one click away.
+Ranked by how often they have a lobby going (as many players as the Discord ping), then by how often anyone's on. Favorite these so they're one click away.
 
 <!-- TOP_SERVERS_START -->
 | # | Server | Connect (paste in TF2 console) | Best time | Best day | Has players | Avg players when on | Peak |
@@ -31,11 +31,11 @@ To favorite one: Steam → View → Game Servers → Favorites → **+** and pas
 
 ### How it works
 
-- `main.py` runs every 5 minutes. It asks the Steam API which TF2 servers are on `balloon_race_v2b`, logs every server with human players (bots excluded) to `data/tf2_balloon_log.txt`, and scores the lobby forecast. If `discord_webhook_url` is set, it posts to Discord when a server reaches `MIN_PLAYER_THRESHOLD` (10) or more players.
+- `main.py` runs every 5 minutes. It asks the Steam API which TF2 servers are on `balloon_race_v2b`, logs every server with human players (bots excluded) to `data/tf2_balloon_log.txt`, and scores the lobby forecast. If `discord_webhook_url` is set, it posts to Discord when a server reaches `LOBBY_PLAYERS` (10) or more players.
 - `site/index.html` is the website, served free by GitHub Pages. It shows the charts, the top servers from `site/charts/site_data.json`, and the live server list.
 - `generate_report.py` runs once a day. It turns the log into the website's charts, retrains the lobby forecast, rewrites the top servers table, and pushes the README and log to `main`. Everything in `site/` goes to the `site` branch as a single commit that's replaced daily, so ~16MB of charts a day doesn't pile up in the history. The log lives in `main` so its history is never lost.
 - `main.py` also pushes the current server list to the `live` branch every check, the same single-commit way, for the website's "who's on now" list.
-- `rotation_tracker.py` runs all the time as a systemd service (`balloon-rotation.service`), separately from everything else. Every 30 seconds it looks up the rotating servers that have had a 10+ player lobby on Balloon Race (fixed addresses only):
+- `rotation_tracker.py` runs all the time as a systemd service (`balloon-rotation.service`), separately from everything else. Every 30 seconds it looks up the rotating servers that have had a `LOBBY_PLAYERS`+ player lobby on Balloon Race (fixed addresses only):
   - It logs whichever map each one is on, plus its `sm_nextmap` when the server shares it, to `data/rotation_log.csv` (every 5 minutes and on every map change), so we can see whether Balloon Race comes up at a fixed spot in their map cycles.
   - At every map change it logs who was on right before and who was still there a few minutes later to `data/rotation_players.jsonl`, from the server's own player list (names only, no SteamIDs). Players who stay for Balloon Race far more often than for other maps are probably voting for it (`balloon/voters.py`).
   - Every 5 minutes it logs who's on each one to `data/rotation_snapshots.jsonl` (on the server only), so the lobby forecast can count how many of those voters are sitting on a rotating server that isn't on Balloon Race yet. The forecast starts using that count once the snapshots cover a week with a voter seen in them.
@@ -70,7 +70,7 @@ Where to get each value:
 | Key | Where to get it |
 |---|---|
 | `steam_api_key` | Sign in at https://steamcommunity.com/dev/apikey, enter any domain name (e.g. `localhost`), and copy the key. |
-| `discord_webhook_url` | Optional. In Discord: channel settings (gear icon) → Integrations → Webhooks → New Webhook → Copy Webhook URL. Posts once when a server reaches `MIN_PLAYER_THRESHOLD` or more players, and again only after it empties out and refills. |
+| `discord_webhook_url` | Optional. In Discord: channel settings (gear icon) → Integrations → Webhooks → New Webhook → Copy Webhook URL. Posts once when a server reaches `LOBBY_PLAYERS` or more players, and again only after it empties out and refills. |
 
 **3. Test it**
 
@@ -99,10 +99,10 @@ The daily report pushes to GitHub, so the repo remote needs to use SSH (`git rem
 
 ### Settings
 
-- `main.py`: `MIN_PLAYER_THRESHOLD`
+- `balloon/config.py`: `LOBBY_PLAYERS` (how many players make a lobby: Discord pings, the website's alarm, the forecast, the charts and which servers the rotation tracker watches; the website picks it up on the next daily report)
 - `balloon/servers.py`: `DEDICATED_NAME_RE` / `DEDICATED_ADDRS` (which servers count as dedicated 24/7)
 - `balloon/log.py`: `LOG_TIMEZONE` (clock the log was written in)
 - `balloon/forecast.py`: `FORECAST_MINUTES` and the model's other settings
-- `rotation_tracker.py`: `PROVEN_PLAYERS`, `CHECK_SECONDS`
+- `rotation_tracker.py`: `CHECK_SECONDS`
 - `balloon/voters.py`: `MIN_BALLOON_CHANGES`, `MIN_OTHER_CHANGES`, `VOTER_MIN_SCORE`, `LEADERBOARD_SIZE`
-- `generate_report.py`: `ZONES` (chart timezones; the first is the default), `MIN_DAYS_FOR_SCORECARD`, `SCORECARD_RECENT_DAYS`, `BUSY_THRESHOLD`, `TOP_SERVER_COUNT`
+- `generate_report.py`: `ZONES` (chart timezones; the first is the default), `MIN_DAYS_FOR_SCORECARD`, `SCORECARD_RECENT_DAYS`, `TOP_SERVER_COUNT`

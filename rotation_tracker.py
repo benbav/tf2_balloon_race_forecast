@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from balloon.config import LOBBY_PLAYERS
 from balloon.log import LINE_RE, SERVER_RE
 from balloon.rotation import ROTATION_COLUMNS, ROTATION_LOG_PATH
 from balloon.servers import clean_name, is_dedicated
@@ -23,8 +24,6 @@ import os
 # `python rotation_tracker.py --once` does a single check, for testing.
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 LOG_PATH = os.path.join(SCRIPT_DIR, 'data', 'tf2_balloon_log.txt')
-# "Proven" = has had a lobby this big on Balloon Race in the main log
-PROVEN_PLAYERS = 10
 # Steam Datagram Relay addresses change, so those servers can't be found again by address
 RELAY_PREFIX = '169.254.'
 A2S_TIMEOUT = 2
@@ -40,7 +39,7 @@ MAX_CHANGE_GAP = 300
 WATCH_LIST_SECONDS = 3600
 
 def proven_servers():
-    """Rotating servers with a fixed address that have had a PROVEN_PLAYERS+ lobby on Balloon Race."""
+    """Rotating servers with a fixed address that have had a LOBBY_PLAYERS+ lobby on Balloon Race."""
     peaks, names = {}, {}
     with open(LOG_PATH, encoding='utf-8', errors='replace') as f:
         for line in f:
@@ -53,7 +52,7 @@ def proven_servers():
                 peaks[addr] = max(peaks.get(addr, 0), int(s.group(3)))
                 names[addr] = clean_name(s.group(2))
     return sorted(a for a, p in peaks.items()
-                  if p >= PROVEN_PLAYERS and not a.startswith(RELAY_PREFIX) and not is_dedicated(names[a], a))
+                  if p >= LOBBY_PLAYERS and not a.startswith(RELAY_PREFIX) and not is_dedicated(names[a], a))
 
 def server_info(api_key, addr):
     """The server as Steam lists it right now, whatever map it's on, or None if it's offline."""

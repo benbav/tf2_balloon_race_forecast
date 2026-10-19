@@ -18,7 +18,7 @@ SNAPSHOT_TAIL_BYTES = 300_000
 # A server's latest snapshot older than this is stale (it emptied out or the tracker was down)
 SNAPSHOT_STALE_MINUTES = 10
 # Map changes a player has to have been there for, to Balloon Race and to anything else, before they're scored
-MIN_BALLOON_CHANGES = 3
+MIN_BALLOON_CHANGES = 5
 MIN_OTHER_CHANGES = 3
 # Stay rate for Balloon Race minus stay rate for other maps; this or more counts as a voter
 VOTER_MIN_SCORE = 0.25
