@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 from balloon.forecast import predict_now
 from balloon.servers import clean_name, is_dedicated
+from balloon.voters import voters_on_now
 import subprocess
 import requests
 import logging
@@ -19,6 +20,10 @@ LIVE_BRANCH = 'live'
 MIN_PLAYER_THRESHOLD = 10
 # Servers that had MIN_PLAYER_THRESHOLD+ players last check, so Discord is only pinged when a lobby fills up
 DISCORD_STATE_FILE = os.path.join(DATA_DIR, 'discord_notified.json')
+# Discord is also pinged when this many Balloon Race voters (balloon/voters.py) are on a rotating server that
+# isn't on it yet, since they may vote it in next. Servers already pinged, so it's once per crowd.
+VOTER_ALERT_MIN = 8
+DISCORD_VOTERS_STATE_FILE = os.path.join(DATA_DIR, 'discord_voters_notified.json')
 
 def get_server_list():
     api_key = os.getenv('steam_api_key')
@@ -62,6 +67,36 @@ def notify_discord(servers):
 
     with open(DISCORD_STATE_FILE, 'w') as f:
         json.dump([s['addr'] for s in busy], f)
+
+def notify_voters():
+    """Post to the Discord webhook for each rotating server that just reached VOTER_ALERT_MIN voters waiting."""
+    webhook_url = os.getenv('discord_webhook_url')
+    if not webhook_url:
+        return
+    try:
+        with open(DISCORD_VOTERS_STATE_FILE) as f:
+            already_notified = set(json.load(f))
+    except (FileNotFoundError, ValueError):
+        already_notified = set()
+
+    waiting = [s for s in voters_on_now() if s['voters'] >= VOTER_ALERT_MIN]
+    for s in waiting:
+        if s['addr'] in already_notified:
+            continue
+        content = (f"**BALLOON RACE VOTERS WAITING:** {s['voters']} players who usually vote for Balloon Race are on "
+                   f"**{s['name'] or s['addr']}** (on `{s['map']}`), so it might come up next\n"
+                   f"IP: `{s['addr']}`\n"
+                   f"Console: `connect {s['addr']}`")
+        try:
+            requests.post(webhook_url, json={'content': content}, timeout=15).raise_for_status()
+            logging.info(f"Sent Discord voter notification for {s['name'] or s['addr']}")
+        except requests.RequestException as e:
+            print(f'Error sending Discord voter notification: {e}')
+            # Leave it out of the state file so the next check retries
+            waiting = [w for w in waiting if w is not s]
+
+    with open(DISCORD_VOTERS_STATE_FILE, 'w') as f:
+        json.dump([s['addr'] for s in waiting], f)
 
 def lobby_forecast():
     """Chance of a lobby in the next hour from the checks logged so far, or None if it can't be worked out."""
@@ -120,6 +155,11 @@ def main():
         logging.info('No one playing balloon race :(')
 
     notify_discord(servers)
+    try:
+        notify_voters()
+    except Exception as e:
+        # The voter logs are the rotation tracker's; a problem there shouldn't stop the live status
+        print(f'Error checking Balloon Race voters: {e!r}')
 
     # After logging, so the forecast includes this check
     publish_status(servers, lobby_forecast())

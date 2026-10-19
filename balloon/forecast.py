@@ -7,6 +7,8 @@ from sklearn.metrics import brier_score_loss, log_loss, roc_auc_score
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from balloon.log import LOG_TIMEZONE, parse_log, tail_lines
+from balloon.voters import (SNAPSHOT_LOG_PATH, SNAPSHOT_STALE_MINUTES, read_changes, read_snapshots,
+                            recent_snapshots, voters_waiting)
 
 # "Will a lobby form?" model: chance some server hits `threshold`+ players within the next hour.
 # The daily report trains it on the whole log and saves it; the 5-minute poller (main.py) loads it and
@@ -26,6 +28,9 @@ MOMENTUM_MINUTES = (15, 30)
 SINCE_BUSY_CAP_MINUTES = 24 * 60
 # Live scoring reads this much of the end of the log, enough to cover the longest lookback
 TAIL_BYTES = 2_000_000
+# Voters waiting: the most Balloon Race voters (balloon/voters.py) on one rotating server that isn't on
+# Balloon Race yet. Left out until the tracker's snapshots cover this many days with a voter seen in them.
+FORECAST_MIN_VOTER_DATES = 7
 # Rolling evaluation: each of the latest days (up to this many) is predicted by a model trained only
 # on the days before it, and at least this many earlier days are needed before a day is tested
 EVAL_MAX_DAYS = 14
@@ -41,8 +46,23 @@ def busiest_addrs(df, server_df):
     return df['ts'].map(top).fillna(df['server_name'].map(by_name))
 
 
+# Most voters waiting on any one server at each check, and whether the tracker was running yet then
+def add_voters(f, voter_rows):
+    f['voters_waiting'], f['has_voter_data'] = 0.0, 0.0
+    if not voter_rows:
+        return
+    v = pd.DataFrame(voter_rows)
+    v['ts'] = pd.to_datetime(v['ts']).dt.tz_localize('UTC').dt.tz_convert(f['ts'].dt.tz).astype(f['ts'].dtype)
+    v = v.sort_values('ts')
+    tolerance = pd.Timedelta(minutes=SNAPSHOT_STALE_MINUTES)
+    for _, rows in v.groupby('addr'):
+        on = pd.merge_asof(f[['ts']], rows[['ts', 'voters']], on='ts', direction='backward', tolerance=tolerance)
+        f['voters_waiting'] = np.maximum(f['voters_waiting'], on['voters'].fillna(0).to_numpy())
+    f['has_voter_data'] = (f['ts'] >= v['ts'].iloc[0]).astype(float)
+
+
 # One row per check with everything the features need, each computed only from that check and earlier ones
-def check_frame(df, server_df, threshold, check_minutes):
+def check_frame(df, server_df, threshold, check_minutes, voter_rows=None):
     f = df.sort_values('ts').reset_index(drop=True)
     f['addr'] = busiest_addrs(f, server_df)
     per_check = server_df.groupby('ts')['players'].agg(['sum', 'size'])
@@ -60,6 +80,7 @@ def check_frame(df, server_df, threshold, check_minutes):
     last = pd.merge_asof(f[['ts']], busy, left_on='ts', right_on='last_busy', direction='backward')
     since = (f['ts'] - last['last_busy']).dt.total_seconds() / 60
     f['minutes_since_busy'] = since.fillna(SINCE_BUSY_CAP_MINUTES).clip(upper=SINCE_BUSY_CAP_MINUTES)
+    add_voters(f, voter_rows)
     return f
 
 
@@ -73,13 +94,17 @@ def feature_matrix(f, cfg):
     addr, on = f['addr'].to_numpy(dtype=object), players > 0
     servers = [((addr == s) & on).astype(float) for s in cfg['servers']]
     holidays = [f['ts'].dt.date.isin(cfg['holiday_dates']).to_numpy(dtype=float)] if cfg['use_holidays'] else []
+    # Checks from before the tracker started have no count, so the flag keeps them from reading as "0 voters on".
+    # Models saved before this feature existed have no use_voters.
+    voters = ([f['has_voter_data'].to_numpy(dtype=float), f['voters_waiting'].to_numpy(dtype=float)]
+              if cfg.get('use_voters') else [])
     return np.column_stack([
         np.log1p(players), (players >= cfg['threshold']).astype(float),
         np.log1p(f['total_players'].to_numpy(dtype=float)), f['servers_on'].to_numpy(dtype=float),
         *[f[f'change_{m}'].to_numpy(dtype=float) for m in MOMENTUM_MINUTES],
         np.log1p(f['minutes_since_busy'].to_numpy(dtype=float)),
         np.sin(angle), np.cos(angle), np.sin(2 * angle), np.cos(2 * angle),
-        *days, *servers, *holidays,
+        *days, *servers, *holidays, *voters,
     ])
 
 
@@ -162,21 +187,24 @@ def rolling_evaluation(ts, X, y, players, threshold):
 
 # Returns (info for the website, fit for the regression chart or None)
 def train_lobby_forecast(df, server_df, holiday_dates, threshold, check_minutes, timezone, model_path):
-    f = check_frame(df, server_df, threshold, check_minutes)
+    voter_rows = voters_waiting(read_snapshots(), read_changes())
+    f = check_frame(df, server_df, threshold, check_minutes, voter_rows)
     dates = f['ts'].dt.date.drop_duplicates()
     weekday_dates = pd.to_datetime(dates).dt.dayofweek.value_counts().reindex(range(7), fill_value=0)
     cfg = {'threshold': threshold, 'check_minutes': check_minutes, 'timezone': timezone,
            'servers': pick_servers(f['addr'], f['online_players']),
            'use_days': bool(len(dates)) and bool(weekday_dates.min() >= FORECAST_MIN_DATES_PER_WEEKDAY),
            'use_holidays': bool(dates.isin(holiday_dates).sum() >= FORECAST_MIN_HOLIDAY_DATES),
-           'holiday_dates': set(holiday_dates)}
+           'holiday_dates': set(holiday_dates),
+           'use_voters': len({r['ts'][:10] for r in voter_rows}) >= FORECAST_MIN_VOTER_DATES
+                         and bool(f['voters_waiting'].max() > 0)}
     keep, y = lobby_labels(f, threshold, check_minutes)
     examples = f.iloc[keep].reset_index(drop=True)
     X = feature_matrix(examples, cfg)
     days = (f['ts'].max() - f['ts'].min()).days if len(f) else 0
     info = {'model': 'Logistic regression', 'horizon_minutes': FORECAST_MINUTES, 'threshold': threshold, 'timezone': timezone,
             'days': days, 'examples': int(len(y)), 'positives': int(y.sum()), 'servers': cfg['servers'],
-            'uses_day_of_week': cfg['use_days'], 'uses_holidays': cfg['use_holidays']}
+            'uses_day_of_week': cfg['use_days'], 'uses_holidays': cfg['use_holidays'], 'uses_voters': cfg['use_voters']}
     if len(y) < 100 or y.sum() < 3 or y.sum() == len(y):
         print('Lobby forecast: not enough data to train')
         return dict(info, ready=False), None
@@ -196,7 +224,7 @@ def train_lobby_forecast(df, server_df, holiday_dates, threshold, check_minutes,
 
 
 # Chance of a lobby in the next hour as of the latest check in the log, or None if there's no model yet
-def predict_now(log_path, model_path):
+def predict_now(log_path, model_path, snapshot_path=SNAPSHOT_LOG_PATH):
     try:
         saved = joblib.load(model_path)
     except FileNotFoundError:
@@ -207,8 +235,11 @@ def predict_now(log_path, model_path):
         return None
     for frame in (checks, servers):
         frame['ts'] = pd.to_datetime(frame['ts']).dt.tz_localize(LOG_TIMEZONE).dt.tz_convert(cfg['timezone'])
-    f = check_frame(checks, servers, cfg['threshold'], cfg['check_minutes']).tail(1)
+    voter_rows = None
+    if cfg.get('use_voters'):
+        voter_rows = voters_waiting(recent_snapshots(snapshot_path), read_changes())
+    f = check_frame(checks, servers, cfg['threshold'], cfg['check_minutes'], voter_rows).tail(1)
     chance = float(saved['model'].predict_proba(feature_matrix(f, cfg))[0, 1])
     row = f.iloc[0]
     return {'chance': round(chance, 3), 'as_of': row['ts'].isoformat(), 'players': int(row['online_players']),
-            'change_15': int(row['change_15']), 'trained': saved['trained']}
+            'change_15': int(row['change_15']), 'voters_waiting': int(row['voters_waiting']), 'trained': saved['trained']}
