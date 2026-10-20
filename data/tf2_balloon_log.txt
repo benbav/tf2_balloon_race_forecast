@@ -5771,3 +5771,171 @@
 2026-10-19 18:45:04 - INFO - No one playing balloon race :(
 2026-10-19 18:50:07 - INFO - No one playing balloon race :(
 2026-10-19 18:55:07 - INFO - No one playing balloon race :(
+2026-10-19 19:00:07 - INFO - Found people playing Balloon Race
+2026-10-19 19:00:07 - INFO - Balloon Race 24/7 : 1
+2026-10-19 19:00:07 - INFO - SERVER 45.88.229.19:27024 | Balloon Race 24/7 : 1
+2026-10-19 19:05:05 - INFO - Found people playing Balloon Race
+2026-10-19 19:05:05 - INFO - Balloon Race 24/7 : 1
+2026-10-19 19:05:05 - INFO - SERVER 45.88.229.19:27024 | Balloon Race 24/7 : 1
+2026-10-19 19:10:05 - INFO - Found people playing Balloon Race
+2026-10-19 19:10:05 - INFO - Balloon Race 24/7 : 1
+2026-10-19 19:10:05 - INFO - SERVER 45.88.229.19:27024 | Balloon Race 24/7 : 1
+2026-10-19 19:15:05 - INFO - No one playing balloon race :(
+2026-10-19 19:20:05 - INFO - No one playing balloon race :(
+2026-10-19 19:25:05 - INFO - No one playing balloon race :(
+2026-10-19 19:30:06 - INFO - No one playing balloon race :(
+2026-10-19 19:35:05 - INFO - No one playing balloon race :(
+2026-10-19 19:40:06 - INFO - No one playing balloon race :(
+2026-10-19 19:45:05 - INFO - No one playing balloon race :(
+2026-10-19 19:50:05 - INFO - No one playing balloon race :(
+2026-10-19 19:55:05 - INFO - No one playing balloon race :(
+2026-10-19 20:00:06 - INFO - No one playing balloon race :(
+2026-10-19 20:05:05 - INFO - Found people playing Balloon Race
+2026-10-19 20:05:05 - INFO - Balloon Race 24/7 : 1
+2026-10-19 20:05:05 - INFO - SERVER 45.88.229.19:27024 | Balloon Race 24/7 : 1
+2026-10-19 20:10:05 - INFO - Found people playing Balloon Race
+2026-10-19 20:10:05 - INFO - Balloon Race 24/7 : 1
+2026-10-19 20:10:05 - INFO - SERVER 45.88.229.19:27024 | Balloon Race 24/7 : 1
+2026-10-19 20:15:05 - INFO - Found people playing Balloon Race
+2026-10-19 20:15:05 - INFO - Balloon Race 24/7 : 1
+2026-10-19 20:15:05 - INFO - SERVER 45.88.229.19:27024 | Balloon Race 24/7 : 1
+2026-10-19 20:20:05 - INFO - No one playing balloon race :(
+2026-10-19 20:25:04 - INFO - No one playing balloon race :(
+2026-10-19 20:30:06 - INFO - No one playing balloon race :(
+2026-10-19 20:35:05 - INFO - No one playing balloon race :(
+2026-10-19 20:40:06 - INFO - No one playing balloon race :(
+2026-10-19 20:45:05 - INFO - No one playing balloon race :(
+2026-10-19 20:50:05 - INFO - No one playing balloon race :(
+2026-10-19 20:55:04 - INFO - No one playing balloon race :(
+2026-10-19 21:00:06 - INFO - No one playing balloon race :(
+2026-10-19 21:05:06 - INFO - No one playing balloon race :(
+2026-10-19 21:10:05 - INFO - No one playing balloon race :(
+2026-10-19 21:15:05 - INFO - No one playing balloon race :(
+2026-10-19 21:20:05 - INFO - No one playing balloon race :(
+2026-10-19 21:25:05 - INFO - No one playing balloon race :(
+2026-10-19 21:30:06 - INFO - No one playing balloon race :(
+2026-10-19 21:35:05 - INFO - No one playing balloon race :(
+2026-10-19 21:40:05 - INFO - No one playing balloon race :(
+2026-10-19 21:45:05 - INFO - No one playing balloon race :(
+2026-10-19 21:50:05 - INFO - No one playing balloon race :(
+2026-10-19 21:55:05 - INFO - No one playing balloon race :(
+2026-10-19 22:00:05 - INFO - No one playing balloon race :(
+2026-10-19 22:05:06 - INFO - No one playing balloon race :(
+2026-10-19 22:10:05 - INFO - No one playing balloon race :(
+2026-10-19 22:15:05 - INFO - No one playing balloon race :(
+2026-10-19 22:20:05 - INFO - No one playing balloon race :(
+2026-10-19 22:25:05 - INFO - No one playing balloon race :(
+2026-10-19 22:30:06 - INFO - No one playing balloon race :(
+2026-10-19 22:35:06 - INFO - No one playing balloon race :(
+2026-10-19 22:40:05 - INFO - No one playing balloon race :(
+2026-10-19 22:45:05 - INFO - No one playing balloon race :(
+2026-10-19 22:50:05 - INFO - No one playing balloon race :(
+2026-10-19 22:55:04 - INFO - No one playing balloon race :(
+2026-10-19 23:00:06 - INFO - No one playing balloon race :(
+2026-10-19 23:05:06 - INFO - No one playing balloon race :(
+2026-10-19 23:10:05 - INFO - No one playing balloon race :(
+2026-10-19 23:15:05 - INFO - No one playing balloon race :(
+2026-10-19 23:20:06 - INFO - No one playing balloon race :(
+2026-10-19 23:25:05 - INFO - No one playing balloon race :(
+2026-10-19 23:30:06 - INFO - No one playing balloon race :(
+2026-10-19 23:35:05 - INFO - No one playing balloon race :(
+2026-10-19 23:40:05 - INFO - No one playing balloon race :(
+2026-10-19 23:45:05 - INFO - No one playing balloon race :(
+2026-10-19 23:50:04 - INFO - No one playing balloon race :(
+2026-10-19 23:55:05 - INFO - No one playing balloon race :(
+2026-10-20 00:00:06 - INFO - No one playing balloon race :(
+2026-10-20 00:05:06 - INFO - No one playing balloon race :(
+2026-10-20 00:10:05 - INFO - No one playing balloon race :(
+2026-10-20 00:15:05 - INFO - No one playing balloon race :(
+2026-10-20 00:20:05 - INFO - No one playing balloon race :(
+2026-10-20 00:25:05 - INFO - No one playing balloon race :(
+2026-10-20 00:30:05 - INFO - No one playing balloon race :(
+2026-10-20 00:35:05 - INFO - No one playing balloon race :(
+2026-10-20 00:40:05 - INFO - No one playing balloon race :(
+2026-10-20 00:45:05 - INFO - No one playing balloon race :(
+2026-10-20 00:50:06 - INFO - No one playing balloon race :(
+2026-10-20 00:55:05 - INFO - No one playing balloon race :(
+2026-10-20 01:00:05 - INFO - No one playing balloon race :(
+2026-10-20 01:05:05 - INFO - No one playing balloon race :(
+2026-10-20 01:10:05 - INFO - No one playing balloon race :(
+2026-10-20 01:15:04 - INFO - No one playing balloon race :(
+2026-10-20 01:20:05 - INFO - No one playing balloon race :(
+2026-10-20 01:25:04 - INFO - No one playing balloon race :(
+2026-10-20 01:30:05 - INFO - No one playing balloon race :(
+2026-10-20 01:35:05 - INFO - No one playing balloon race :(
+2026-10-20 01:40:05 - INFO - No one playing balloon race :(
+2026-10-20 01:45:05 - INFO - No one playing balloon race :(
+2026-10-20 01:50:05 - INFO - No one playing balloon race :(
+2026-10-20 01:55:05 - INFO - No one playing balloon race :(
+2026-10-20 02:00:07 - INFO - No one playing balloon race :(
+2026-10-20 02:05:05 - INFO - No one playing balloon race :(
+2026-10-20 02:10:05 - INFO - No one playing balloon race :(
+2026-10-20 02:15:05 - INFO - No one playing balloon race :(
+2026-10-20 02:20:05 - INFO - No one playing balloon race :(
+2026-10-20 02:25:04 - INFO - No one playing balloon race :(
+2026-10-20 02:30:05 - INFO - No one playing balloon race :(
+2026-10-20 02:35:05 - INFO - No one playing balloon race :(
+2026-10-20 02:40:05 - INFO - No one playing balloon race :(
+2026-10-20 02:45:05 - INFO - No one playing balloon race :(
+2026-10-20 02:50:05 - INFO - No one playing balloon race :(
+2026-10-20 02:55:04 - INFO - No one playing balloon race :(
+2026-10-20 03:00:06 - INFO - No one playing balloon race :(
+2026-10-20 03:05:04 - INFO - No one playing balloon race :(
+2026-10-20 03:10:06 - INFO - No one playing balloon race :(
+2026-10-20 03:15:06 - INFO - No one playing balloon race :(
+2026-10-20 03:20:05 - INFO - No one playing balloon race :(
+2026-10-20 03:25:05 - INFO - No one playing balloon race :(
+2026-10-20 03:30:06 - INFO - No one playing balloon race :(
+2026-10-20 03:35:04 - INFO - No one playing balloon race :(
+2026-10-20 03:40:05 - INFO - No one playing balloon race :(
+2026-10-20 03:45:05 - INFO - No one playing balloon race :(
+2026-10-20 03:50:05 - INFO - No one playing balloon race :(
+2026-10-20 03:55:05 - INFO - Found people playing Balloon Race
+2026-10-20 03:55:05 - INFO - Spanakopita : 1
+2026-10-20 03:55:05 - INFO - SERVER 99.110.11.58:27015 | Spanakopita : 1
+2026-10-20 04:00:05 - INFO - Found people playing Balloon Race
+2026-10-20 04:00:05 - INFO - Spanakopita : 1
+2026-10-20 04:00:05 - INFO - SERVER 99.110.11.58:27015 | Spanakopita : 1
+2026-10-20 04:05:05 - INFO - Found people playing Balloon Race
+2026-10-20 04:05:05 - INFO - Spanakopita : 3
+2026-10-20 04:05:05 - INFO - SERVER 99.110.11.58:27015 | Spanakopita : 3
+2026-10-20 04:10:06 - INFO - Found people playing Balloon Race
+2026-10-20 04:10:06 - INFO - Spanakopita : 6
+2026-10-20 04:10:06 - INFO - SERVER 99.110.11.58:27015 | Spanakopita : 6
+2026-10-20 04:15:05 - INFO - Found people playing Balloon Race
+2026-10-20 04:15:05 - INFO - Spanakopita : 8
+2026-10-20 04:15:05 - INFO - SERVER 99.110.11.58:27015 | Spanakopita : 8
+2026-10-20 04:20:05 - INFO - Found people playing Balloon Race
+2026-10-20 04:20:05 - INFO - Spanakopita : 8
+2026-10-20 04:20:05 - INFO - SERVER 99.110.11.58:27015 | Spanakopita : 8
+2026-10-20 04:25:05 - INFO - Found people playing Balloon Race
+2026-10-20 04:25:05 - INFO - Spanakopita : 8
+2026-10-20 04:25:05 - INFO - SERVER 99.110.11.58:27015 | Spanakopita : 8
+2026-10-20 04:30:05 - INFO - Found people playing Balloon Race
+2026-10-20 04:30:05 - INFO - Spanakopita : 10
+2026-10-20 04:30:05 - INFO - SERVER 99.110.11.58:27015 | Spanakopita : 10
+2026-10-20 04:30:06 - INFO - Sent Discord notification for Spanakopita
+2026-10-20 04:35:04 - INFO - Found people playing Balloon Race
+2026-10-20 04:35:04 - INFO - Spanakopita : 8
+2026-10-20 04:35:04 - INFO - SERVER 99.110.11.58:27015 | Spanakopita : 8
+2026-10-20 04:40:05 - INFO - Found people playing Balloon Race
+2026-10-20 04:40:05 - INFO - Spanakopita : 8
+2026-10-20 04:40:05 - INFO - SERVER 99.110.11.58:27015 | Spanakopita : 8
+2026-10-20 04:45:04 - INFO - Found people playing Balloon Race
+2026-10-20 04:45:04 - INFO - Spanakopita : 2
+2026-10-20 04:45:04 - INFO - SERVER 99.110.11.58:27015 | Spanakopita : 2
+2026-10-20 04:50:05 - INFO - No one playing balloon race :(
+2026-10-20 04:55:05 - INFO - No one playing balloon race :(
+2026-10-20 05:00:05 - INFO - No one playing balloon race :(
+2026-10-20 05:05:05 - INFO - No one playing balloon race :(
+2026-10-20 05:10:05 - INFO - No one playing balloon race :(
+2026-10-20 05:15:05 - INFO - No one playing balloon race :(
+2026-10-20 05:20:05 - INFO - No one playing balloon race :(
+2026-10-20 05:25:05 - INFO - No one playing balloon race :(
+2026-10-20 05:30:05 - INFO - No one playing balloon race :(
+2026-10-20 05:35:04 - INFO - No one playing balloon race :(
+2026-10-20 05:40:05 - INFO - No one playing balloon race :(
+2026-10-20 05:45:04 - INFO - No one playing balloon race :(
+2026-10-20 05:50:05 - INFO - No one playing balloon race :(
+2026-10-20 05:55:04 - INFO - No one playing balloon race :(
+2026-10-20 06:00:06 - INFO - No one playing balloon race :(
