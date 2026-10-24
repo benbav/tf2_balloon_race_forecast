@@ -1,0 +1,1229 @@
+{
+ "updated": "2026-10-24T06:03:26+00:00",
+ "lobby_players": 10,
+ "top_servers": {
+  "mt": {
+   "all": [
+    {
+     "name": "[TR]  Türk Ninjalar sunucusu",
+     "addr": "88.233.138.82:27017",
+     "best_time": "Sun · 6 AM – 8 AM MT",
+     "best_time_pct": 0.243,
+     "best_day": "Friday",
+     "pct_busy": 0.006,
+     "pct_active": 0.007,
+     "avg_players": 13.3,
+     "peak": 18
+    },
+    {
+     "name": "shounic trenches (USA Chicago)",
+     "addr": "193.243.190.25:27015",
+     "best_time": "Fri · 6 PM – 8 PM MT",
+     "best_time_pct": 0.048,
+     "best_day": "Saturday",
+     "pct_busy": 0.003,
+     "pct_active": 0.009,
+     "avg_players": 17.1,
+     "peak": 84
+    },
+    {
+     "name": "Server hosted by Physgun.com",
+     "addr": "45.45.238.134:27105",
+     "best_time": "Fri · 6 PM – 8 PM MT",
+     "best_time_pct": 0.167,
+     "best_day": "Friday",
+     "pct_busy": 0.002,
+     "pct_active": 0.002,
+     "avg_players": 21.8,
+     "peak": 23
+    },
+    {
+     "name": "Aar's Server | Map Testing | Virginia",
+     "addr": "169.254.112.56:12184",
+     "best_time": "Sat · 2 PM – 4 PM MT",
+     "best_time_pct": 0.175,
+     "best_day": "Saturday",
+     "pct_busy": 0.002,
+     "pct_active": 0.002,
+     "avg_players": 24.7,
+     "peak": 26
+    },
+    {
+     "name": "Spanakopita",
+     "addr": "99.110.11.58:27015",
+     "best_time": "Mon · 9 PM – 11 PM MT",
+     "best_time_pct": 0.077,
+     "best_day": "Monday",
+     "pct_busy": 0.001,
+     "pct_active": 0.01,
+     "avg_players": 5.3,
+     "peak": 10
+    },
+    {
+     "name": "Server Testing",
+     "addr": "69.41.182.173:27015",
+     "best_time": "Sat · 6 PM – 8 PM MT",
+     "best_time_pct": 0.042,
+     "best_day": "Saturday",
+     "pct_busy": 0.0,
+     "pct_active": 0.002,
+     "avg_players": 4.8,
+     "peak": 12
+    },
+    {
+     "name": "Balloon Race 24/7",
+     "addr": "45.88.229.19:27024",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.352,
+     "avg_players": 1.2,
+     "peak": 6
+    },
+    {
+     "name": "Wacky Races + Balloon Race 24/7 [ratland]",
+     "addr": "24.163.130.153:27017",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 1.2,
+     "peak": 2
+    },
+    {
+     "name": "Matheous' Mothy Madness",
+     "addr": "74.91.123.14:27015",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 1.0,
+     "peak": 1
+    },
+    {
+     "name": "[xG] Community Gamemodes - XenoGamers.com",
+     "addr": "74.91.119.153:27015",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 1.2,
+     "peak": 2
+    }
+   ],
+   "dedicated": [
+    {
+     "name": "Balloon Race 24/7",
+     "addr": "45.88.229.19:27024",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.352,
+     "avg_players": 1.2,
+     "peak": 6
+    },
+    {
+     "name": "Wacky Races + Balloon Race 24/7 [ratland]",
+     "addr": "24.163.130.153:27017",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 1.2,
+     "peak": 2
+    },
+    {
+     "name": "IdleServer.Com | BALLOON | BALLOON_01",
+     "addr": "108.181.244.76:48800",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.001,
+     "avg_players": 1.0,
+     "peak": 1
+    }
+   ],
+   "rotating": [
+    {
+     "name": "[TR]  Türk Ninjalar sunucusu",
+     "addr": "88.233.138.82:27017",
+     "best_time": "Sun · 6 AM – 8 AM MT",
+     "best_time_pct": 0.243,
+     "best_day": "Friday",
+     "pct_busy": 0.006,
+     "pct_active": 0.007,
+     "avg_players": 13.3,
+     "peak": 18
+    },
+    {
+     "name": "shounic trenches (USA Chicago)",
+     "addr": "193.243.190.25:27015",
+     "best_time": "Fri · 6 PM – 8 PM MT",
+     "best_time_pct": 0.048,
+     "best_day": "Saturday",
+     "pct_busy": 0.003,
+     "pct_active": 0.009,
+     "avg_players": 17.1,
+     "peak": 84
+    },
+    {
+     "name": "Server hosted by Physgun.com",
+     "addr": "45.45.238.134:27105",
+     "best_time": "Fri · 6 PM – 8 PM MT",
+     "best_time_pct": 0.167,
+     "best_day": "Friday",
+     "pct_busy": 0.002,
+     "pct_active": 0.002,
+     "avg_players": 21.8,
+     "peak": 23
+    },
+    {
+     "name": "Aar's Server | Map Testing | Virginia",
+     "addr": "169.254.112.56:12184",
+     "best_time": "Sat · 2 PM – 4 PM MT",
+     "best_time_pct": 0.175,
+     "best_day": "Saturday",
+     "pct_busy": 0.002,
+     "pct_active": 0.002,
+     "avg_players": 24.7,
+     "peak": 26
+    },
+    {
+     "name": "Spanakopita",
+     "addr": "99.110.11.58:27015",
+     "best_time": "Mon · 9 PM – 11 PM MT",
+     "best_time_pct": 0.077,
+     "best_day": "Monday",
+     "pct_busy": 0.001,
+     "pct_active": 0.01,
+     "avg_players": 5.3,
+     "peak": 10
+    },
+    {
+     "name": "Server Testing",
+     "addr": "69.41.182.173:27015",
+     "best_time": "Sat · 6 PM – 8 PM MT",
+     "best_time_pct": 0.042,
+     "best_day": "Saturday",
+     "pct_busy": 0.0,
+     "pct_active": 0.002,
+     "avg_players": 4.8,
+     "peak": 12
+    },
+    {
+     "name": "Matheous' Mothy Madness",
+     "addr": "74.91.123.14:27015",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 1.0,
+     "peak": 1
+    },
+    {
+     "name": "[xG] Community Gamemodes - XenoGamers.com",
+     "addr": "74.91.119.153:27015",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 1.2,
+     "peak": 2
+    },
+    {
+     "name": "Wacky Races",
+     "addr": "169.254.226.130:52208",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.003,
+     "avg_players": 4.0,
+     "peak": 4
+    },
+    {
+     "name": "[24/7 Funbox] Dυɱρʂƚҽɾ ɾαTʂ + ϝɾҽҽ Bυɱρz",
+     "addr": "91.230.199.49:27015",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.002,
+     "avg_players": 1.2,
+     "peak": 2
+    }
+   ]
+  },
+  "et": {
+   "all": [
+    {
+     "name": "[TR]  Türk Ninjalar sunucusu",
+     "addr": "88.233.138.82:27017",
+     "best_time": "Sun · 8 AM – 10 AM ET",
+     "best_time_pct": 0.243,
+     "best_day": "Sunday",
+     "pct_busy": 0.006,
+     "pct_active": 0.007,
+     "avg_players": 13.3,
+     "peak": 18
+    },
+    {
+     "name": "shounic trenches (USA Chicago)",
+     "addr": "193.243.190.25:27015",
+     "best_time": "Fri · 8 PM – 10 PM ET",
+     "best_time_pct": 0.048,
+     "best_day": "Saturday",
+     "pct_busy": 0.003,
+     "pct_active": 0.009,
+     "avg_players": 17.1,
+     "peak": 84
+    },
+    {
+     "name": "Server hosted by Physgun.com",
+     "addr": "45.45.238.134:27105",
+     "best_time": "Fri · 8 PM – 10 PM ET",
+     "best_time_pct": 0.167,
+     "best_day": "Friday",
+     "pct_busy": 0.002,
+     "pct_active": 0.002,
+     "avg_players": 21.8,
+     "peak": 23
+    },
+    {
+     "name": "Aar's Server | Map Testing | Virginia",
+     "addr": "169.254.112.56:12184",
+     "best_time": "Sat · 4 PM – 6 PM ET",
+     "best_time_pct": 0.175,
+     "best_day": "Saturday",
+     "pct_busy": 0.002,
+     "pct_active": 0.002,
+     "avg_players": 24.7,
+     "peak": 26
+    },
+    {
+     "name": "Spanakopita",
+     "addr": "99.110.11.58:27015",
+     "best_time": "Mon · 11 PM – 1 AM ET",
+     "best_time_pct": 0.077,
+     "best_day": "Tuesday",
+     "pct_busy": 0.001,
+     "pct_active": 0.01,
+     "avg_players": 5.3,
+     "peak": 10
+    },
+    {
+     "name": "Server Testing",
+     "addr": "69.41.182.173:27015",
+     "best_time": "Sat · 8 PM – 10 PM ET",
+     "best_time_pct": 0.042,
+     "best_day": "Saturday",
+     "pct_busy": 0.0,
+     "pct_active": 0.002,
+     "avg_players": 4.8,
+     "peak": 12
+    },
+    {
+     "name": "Balloon Race 24/7",
+     "addr": "45.88.229.19:27024",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.352,
+     "avg_players": 1.2,
+     "peak": 6
+    },
+    {
+     "name": "Wacky Races + Balloon Race 24/7 [ratland]",
+     "addr": "24.163.130.153:27017",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 1.2,
+     "peak": 2
+    },
+    {
+     "name": "Matheous' Mothy Madness",
+     "addr": "74.91.123.14:27015",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 1.0,
+     "peak": 1
+    },
+    {
+     "name": "[xG] Community Gamemodes - XenoGamers.com",
+     "addr": "74.91.119.153:27015",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 1.2,
+     "peak": 2
+    }
+   ],
+   "dedicated": [
+    {
+     "name": "Balloon Race 24/7",
+     "addr": "45.88.229.19:27024",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.352,
+     "avg_players": 1.2,
+     "peak": 6
+    },
+    {
+     "name": "Wacky Races + Balloon Race 24/7 [ratland]",
+     "addr": "24.163.130.153:27017",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 1.2,
+     "peak": 2
+    },
+    {
+     "name": "IdleServer.Com | BALLOON | BALLOON_01",
+     "addr": "108.181.244.76:48800",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.001,
+     "avg_players": 1.0,
+     "peak": 1
+    }
+   ],
+   "rotating": [
+    {
+     "name": "[TR]  Türk Ninjalar sunucusu",
+     "addr": "88.233.138.82:27017",
+     "best_time": "Sun · 8 AM – 10 AM ET",
+     "best_time_pct": 0.243,
+     "best_day": "Sunday",
+     "pct_busy": 0.006,
+     "pct_active": 0.007,
+     "avg_players": 13.3,
+     "peak": 18
+    },
+    {
+     "name": "shounic trenches (USA Chicago)",
+     "addr": "193.243.190.25:27015",
+     "best_time": "Fri · 8 PM – 10 PM ET",
+     "best_time_pct": 0.048,
+     "best_day": "Saturday",
+     "pct_busy": 0.003,
+     "pct_active": 0.009,
+     "avg_players": 17.1,
+     "peak": 84
+    },
+    {
+     "name": "Server hosted by Physgun.com",
+     "addr": "45.45.238.134:27105",
+     "best_time": "Fri · 8 PM – 10 PM ET",
+     "best_time_pct": 0.167,
+     "best_day": "Friday",
+     "pct_busy": 0.002,
+     "pct_active": 0.002,
+     "avg_players": 21.8,
+     "peak": 23
+    },
+    {
+     "name": "Aar's Server | Map Testing | Virginia",
+     "addr": "169.254.112.56:12184",
+     "best_time": "Sat · 4 PM – 6 PM ET",
+     "best_time_pct": 0.175,
+     "best_day": "Saturday",
+     "pct_busy": 0.002,
+     "pct_active": 0.002,
+     "avg_players": 24.7,
+     "peak": 26
+    },
+    {
+     "name": "Spanakopita",
+     "addr": "99.110.11.58:27015",
+     "best_time": "Mon · 11 PM – 1 AM ET",
+     "best_time_pct": 0.077,
+     "best_day": "Tuesday",
+     "pct_busy": 0.001,
+     "pct_active": 0.01,
+     "avg_players": 5.3,
+     "peak": 10
+    },
+    {
+     "name": "Server Testing",
+     "addr": "69.41.182.173:27015",
+     "best_time": "Sat · 8 PM – 10 PM ET",
+     "best_time_pct": 0.042,
+     "best_day": "Saturday",
+     "pct_busy": 0.0,
+     "pct_active": 0.002,
+     "avg_players": 4.8,
+     "peak": 12
+    },
+    {
+     "name": "Matheous' Mothy Madness",
+     "addr": "74.91.123.14:27015",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 1.0,
+     "peak": 1
+    },
+    {
+     "name": "[xG] Community Gamemodes - XenoGamers.com",
+     "addr": "74.91.119.153:27015",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 1.2,
+     "peak": 2
+    },
+    {
+     "name": "Wacky Races",
+     "addr": "169.254.226.130:52208",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.003,
+     "avg_players": 4.0,
+     "peak": 4
+    },
+    {
+     "name": "[24/7 Funbox] Dυɱρʂƚҽɾ ɾαTʂ + ϝɾҽҽ Bυɱρz",
+     "addr": "91.230.199.49:27015",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.002,
+     "avg_players": 1.2,
+     "peak": 2
+    }
+   ]
+  },
+  "ct": {
+   "all": [
+    {
+     "name": "[TR]  Türk Ninjalar sunucusu",
+     "addr": "88.233.138.82:27017",
+     "best_time": "Sun · 7 AM – 9 AM CT",
+     "best_time_pct": 0.243,
+     "best_day": "Friday",
+     "pct_busy": 0.006,
+     "pct_active": 0.007,
+     "avg_players": 13.3,
+     "peak": 18
+    },
+    {
+     "name": "shounic trenches (USA Chicago)",
+     "addr": "193.243.190.25:27015",
+     "best_time": "Fri · 7 PM – 9 PM CT",
+     "best_time_pct": 0.048,
+     "best_day": "Saturday",
+     "pct_busy": 0.003,
+     "pct_active": 0.009,
+     "avg_players": 17.1,
+     "peak": 84
+    },
+    {
+     "name": "Server hosted by Physgun.com",
+     "addr": "45.45.238.134:27105",
+     "best_time": "Fri · 7 PM – 9 PM CT",
+     "best_time_pct": 0.167,
+     "best_day": "Friday",
+     "pct_busy": 0.002,
+     "pct_active": 0.002,
+     "avg_players": 21.8,
+     "peak": 23
+    },
+    {
+     "name": "Aar's Server | Map Testing | Virginia",
+     "addr": "169.254.112.56:12184",
+     "best_time": "Sat · 3 PM – 5 PM CT",
+     "best_time_pct": 0.175,
+     "best_day": "Saturday",
+     "pct_busy": 0.002,
+     "pct_active": 0.002,
+     "avg_players": 24.7,
+     "peak": 26
+    },
+    {
+     "name": "Spanakopita",
+     "addr": "99.110.11.58:27015",
+     "best_time": "Mon · 10 PM – 12 AM CT",
+     "best_time_pct": 0.077,
+     "best_day": "Monday",
+     "pct_busy": 0.001,
+     "pct_active": 0.01,
+     "avg_players": 5.3,
+     "peak": 10
+    },
+    {
+     "name": "Server Testing",
+     "addr": "69.41.182.173:27015",
+     "best_time": "Sat · 7 PM – 9 PM CT",
+     "best_time_pct": 0.042,
+     "best_day": "Saturday",
+     "pct_busy": 0.0,
+     "pct_active": 0.002,
+     "avg_players": 4.8,
+     "peak": 12
+    },
+    {
+     "name": "Balloon Race 24/7",
+     "addr": "45.88.229.19:27024",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.352,
+     "avg_players": 1.2,
+     "peak": 6
+    },
+    {
+     "name": "Wacky Races + Balloon Race 24/7 [ratland]",
+     "addr": "24.163.130.153:27017",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 1.2,
+     "peak": 2
+    },
+    {
+     "name": "Matheous' Mothy Madness",
+     "addr": "74.91.123.14:27015",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 1.0,
+     "peak": 1
+    },
+    {
+     "name": "[xG] Community Gamemodes - XenoGamers.com",
+     "addr": "74.91.119.153:27015",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 1.2,
+     "peak": 2
+    }
+   ],
+   "dedicated": [
+    {
+     "name": "Balloon Race 24/7",
+     "addr": "45.88.229.19:27024",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.352,
+     "avg_players": 1.2,
+     "peak": 6
+    },
+    {
+     "name": "Wacky Races + Balloon Race 24/7 [ratland]",
+     "addr": "24.163.130.153:27017",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 1.2,
+     "peak": 2
+    },
+    {
+     "name": "IdleServer.Com | BALLOON | BALLOON_01",
+     "addr": "108.181.244.76:48800",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.001,
+     "avg_players": 1.0,
+     "peak": 1
+    }
+   ],
+   "rotating": [
+    {
+     "name": "[TR]  Türk Ninjalar sunucusu",
+     "addr": "88.233.138.82:27017",
+     "best_time": "Sun · 7 AM – 9 AM CT",
+     "best_time_pct": 0.243,
+     "best_day": "Friday",
+     "pct_busy": 0.006,
+     "pct_active": 0.007,
+     "avg_players": 13.3,
+     "peak": 18
+    },
+    {
+     "name": "shounic trenches (USA Chicago)",
+     "addr": "193.243.190.25:27015",
+     "best_time": "Fri · 7 PM – 9 PM CT",
+     "best_time_pct": 0.048,
+     "best_day": "Saturday",
+     "pct_busy": 0.003,
+     "pct_active": 0.009,
+     "avg_players": 17.1,
+     "peak": 84
+    },
+    {
+     "name": "Server hosted by Physgun.com",
+     "addr": "45.45.238.134:27105",
+     "best_time": "Fri · 7 PM – 9 PM CT",
+     "best_time_pct": 0.167,
+     "best_day": "Friday",
+     "pct_busy": 0.002,
+     "pct_active": 0.002,
+     "avg_players": 21.8,
+     "peak": 23
+    },
+    {
+     "name": "Aar's Server | Map Testing | Virginia",
+     "addr": "169.254.112.56:12184",
+     "best_time": "Sat · 3 PM – 5 PM CT",
+     "best_time_pct": 0.175,
+     "best_day": "Saturday",
+     "pct_busy": 0.002,
+     "pct_active": 0.002,
+     "avg_players": 24.7,
+     "peak": 26
+    },
+    {
+     "name": "Spanakopita",
+     "addr": "99.110.11.58:27015",
+     "best_time": "Mon · 10 PM – 12 AM CT",
+     "best_time_pct": 0.077,
+     "best_day": "Monday",
+     "pct_busy": 0.001,
+     "pct_active": 0.01,
+     "avg_players": 5.3,
+     "peak": 10
+    },
+    {
+     "name": "Server Testing",
+     "addr": "69.41.182.173:27015",
+     "best_time": "Sat · 7 PM – 9 PM CT",
+     "best_time_pct": 0.042,
+     "best_day": "Saturday",
+     "pct_busy": 0.0,
+     "pct_active": 0.002,
+     "avg_players": 4.8,
+     "peak": 12
+    },
+    {
+     "name": "Matheous' Mothy Madness",
+     "addr": "74.91.123.14:27015",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 1.0,
+     "peak": 1
+    },
+    {
+     "name": "[xG] Community Gamemodes - XenoGamers.com",
+     "addr": "74.91.119.153:27015",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 1.2,
+     "peak": 2
+    },
+    {
+     "name": "Wacky Races",
+     "addr": "169.254.226.130:52208",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.003,
+     "avg_players": 4.0,
+     "peak": 4
+    },
+    {
+     "name": "[24/7 Funbox] Dυɱρʂƚҽɾ ɾαTʂ + ϝɾҽҽ Bυɱρz",
+     "addr": "91.230.199.49:27015",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.002,
+     "avg_players": 1.2,
+     "peak": 2
+    }
+   ]
+  },
+  "pt": {
+   "all": [
+    {
+     "name": "[TR]  Türk Ninjalar sunucusu",
+     "addr": "88.233.138.82:27017",
+     "best_time": "Sun · 5 AM – 7 AM PT",
+     "best_time_pct": 0.243,
+     "best_day": "Friday",
+     "pct_busy": 0.006,
+     "pct_active": 0.007,
+     "avg_players": 13.3,
+     "peak": 18
+    },
+    {
+     "name": "shounic trenches (USA Chicago)",
+     "addr": "193.243.190.25:27015",
+     "best_time": "Fri · 5 PM – 7 PM PT",
+     "best_time_pct": 0.048,
+     "best_day": "Saturday",
+     "pct_busy": 0.003,
+     "pct_active": 0.009,
+     "avg_players": 17.1,
+     "peak": 84
+    },
+    {
+     "name": "Server hosted by Physgun.com",
+     "addr": "45.45.238.134:27105",
+     "best_time": "Fri · 5 PM – 7 PM PT",
+     "best_time_pct": 0.167,
+     "best_day": "Friday",
+     "pct_busy": 0.002,
+     "pct_active": 0.002,
+     "avg_players": 21.8,
+     "peak": 23
+    },
+    {
+     "name": "Aar's Server | Map Testing | Virginia",
+     "addr": "169.254.112.56:12184",
+     "best_time": "Sat · 1 PM – 3 PM PT",
+     "best_time_pct": 0.175,
+     "best_day": "Saturday",
+     "pct_busy": 0.002,
+     "pct_active": 0.002,
+     "avg_players": 24.7,
+     "peak": 26
+    },
+    {
+     "name": "Spanakopita",
+     "addr": "99.110.11.58:27015",
+     "best_time": "Mon · 8 PM – 10 PM PT",
+     "best_time_pct": 0.077,
+     "best_day": "Monday",
+     "pct_busy": 0.001,
+     "pct_active": 0.01,
+     "avg_players": 5.3,
+     "peak": 10
+    },
+    {
+     "name": "Server Testing",
+     "addr": "69.41.182.173:27015",
+     "best_time": "Sat · 5 PM – 7 PM PT",
+     "best_time_pct": 0.042,
+     "best_day": "Saturday",
+     "pct_busy": 0.0,
+     "pct_active": 0.002,
+     "avg_players": 4.8,
+     "peak": 12
+    },
+    {
+     "name": "Balloon Race 24/7",
+     "addr": "45.88.229.19:27024",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.352,
+     "avg_players": 1.2,
+     "peak": 6
+    },
+    {
+     "name": "Wacky Races + Balloon Race 24/7 [ratland]",
+     "addr": "24.163.130.153:27017",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 1.2,
+     "peak": 2
+    },
+    {
+     "name": "Matheous' Mothy Madness",
+     "addr": "74.91.123.14:27015",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 1.0,
+     "peak": 1
+    },
+    {
+     "name": "[xG] Community Gamemodes - XenoGamers.com",
+     "addr": "74.91.119.153:27015",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 1.2,
+     "peak": 2
+    }
+   ],
+   "dedicated": [
+    {
+     "name": "Balloon Race 24/7",
+     "addr": "45.88.229.19:27024",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.352,
+     "avg_players": 1.2,
+     "peak": 6
+    },
+    {
+     "name": "Wacky Races + Balloon Race 24/7 [ratland]",
+     "addr": "24.163.130.153:27017",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 1.2,
+     "peak": 2
+    },
+    {
+     "name": "IdleServer.Com | BALLOON | BALLOON_01",
+     "addr": "108.181.244.76:48800",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.001,
+     "avg_players": 1.0,
+     "peak": 1
+    }
+   ],
+   "rotating": [
+    {
+     "name": "[TR]  Türk Ninjalar sunucusu",
+     "addr": "88.233.138.82:27017",
+     "best_time": "Sun · 5 AM – 7 AM PT",
+     "best_time_pct": 0.243,
+     "best_day": "Friday",
+     "pct_busy": 0.006,
+     "pct_active": 0.007,
+     "avg_players": 13.3,
+     "peak": 18
+    },
+    {
+     "name": "shounic trenches (USA Chicago)",
+     "addr": "193.243.190.25:27015",
+     "best_time": "Fri · 5 PM – 7 PM PT",
+     "best_time_pct": 0.048,
+     "best_day": "Saturday",
+     "pct_busy": 0.003,
+     "pct_active": 0.009,
+     "avg_players": 17.1,
+     "peak": 84
+    },
+    {
+     "name": "Server hosted by Physgun.com",
+     "addr": "45.45.238.134:27105",
+     "best_time": "Fri · 5 PM – 7 PM PT",
+     "best_time_pct": 0.167,
+     "best_day": "Friday",
+     "pct_busy": 0.002,
+     "pct_active": 0.002,
+     "avg_players": 21.8,
+     "peak": 23
+    },
+    {
+     "name": "Aar's Server | Map Testing | Virginia",
+     "addr": "169.254.112.56:12184",
+     "best_time": "Sat · 1 PM – 3 PM PT",
+     "best_time_pct": 0.175,
+     "best_day": "Saturday",
+     "pct_busy": 0.002,
+     "pct_active": 0.002,
+     "avg_players": 24.7,
+     "peak": 26
+    },
+    {
+     "name": "Spanakopita",
+     "addr": "99.110.11.58:27015",
+     "best_time": "Mon · 8 PM – 10 PM PT",
+     "best_time_pct": 0.077,
+     "best_day": "Monday",
+     "pct_busy": 0.001,
+     "pct_active": 0.01,
+     "avg_players": 5.3,
+     "peak": 10
+    },
+    {
+     "name": "Server Testing",
+     "addr": "69.41.182.173:27015",
+     "best_time": "Sat · 5 PM – 7 PM PT",
+     "best_time_pct": 0.042,
+     "best_day": "Saturday",
+     "pct_busy": 0.0,
+     "pct_active": 0.002,
+     "avg_players": 4.8,
+     "peak": 12
+    },
+    {
+     "name": "Matheous' Mothy Madness",
+     "addr": "74.91.123.14:27015",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 1.0,
+     "peak": 1
+    },
+    {
+     "name": "[xG] Community Gamemodes - XenoGamers.com",
+     "addr": "74.91.119.153:27015",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 1.2,
+     "peak": 2
+    },
+    {
+     "name": "Wacky Races",
+     "addr": "169.254.226.130:52208",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.003,
+     "avg_players": 4.0,
+     "peak": 4
+    },
+    {
+     "name": "[24/7 Funbox] Dυɱρʂƚҽɾ ɾαTʂ + ϝɾҽҽ Bυɱρz",
+     "addr": "91.230.199.49:27015",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.002,
+     "avg_players": 1.2,
+     "peak": 2
+    }
+   ]
+  }
+ },
+ "lobby_windows": {
+  "timezone": "America/Denver",
+  "all": [
+   {
+    "start": 150,
+    "pct": 0.188
+   },
+   {
+    "start": 134,
+    "pct": 0.146
+   },
+   {
+    "start": 110,
+    "pct": 0.111
+   },
+   {
+    "start": 114,
+    "pct": 0.111
+   },
+   {
+    "start": 129,
+    "pct": 0.104
+   }
+  ],
+  "dedicated": [],
+  "rotating": [
+   {
+    "start": 150,
+    "pct": 0.188
+   },
+   {
+    "start": 134,
+    "pct": 0.146
+   },
+   {
+    "start": 110,
+    "pct": 0.111
+   },
+   {
+    "start": 114,
+    "pct": 0.111
+   },
+   {
+    "start": 129,
+    "pct": 0.104
+   }
+  ]
+ },
+ "forecast": {
+  "model": "Logistic regression",
+  "horizon_minutes": 60,
+  "threshold": 10,
+  "timezone": "America/Denver",
+  "days": 14,
+  "examples": 4235,
+  "positives": 209,
+  "servers": [
+   "45.88.229.19:27024",
+   "193.243.190.25:27015",
+   "88.233.138.82:27017"
+  ],
+  "uses_day_of_week": true,
+  "uses_holidays": false,
+  "uses_voters": false,
+  "evaluation": {
+   "method": "rolling by day",
+   "test_days": [
+    "2026-10-11",
+    "2026-10-12",
+    "2026-10-13",
+    "2026-10-14",
+    "2026-10-15",
+    "2026-10-16",
+    "2026-10-17",
+    "2026-10-18",
+    "2026-10-19",
+    "2026-10-20",
+    "2026-10-21",
+    "2026-10-22",
+    "2026-10-23"
+   ],
+   "all": {
+    "examples": 3733,
+    "positives": 151,
+    "lobbies": 11,
+    "log_loss": 0.1616,
+    "baseline_log_loss": 0.1782,
+    "brier": 0.0408,
+    "baseline_brier": 0.04,
+    "auc": 0.799,
+    "gini": 0.598
+   },
+   "no_lobby_yet": {
+    "examples": 3696,
+    "positives": 125,
+    "lobbies": 11,
+    "log_loss": 0.1526,
+    "baseline_log_loss": 0.1612,
+    "brier": 0.0375,
+    "baseline_brier": 0.0343,
+    "auc": 0.768,
+    "gini": 0.535
+   },
+   "calibration": [
+    {
+     "from": 0.0,
+     "to": 0.1,
+     "checks": 2696,
+     "predicted": 0.032,
+     "actual": 0.017
+    },
+    {
+     "from": 0.1,
+     "to": 0.2,
+     "checks": 619,
+     "predicted": 0.14,
+     "actual": 0.058
+    },
+    {
+     "from": 0.2,
+     "to": 0.3,
+     "checks": 251,
+     "predicted": 0.234,
+     "actual": 0.108
+    },
+    {
+     "from": 0.3,
+     "to": 0.4,
+     "checks": 59,
+     "predicted": 0.351,
+     "actual": 0.085
+    },
+    {
+     "from": 0.4,
+     "to": 0.5,
+     "checks": 45,
+     "predicted": 0.44,
+     "actual": 0.333
+    },
+    {
+     "from": 0.5,
+     "to": 0.6,
+     "checks": 34,
+     "predicted": 0.55,
+     "actual": 0.471
+    },
+    {
+     "from": 0.6,
+     "to": 0.7,
+     "checks": 22,
+     "predicted": 0.621,
+     "actual": 0.136
+    },
+    {
+     "from": 0.7,
+     "to": 0.8,
+     "checks": 1,
+     "predicted": 0.714,
+     "actual": 0.0
+    },
+    {
+     "from": 0.8,
+     "to": 0.9,
+     "checks": 4,
+     "predicted": 0.847,
+     "actual": 0.5
+    },
+    {
+     "from": 0.9,
+     "to": 1.0,
+     "checks": 2,
+     "predicted": 0.971,
+     "actual": 0.0
+    }
+   ]
+  },
+  "ready": true,
+  "trained": "2026-10-24T06:03:23+00:00"
+ }
+}

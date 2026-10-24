@@ -1,0 +1,837 @@
+{
+ "since": "2026-10-19T04:27:20+00:00",
+ "last_check": "2026-10-24T06:01:19+00:00",
+ "balloon_map": "balloon_race_v2b",
+ "min_repeats": 3,
+ "servers": [
+  {
+   "addr": "193.243.190.25:27015",
+   "name": "shounic trenches (USA Chicago)",
+   "checks": 3877,
+   "current": {
+    "map": "pl_goldrush_st1c3",
+    "players": 73,
+    "next_map": "cp_freaky_fair",
+    "as_of": "2026-10-24T06:01:19+00:00",
+    "since": "2026-10-24T05:35:49+00:00"
+   },
+   "visits": 4,
+   "before": [
+    [
+     "cp_gravelpit",
+     1
+    ],
+    [
+     "plr_nightfall_final",
+     1
+    ],
+    [
+     "ctf_doublecross_snowy",
+     1
+    ],
+    [
+     "ctf_pressure",
+     1
+    ]
+   ],
+   "after": [
+    [
+     "koth_rotunda",
+     1
+    ],
+    [
+     "koth_megalo",
+     1
+    ],
+    [
+     "ctf_applejack",
+     1
+    ],
+    [
+     "pl_dustbowl_st5",
+     1
+    ]
+   ],
+   "gaps": [
+    {
+     "hours": 19.0,
+     "maps_between": 31
+    },
+    {
+     "hours": 39.5,
+     "maps_between": 83
+    },
+    {
+     "hours": 12.7,
+     "maps_between": 28
+    }
+   ],
+   "verdict": "varies",
+   "verdict_text": "Not fixed: after cp_gravelpit 1 of 4 times",
+   "recent": [
+    {
+     "map": "pl_divulgence_b4b",
+     "start": "2026-10-23T19:35:47+00:00",
+     "peak": 1,
+     "next_map": "pl_rumford_event",
+     "minutes": 5
+    },
+    {
+     "map": "cp_sunshine_event",
+     "start": "2026-10-23T19:40:47+00:00",
+     "peak": 2,
+     "next_map": "pl_rumford_event",
+     "minutes": 5
+    },
+    {
+     "map": "ctf_doublecross_event",
+     "start": "2026-10-23T19:45:47+00:00",
+     "peak": 1,
+     "next_map": "pl_snowycoast",
+     "minutes": 21
+    },
+    {
+     "map": "plr_nightfall_final",
+     "start": "2026-10-23T20:03:17+00:00",
+     "peak": 5,
+     "next_map": "pl_thundermountain",
+     "minutes": 26
+    },
+    {
+     "map": "koth_sawmill",
+     "start": "2026-10-23T20:25:47+00:00",
+     "peak": 12,
+     "next_map": "pl_circle_st3",
+     "minutes": 58
+    },
+    {
+     "map": "pl_circle_st3",
+     "start": "2026-10-23T21:20:49+00:00",
+     "peak": 36,
+     "next_map": "koth_camp_saxton",
+     "minutes": 36
+    },
+    {
+     "map": "koth_camp_saxton",
+     "start": "2026-10-23T21:55:49+00:00",
+     "peak": 25,
+     "next_map": "pl_dbz_b5",
+     "minutes": 10
+    },
+    {
+     "map": "pl_dbz_b5",
+     "start": "2026-10-23T22:05:49+00:00",
+     "peak": 12,
+     "next_map": "ctf_pressure",
+     "minutes": 31
+    },
+    {
+     "map": "ctf_pressure",
+     "start": "2026-10-23T22:35:49+00:00",
+     "peak": 1,
+     "next_map": "balloon_race_v2b",
+     "minutes": 5
+    },
+    {
+     "map": "balloon_race_v2b",
+     "start": "2026-10-23T22:40:49+00:00",
+     "peak": 5,
+     "next_map": "cp_wildcat_event",
+     "minutes": 30
+    },
+    {
+     "map": "pl_dustbowl_st5",
+     "start": "2026-10-23T23:10:49+00:00",
+     "peak": 3,
+     "next_map": "uw_dingo_pass",
+     "minutes": 20
+    },
+    {
+     "map": "uw_dingo_pass",
+     "start": "2026-10-23T23:30:49+00:00",
+     "peak": 7,
+     "next_map": "ctf_medi_evil",
+     "minutes": 10
+    },
+    {
+     "map": "pl_barnblitz_st1e",
+     "start": "2026-10-23T23:40:49+00:00",
+     "peak": 23,
+     "next_map": "pl_aridpass_event",
+     "minutes": 20
+    },
+    {
+     "map": "pl_goldrush_st1c3",
+     "start": "2026-10-24T00:00:49+00:00",
+     "peak": 30,
+     "next_map": "cp_mojave",
+     "minutes": 31
+    },
+    {
+     "map": "ctf_2fort",
+     "start": "2026-10-24T00:30:49+00:00",
+     "peak": 30,
+     "next_map": "fr_gustav",
+     "minutes": 10
+    },
+    {
+     "map": "fr_gustav",
+     "start": "2026-10-24T00:40:49+00:00",
+     "peak": 53,
+     "next_map": "koth_camp_saxton",
+     "minutes": 32
+    },
+    {
+     "map": "pl_aquarius",
+     "start": "2026-10-24T01:10:49+00:00",
+     "peak": 72,
+     "next_map": "koth_dryfield",
+     "minutes": 31
+    },
+    {
+     "map": "pl_circle_st3",
+     "start": "2026-10-24T01:40:49+00:00",
+     "peak": 82,
+     "next_map": "pl_dbz_b5",
+     "minutes": 26
+    },
+    {
+     "map": "pl_dbz_b5",
+     "start": "2026-10-24T02:06:19+00:00",
+     "peak": 96,
+     "next_map": "pl_redwood",
+     "minutes": 48
+    },
+    {
+     "map": "pl_odyssey",
+     "start": "2026-10-24T02:50:49+00:00",
+     "peak": 95,
+     "next_map": "pl_dustbowl_st5",
+     "minutes": 16
+    },
+    {
+     "map": "pl_dustbowl_st5",
+     "start": "2026-10-24T03:06:19+00:00",
+     "peak": 99,
+     "next_map": "wacky_races_v2",
+     "minutes": 42
+    },
+    {
+     "map": "wacky_races_v2",
+     "start": "2026-10-24T03:45:49+00:00",
+     "peak": 85,
+     "next_map": "fr_gustav",
+     "minutes": 10
+    },
+    {
+     "map": "cp_degrootkeep_rats",
+     "start": "2026-10-24T03:55:49+00:00",
+     "peak": 74,
+     "next_map": "ctf_medi_evil",
+     "minutes": 5
+    },
+    {
+     "map": "ctf_medi_evil",
+     "start": "2026-10-24T04:00:49+00:00",
+     "peak": 90,
+     "next_map": "wacky_races_v2",
+     "minutes": 10
+    },
+    {
+     "map": "cp_burghausen",
+     "start": "2026-10-24T04:10:49+00:00",
+     "peak": 94,
+     "next_map": "koth_camp_saxton",
+     "minutes": 20
+    },
+    {
+     "map": "koth_camp_saxton",
+     "start": "2026-10-24T04:30:49+00:00",
+     "peak": 100,
+     "next_map": "ctf_turbine_winter",
+     "minutes": 15
+    },
+    {
+     "map": "ctf_turbine_winter",
+     "start": "2026-10-24T04:45:49+00:00",
+     "peak": 90,
+     "next_map": "2koth_abbey",
+     "minutes": 5
+    },
+    {
+     "map": "fr_gustav",
+     "start": "2026-10-24T04:50:49+00:00",
+     "peak": 96,
+     "next_map": "ctf_sidewinder",
+     "minutes": 31
+    },
+    {
+     "map": "pl_barnblitz_st1e",
+     "start": "2026-10-24T05:20:49+00:00",
+     "peak": 83,
+     "next_map": "pl_goldrush_st1c3",
+     "minutes": 15
+    },
+    {
+     "map": "pl_goldrush_st1c3",
+     "start": "2026-10-24T05:35:49+00:00",
+     "peak": 73,
+     "next_map": "cp_freaky_fair",
+     "minutes": 30
+    }
+   ]
+  },
+  {
+   "addr": "99.110.11.58:27015",
+   "name": "Spanakopita",
+   "checks": 1109,
+   "current": {
+    "map": "balloon_race_v2b",
+    "players": 0,
+    "next_map": "",
+    "as_of": "2026-10-24T05:59:50+00:00",
+    "since": "2026-10-20T22:05:59+00:00"
+   },
+   "visits": 2,
+   "before": [],
+   "after": [],
+   "gaps": [
+    {
+     "hours": 17.6,
+     "maps_between": 0
+    }
+   ],
+   "verdict": "waiting",
+   "verdict_text": "Waiting to see which map comes before Balloon Race",
+   "recent": [
+    {
+     "map": "balloon_race_v2b",
+     "start": "2026-10-20T04:30:28+00:00",
+     "peak": 10,
+     "next_map": "",
+     "minutes": 1053
+    },
+    {
+     "map": "",
+     "start": "2026-10-20T22:05:29+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "balloon_race_v2b",
+     "start": "2026-10-20T22:05:59+00:00",
+     "peak": 1,
+     "next_map": "",
+     "minutes": 4798
+    }
+   ]
+  },
+  {
+   "addr": "88.233.138.82:27017",
+   "name": "[TR]  Türk Ninjalar sunucusu",
+   "checks": 2525,
+   "current": {
+    "map": "",
+    "players": 0,
+    "next_map": "",
+    "as_of": "2026-10-24T06:00:20+00:00",
+    "since": "2026-10-23T21:36:50+00:00"
+   },
+   "visits": 1,
+   "before": [
+    [
+     "vsh_natural_halestorm_v2",
+     1
+    ]
+   ],
+   "after": [
+    [
+     "minecraft_koth_rc3",
+     1
+    ]
+   ],
+   "gaps": [],
+   "verdict": "waiting",
+   "verdict_text": "After vsh_natural_halestorm_v2 so far (1 of 1), need 3 to call it",
+   "recent": [
+    {
+     "map": "mge_training_v8_beta4b",
+     "start": "2026-10-22T13:07:51+00:00",
+     "peak": 14,
+     "next_map": "",
+     "minutes": 41
+    },
+    {
+     "map": "ctf_minecraft_fakir_vs_zengin",
+     "start": "2026-10-22T13:47:51+00:00",
+     "peak": 13,
+     "next_map": "",
+     "minutes": 42
+    },
+    {
+     "map": "cp_degrootkeep",
+     "start": "2026-10-22T14:27:51+00:00",
+     "peak": 4,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "mge_training_v8_beta4b",
+     "start": "2026-10-22T14:32:51+00:00",
+     "peak": 13,
+     "next_map": "",
+     "minutes": 52
+    },
+    {
+     "map": "dr_skibidi_toilet_v3b2",
+     "start": "2026-10-22T15:22:51+00:00",
+     "peak": 13,
+     "next_map": "",
+     "minutes": 15
+    },
+    {
+     "map": "vsh_hightower_roblox_v11",
+     "start": "2026-10-22T15:37:51+00:00",
+     "peak": 11,
+     "next_map": "",
+     "minutes": 16
+    },
+    {
+     "map": "dm_mariokart2_b3",
+     "start": "2026-10-22T15:52:51+00:00",
+     "peak": 11,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "dr_skibidi_toilet_v3b2",
+     "start": "2026-10-22T15:58:21+00:00",
+     "peak": 16,
+     "next_map": "",
+     "minutes": 20
+    },
+    {
+     "map": "jb_mlcastle_refurbished_v5",
+     "start": "2026-10-22T16:17:52+00:00",
+     "peak": 21,
+     "next_map": "",
+     "minutes": 68
+    },
+    {
+     "map": "ctf_minecraft_fakir_vs_zengin",
+     "start": "2026-10-22T17:22:52+00:00",
+     "peak": 22,
+     "next_map": "",
+     "minutes": 52
+    },
+    {
+     "map": "ctf_minedesert_rc",
+     "start": "2026-10-22T18:12:51+00:00",
+     "peak": 18,
+     "next_map": "",
+     "minutes": 26
+    },
+    {
+     "map": "",
+     "start": "2026-10-22T18:34:51+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "ctf_minedesert_rc",
+     "start": "2026-10-22T18:35:21+00:00",
+     "peak": 0,
+     "next_map": "workshop/dr_retroland_fix.ugc974215516",
+     "minutes": 5
+    },
+    {
+     "map": "",
+     "start": "2026-10-22T18:37:21+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 1182
+    },
+    {
+     "map": "ctf_2fort",
+     "start": "2026-10-23T14:17:17+00:00",
+     "peak": 19,
+     "next_map": "",
+     "minutes": 48
+    },
+    {
+     "map": "ctf_minedesert_rc",
+     "start": "2026-10-23T15:03:48+00:00",
+     "peak": 23,
+     "next_map": "",
+     "minutes": 42
+    },
+    {
+     "map": "vsh_fnaf_v3",
+     "start": "2026-10-23T15:43:48+00:00",
+     "peak": 21,
+     "next_map": "",
+     "minutes": 15
+    },
+    {
+     "map": "ctf_minecraft_fakir_vs_zengin",
+     "start": "2026-10-23T15:58:48+00:00",
+     "peak": 21,
+     "next_map": "",
+     "minutes": 52
+    },
+    {
+     "map": "dr_undertale_finished_v2fix2",
+     "start": "2026-10-23T16:48:48+00:00",
+     "peak": 11,
+     "next_map": "",
+     "minutes": 10
+    },
+    {
+     "map": "jb_mlcastle_refurbished_v5",
+     "start": "2026-10-23T16:58:48+00:00",
+     "peak": 16,
+     "next_map": "",
+     "minutes": 78
+    },
+    {
+     "map": "vsh_hightower_roblox_v11",
+     "start": "2026-10-23T18:13:48+00:00",
+     "peak": 19,
+     "next_map": "",
+     "minutes": 20
+    },
+    {
+     "map": "vsh_natural_halestorm_v2",
+     "start": "2026-10-23T18:33:48+00:00",
+     "peak": 19,
+     "next_map": "",
+     "minutes": 15
+    },
+    {
+     "map": "jb_mlcastle_refurbished_v5",
+     "start": "2026-10-23T18:49:48+00:00",
+     "peak": 19,
+     "next_map": "",
+     "minutes": 58
+    },
+    {
+     "map": "vsh_natural_halestorm_v2",
+     "start": "2026-10-23T19:43:48+00:00",
+     "peak": 15,
+     "next_map": "",
+     "minutes": 15
+    },
+    {
+     "map": "balloon_race_v2b",
+     "start": "2026-10-23T19:58:48+00:00",
+     "peak": 16,
+     "next_map": "",
+     "minutes": 42
+    },
+    {
+     "map": "minecraft_koth_rc3",
+     "start": "2026-10-23T20:38:48+00:00",
+     "peak": 12,
+     "next_map": "",
+     "minutes": 36
+    },
+    {
+     "map": "arena_mw2_highrise",
+     "start": "2026-10-23T21:13:50+00:00",
+     "peak": 13,
+     "next_map": "",
+     "minutes": 15
+    },
+    {
+     "map": "db_rocketarenav2",
+     "start": "2026-10-23T21:25:20+00:00",
+     "peak": 13,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "dr_supermario64_v6b",
+     "start": "2026-10-23T21:28:50+00:00",
+     "peak": 12,
+     "next_map": "",
+     "minutes": 10
+    },
+    {
+     "map": "",
+     "start": "2026-10-23T21:36:50+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 508
+    }
+   ]
+  },
+  {
+   "addr": "45.45.238.134:27105",
+   "name": "Server hosted by Physgun.com",
+   "checks": 1415,
+   "current": {
+    "map": "",
+    "players": 0,
+    "next_map": "",
+    "as_of": "2026-10-24T06:01:19+00:00",
+    "since": "2026-10-24T02:19:19+00:00"
+   },
+   "visits": 0,
+   "before": [],
+   "after": [],
+   "gaps": [],
+   "verdict": "waiting",
+   "verdict_text": "Waiting for Balloon Race to come up",
+   "recent": [
+    {
+     "map": "trade_delirium",
+     "start": "2026-10-19T23:14:58+00:00",
+     "peak": 9,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 15
+    },
+    {
+     "map": "tow_phoneyland_b1_16",
+     "start": "2026-10-19T23:29:58+00:00",
+     "peak": 30,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 36
+    },
+    {
+     "map": "",
+     "start": "2026-10-20T00:03:57+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 15
+    },
+    {
+     "map": "cp_egypt_final",
+     "start": "2026-10-20T00:16:57+00:00",
+     "peak": 6,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 5
+    },
+    {
+     "map": "vsh_rust_remake_tt1",
+     "start": "2026-10-20T00:18:28+00:00",
+     "peak": 19,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 26
+    },
+    {
+     "map": "vsh_pbjungle_b1",
+     "start": "2026-10-20T00:42:58+00:00",
+     "peak": 24,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 20
+    },
+    {
+     "map": "vsh_gyros_v5",
+     "start": "2026-10-20T01:03:27+00:00",
+     "peak": 25,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 26
+    },
+    {
+     "map": "vsh_2fortdesk_kiwi_v1a",
+     "start": "2026-10-20T01:28:27+00:00",
+     "peak": 23,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 37
+    },
+    {
+     "map": "vsh_streets_v3",
+     "start": "2026-10-20T02:03:58+00:00",
+     "peak": 22,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 94
+    },
+    {
+     "map": "cp_egypt_final",
+     "start": "2026-10-20T03:36:58+00:00",
+     "peak": 1,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 15
+    },
+    {
+     "map": "",
+     "start": "2026-10-20T03:49:28+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 106
+    },
+    {
+     "map": "cp_egypt_final",
+     "start": "2026-10-20T05:33:57+00:00",
+     "peak": 1,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 563
+    },
+    {
+     "map": "cp_futura_rc1c",
+     "start": "2026-10-20T14:57:28+00:00",
+     "peak": 0,
+     "next_map": "cp_mountainlab",
+     "minutes": 426
+    },
+    {
+     "map": "",
+     "start": "2026-10-20T22:05:28+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "cp_futura_rc1c",
+     "start": "2026-10-20T22:09:28+00:00",
+     "peak": 1,
+     "next_map": "cp_mountainlab",
+     "minutes": 1449
+    },
+    {
+     "map": "jb_miami_v6",
+     "start": "2026-10-21T22:15:05+00:00",
+     "peak": 13,
+     "next_map": "cp_mountainlab",
+     "minutes": 126
+    },
+    {
+     "map": "",
+     "start": "2026-10-22T00:18:35+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 2749
+    },
+    {
+     "map": "cp_egypt_final",
+     "start": "2026-10-23T22:08:19+00:00",
+     "peak": 0,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 5
+    },
+    {
+     "map": "jb_miami_v6",
+     "start": "2026-10-23T22:10:50+00:00",
+     "peak": 2,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 47
+    },
+    {
+     "map": "",
+     "start": "2026-10-23T22:58:19+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "cp_egypt_final",
+     "start": "2026-10-23T23:03:19+00:00",
+     "peak": 1,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 5
+    },
+    {
+     "map": "",
+     "start": "2026-10-23T23:04:49+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "cp_egypt_final",
+     "start": "2026-10-23T23:08:49+00:00",
+     "peak": 0,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 5
+    },
+    {
+     "map": "jb_miami_v6",
+     "start": "2026-10-23T23:10:19+00:00",
+     "peak": 24,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 79
+    },
+    {
+     "map": "koth_megaton",
+     "start": "2026-10-24T00:24:49+00:00",
+     "peak": 22,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 15
+    },
+    {
+     "map": "pl_aquarius",
+     "start": "2026-10-24T00:39:49+00:00",
+     "peak": 23,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 25
+    },
+    {
+     "map": "vsh_gyros_v5",
+     "start": "2026-10-24T01:04:49+00:00",
+     "peak": 16,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 26
+    },
+    {
+     "map": "vsh_palanquin_ship_novpk",
+     "start": "2026-10-24T01:29:49+00:00",
+     "peak": 14,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 27
+    },
+    {
+     "map": "vsh_maul_rc1",
+     "start": "2026-10-24T01:54:49+00:00",
+     "peak": 14,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 26
+    },
+    {
+     "map": "",
+     "start": "2026-10-24T02:19:19+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 227
+    }
+   ]
+  },
+  {
+   "addr": "69.41.182.173:27015",
+   "name": "69.41.182.173:27015",
+   "checks": 1404,
+   "current": {
+    "map": "",
+    "players": 0,
+    "next_map": "",
+    "as_of": "2026-10-24T06:00:19+00:00",
+    "since": "2026-10-19T04:27:20+00:00"
+   },
+   "visits": 0,
+   "before": [],
+   "after": [],
+   "gaps": [],
+   "verdict": "waiting",
+   "verdict_text": "Waiting for Balloon Race to come up",
+   "recent": [
+    {
+     "map": "",
+     "start": "2026-10-19T04:27:20+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 7297
+    }
+   ]
+  }
+ ],
+ "voters": {
+  "changes": 287,
+  "balloon_changes": 4,
+  "voters": 0,
+  "min_balloon_changes": 5,
+  "min_other_changes": 3,
+  "top": []
+ },
+ "updated": "2026-10-24T06:03:26+00:00"
+}
