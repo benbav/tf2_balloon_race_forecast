@@ -20,7 +20,7 @@ Ranked by how often they have a lobby going (as many players as the Discord ping
 |---|---|---|---|---|---|---|---|---|
 | 1 | [TR]  Türk Ninjalar sunucusu | `connect 88.233.138.82:27017` | Sat · 9 AM – 11 AM MT (19%) | Saturday | 1% of checks | 1% of checks | 15.0 | 24 |
 | 2 | [TR]  Türk Ninjalar sunucusu | `connect 169.254.62.76:16648` | Sun · 12 PM – 2 PM MT (15%) | Sunday | 0% of checks | 1% of checks | 8.7 | 11 |
-| 3 | shounic trenches (USA Chicago) | `connect 193.243.190.25:27015` | Fri · 6 PM – 8 PM MT (5%) | Sunday | 0% of checks | 1% of checks | 21.1 | 91 |
+| 3 | shounic trenches (USA Chicago) | `connect 193.243.190.25:27015` | Fri · 6 PM – 8 PM MT (5%) | Sunday | 0% of checks | 1% of checks | 20.2 | 91 |
 | 4 | Server hosted by Physgun.com | `connect 45.45.238.134:27105` | Fri · 6 PM – 8 PM MT (17%) | Friday | 0% of checks | 0% of checks | 21.8 | 23 |
 | 5 | Aar's Server \| Map Testing \| Virginia | `connect 169.254.112.56:12184` | Sat · 2 PM – 4 PM MT (11%) | Saturday | 0% of checks | 0% of checks | 24.7 | 26 |
 
@@ -37,7 +37,7 @@ To favorite one: Steam → View → Game Servers → Favorites → **+** and pas
 - `main.py` also pushes the current server list to the `live` branch every check, the same single-commit way, for the website's "who's on now" list.
 - `rotation_tracker.py` runs all the time as a systemd service (`balloon-rotation.service`), separately from everything else. Every 30 seconds it looks up the rotating servers that have had a `LOBBY_PLAYERS`+ player lobby on Balloon Race (fixed addresses only):
   - It logs whichever map each one is on, plus its `sm_nextmap` when the server shares it, to `data/rotation_log.csv` (every 5 minutes and on every map change), so we can see whether Balloon Race comes up at a fixed spot in their map cycles.
-  - At every map change it logs who was on right before and who was still there a few minutes later to `data/rotation_players.jsonl`, from the server's own player list (names only, no SteamIDs). Players who stay for Balloon Race far more often than for other maps are probably voting for it (`balloon/voters.py`).
+  - At every map change it logs who was on right before and who was still there a few minutes later to `data/rotation_players.jsonl`, from the server's own player list (names only, no SteamIDs). Players who are there when it switches to Balloon Race far more often than the average player are probably voting for it (`balloon/voters.py`).
   - Every 5 minutes it logs who's on each one to `data/rotation_snapshots.jsonl` (on the server only), so the lobby forecast can count how many of those voters are sitting on a rotating server that isn't on Balloon Race yet. The forecast starts using that count once the snapshots cover a week with a voter seen in them.
   - `generate_report.py` summarizes both logs daily (`balloon/rotation.py`, `balloon/voters.py`) into the "Map rotation tracker" section and the top 10 voter leaderboard at the bottom of the website.
 - `balloon/` is the code both scripts share: reading the log (`log.py`), which servers are dedicated (`servers.py`) and the lobby forecast model (`forecast.py`).
@@ -104,5 +104,5 @@ The daily report pushes to GitHub, so the repo remote needs to use SSH (`git rem
 - `balloon/log.py`: `LOG_TIMEZONE` (clock the log was written in)
 - `balloon/forecast.py`: `FORECAST_MINUTES` and the model's other settings
 - `rotation_tracker.py`: `CHECK_SECONDS`
-- `balloon/voters.py`: `MIN_BALLOON_CHANGES`, `MIN_OTHER_CHANGES`, `VOTER_MIN_SCORE`, `LEADERBOARD_SIZE`
+- `balloon/voters.py`: `MIN_BALLOON_CHANGES`, `PRIOR_CHANGES`, `VOTER_MIN_SCORE`, `LEADERBOARD_SIZE`
 - `generate_report.py`: `ZONES` (chart timezones; the first is the default), `MIN_DAYS_FOR_SCORECARD`, `SCORECARD_RECENT_DAYS`, `TOP_SERVER_COUNT`
