@@ -5,9 +5,10 @@ from balloon.log import tail_lines
 from balloon.rotation import BALLOON_MAP
 
 # Balloon Race voters: at every map change on a rotating server, rotation_tracker.py notes who was on right
-# before it and who was still there a few minutes after. Players who stay for Balloon Race much more often
-# than they stay for other maps are probably the ones voting for it. Names only - the server query that
-# lists players doesn't give SteamIDs - so a player who changes their name starts over.
+# before it. A map change only goes to Balloon Race when enough players vote for it, so players who are there
+# for those changes much more often than the average player are probably the ones voting for it. (Who stays on
+# after the change says nothing: nearly everyone stays for every map.) Names only - the server query that lists
+# players doesn't give SteamIDs - so a player who changes their name starts over.
 VOTER_LOG_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data',
                               'rotation_players.jsonl')
 # Who's on each tracked server every 5 minutes, for counting the voters on at any past check (a lobby
@@ -17,11 +18,13 @@ SNAPSHOT_LOG_PATH = os.path.join(os.path.dirname(VOTER_LOG_PATH), 'rotation_snap
 SNAPSHOT_TAIL_BYTES = 300_000
 # A server's latest snapshot older than this is stale (it emptied out or the tracker was down)
 SNAPSHOT_STALE_MINUTES = 10
-# Map changes a player has to have been there for, to Balloon Race and to anything else, before they're scored
-MIN_BALLOON_CHANGES = 5
-MIN_OTHER_CHANGES = 3
-# Stay rate for Balloon Race minus stay rate for other maps; this or more counts as a voter
-VOTER_MIN_SCORE = 0.25
+# Changes to Balloon Race a player has to have been there for before they're scored
+MIN_BALLOON_CHANGES = 3
+# How many of the average player's changes it takes to outweigh them: keeps someone seen at 1 change out of 1
+# from scoring like a sure voter. Their share is pulled toward the average by this many changes.
+PRIOR_CHANGES = 10
+# How many times the average player's share of changes to Balloon Race; this or more counts as a voter
+VOTER_MIN_SCORE = 3.0
 LEADERBOARD_SIZE = 10
 
 
@@ -51,27 +54,27 @@ def recent_snapshots(path=SNAPSHOT_LOG_PATH):
         return []
 
 
-# Every player seen at enough map changes, best voter first
+# Every player seen at enough changes to Balloon Race, best voter first
 def player_scores(changes):
-    # name -> [Balloon Race stays, Balloon Race changes, other stays, other changes]
+    # name -> [changes to Balloon Race, all changes], counting each time they were on right before one
     tally = {}
     for c in changes:
-        stayed = set(c['stayed'])
-        i = 0 if c['to_map'] == BALLOON_MAP else 2
         for name in set(c['before']):
-            t = tally.setdefault(name, [0, 0, 0, 0])
-            t[i] += name in stayed
-            t[i + 1] += 1
+            t = tally.setdefault(name, [0, 0])
+            t[0] += c['to_map'] == BALLOON_MAP
+            t[1] += 1
+    # The average player's share: of everyone on before a map change, how many were before one to Balloon Race
+    seen = sum(t[1] for t in tally.values())
+    base = sum(t[0] for t in tally.values()) / seen if seen else 0
+    if not base:
+        return []
     scores = []
-    for name, (balloon_stays, balloon_changes, other_stays, other_changes) in tally.items():
-        if balloon_changes < MIN_BALLOON_CHANGES or other_changes < MIN_OTHER_CHANGES:
+    for name, (balloon_changes, all_changes) in tally.items():
+        if balloon_changes < MIN_BALLOON_CHANGES:
             continue
-        # The +1/+2 keeps someone seen only a few times from scoring a perfect 100% or 0%
-        balloon_rate = (balloon_stays + 1) / (balloon_changes + 2)
-        other_rate = (other_stays + 1) / (other_changes + 2)
-        scores.append({'name': name, 'score': round(balloon_rate - other_rate, 3),
-                       'balloon_stays': balloon_stays, 'balloon_changes': balloon_changes,
-                       'other_stays': other_stays, 'other_changes': other_changes})
+        share = (balloon_changes + PRIOR_CHANGES * base) / (all_changes + PRIOR_CHANGES)
+        scores.append({'name': name, 'score': round(share / base, 2),
+                       'balloon_changes': balloon_changes, 'changes': all_changes})
     return sorted(scores, key=lambda s: (-s['score'], -s['balloon_changes']))
 
 
@@ -80,8 +83,8 @@ def voter_summary(path=VOTER_LOG_PATH):
     changes = read_changes(path)
     voters = [s for s in player_scores(changes) if s['score'] >= VOTER_MIN_SCORE]
     return {'changes': len(changes), 'balloon_changes': sum(c['to_map'] == BALLOON_MAP for c in changes),
-            'voters': len(voters), 'min_balloon_changes': MIN_BALLOON_CHANGES,
-            'min_other_changes': MIN_OTHER_CHANGES, 'top': voters[:LEADERBOARD_SIZE]}
+            'voters': len(voters), 'min_balloon_changes': MIN_BALLOON_CHANGES, 'min_score': VOTER_MIN_SCORE,
+            'top': voters[:LEADERBOARD_SIZE]}
 
 
 # Names scoring as voters from the map changes before `before` (a 'YYYY-MM-DD HH:MM:SS' UTC string), or all

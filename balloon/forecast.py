@@ -29,8 +29,10 @@ SINCE_BUSY_CAP_MINUTES = 24 * 60
 # Live scoring reads this much of the end of the log, enough to cover the longest lookback
 TAIL_BYTES = 2_000_000
 # Voters waiting: the most Balloon Race voters (balloon/voters.py) on one rotating server that isn't on
-# Balloon Race yet. Left out until the tracker's snapshots cover this many days with a voter seen in them.
-FORECAST_MIN_VOTER_DATES = 7
+# Balloon Race yet. Left out until the tracker's snapshots cover this many days and this many checks had voters
+# waiting: with 10 days and 38 such checks it made the rolling test slightly worse.
+FORECAST_MIN_VOTER_DATES = 14
+FORECAST_MIN_VOTER_CHECKS = 25
 # Rolling evaluation: each of the latest days (up to this many) is predicted by a model trained only
 # on the days before it, and at least this many earlier days are needed before a day is tested
 EVAL_MAX_DAYS = 14
@@ -128,10 +130,10 @@ def pick_servers(addrs, players):
     return counts[counts >= FORECAST_MIN_SERVER_CHECKS].index[:FORECAST_SERVERS].tolist()
 
 
-# Strong regularization: with only a handful of lobbies to learn from, weaker settings (C=0.5) were
-# overconfident and scored worse than guessing the base rate on the rolling test
+# Strong regularization: with only a handful of lobbies to learn from, weaker settings (C=0.05 and up) were
+# overconfident and scored worse than guessing the base rate on checks without a lobby yet
 def new_forecast_model():
-    return make_pipeline(StandardScaler(), LogisticRegression(C=0.05, max_iter=1000))
+    return make_pipeline(StandardScaler(), LogisticRegression(C=0.01, max_iter=1000))
 
 
 def scores(y, probs, guess):
@@ -197,7 +199,7 @@ def train_lobby_forecast(df, server_df, holiday_dates, threshold, check_minutes,
            'use_holidays': bool(dates.isin(holiday_dates).sum() >= FORECAST_MIN_HOLIDAY_DATES),
            'holiday_dates': set(holiday_dates),
            'use_voters': len({r['ts'][:10] for r in voter_rows}) >= FORECAST_MIN_VOTER_DATES
-                         and bool(f['voters_waiting'].max() > 0)}
+                         and int((f['voters_waiting'] > 0).sum()) >= FORECAST_MIN_VOTER_CHECKS}
     keep, y = lobby_labels(f, threshold, check_minutes)
     examples = f.iloc[keep].reset_index(drop=True)
     X = feature_matrix(examples, cfg)

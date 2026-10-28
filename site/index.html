@@ -231,6 +231,8 @@
   .chart img { display: block; width: 100%; height: auto; }
   .chart.wide { grid-column: 1 / -1; }
   .chart.wide img { width: auto; max-width: 100%; max-height: 900px; }
+  /* Whole chart on screen at once */
+  .chart.fit img { max-height: calc(100vh - 48px); }
 
   /* Top servers table */
   .table-wrap { overflow-x: auto; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); margin-bottom: 20px; }
@@ -404,7 +406,7 @@
     { title: 'When to play', charts: [
       ['best_time', 'Best time for a {N}+ player lobby', true],
       ['top_windows', 'Top 5 times to play', true],
-      ['busy_heatmap', 'How often there is a {N}+ player lobby', true, true],
+      ['busy_heatmap', 'How often there is a {N}+ player lobby', true, true, true],
     ]},
     { title: 'Servers', table: true, charts: [
       ['server_heatmaps', 'When the top servers are busy', true, true],
@@ -682,10 +684,10 @@
       <h2>${section.title}</h2>
       <div class="grid">
       ${section.table ? renderTable() : ''}
-      ${section.charts.map(([file, alt, timed, wide]) => {
+      ${section.charts.map(([file, alt, timed, wide, fit]) => {
         const src = `charts/${file}${suffix}${timed ? ZONES[zone].suffix : ''}.png${v}`;
         const zoneNote = timed ? `, ${ZONES[zone].label}` : '';
-        return `<figure class="chart${wide ? ' wide' : ''}"><a href="${src}" target="_blank" rel="noopener">
+        return `<figure class="chart${wide ? ' wide' : ''}${fit ? ' fit' : ''}"><a href="${src}" target="_blank" rel="noopener">
           <img src="${src}" alt="${esc(alt.replace('{N}', lobbyPlayers()))} (${label}${zoneNote})" loading="lazy"></a></figure>`;
       }).join('')}
       </div>`).join('');
@@ -749,23 +751,22 @@
       ${renderVoters(r.voters)}`;
   }
 
-  // Players who stay on when the vote goes Balloon Race, far more than when it goes anywhere else
+  // Players who are on when the vote goes Balloon Race far more often than the average player
   function renderVoters(v) {
     if (!v) return '';
     const intro = `<h2>Balloon Race's most devoted voters</h2>
-      <p class="note">At every map change on these servers we note who was on right before and who was still there
-        a few minutes later. These players stay for Balloon Race much more often than for other maps, so they're
+      <p class="note">At every map change on these servers we note who was on right before it. These players are
+        there when the vote goes Balloon Race at least ${v.min_score}× as often as the average player, so they're
         probably the ones voting for it. A player shows up here after being around for ${v.min_balloon_changes}
-        changes to Balloon Race and ${v.min_other_changes} to other maps.
+        changes to Balloon Race.
         ${v.changes} map change${v.changes === 1 ? '' : 's'} watched so far, ${v.balloon_changes} to Balloon Race.</p>`;
     if (!v.top.length) return `${intro}<p class="empty">No one yet, check back once a few more Balloon Race votes have happened.</p>`;
-    const rate = (stays, n) => `${Math.round((100 * stays) / n)}% <span class="sub">(${stays} of ${n})</span>`;
     return `${intro}<div class="table-wrap"><table>
-      <thead><tr><th class="num">#</th><th>Player</th><th class="num">Stayed for Balloon Race</th>
-        <th class="num">Stayed for other maps</th><th class="num">Score</th></tr></thead>
+      <thead><tr><th class="num">#</th><th>Player</th><th class="num">Changes to Balloon Race</th>
+        <th class="num">Map changes seen</th><th class="num">Vs. average player</th></tr></thead>
       <tbody>${v.top.map((p, i) => `<tr><td class="num">${i + 1}</td><td><strong>${esc(p.name)}</strong></td>
-        <td class="num">${rate(p.balloon_stays, p.balloon_changes)}</td><td class="num">${rate(p.other_stays, p.other_changes)}</td>
-        <td class="num">+${Math.round(100 * p.score)}</td></tr>`).join('')}</tbody></table></div>`;
+        <td class="num">${p.balloon_changes}</td><td class="num">${p.changes}</td>
+        <td class="num">${p.score.toFixed(1)}×</td></tr>`).join('')}</tbody></table></div>`;
   }
 
   // Choices live in the URL (?server=dedicated&tz=et) so filtered links can be shared

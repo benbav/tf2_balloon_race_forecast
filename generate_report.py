@@ -342,7 +342,7 @@ def generate_heatmap(df, active, title, subtitle, filename, variant=ALL_SERVERS)
                 fig.add_annotation(x=d, y=hour_label(h), text=f"{v:.0f}%", showarrow=False,
                                    font=dict(size=11, color='#ffffff' if v / zmax > 0.45 else TEXT_PRIMARY))
 
-    fig.update_layout(base_layout(title, subtitle, variant=variant, height=820))
+    fig.update_layout(base_layout(title, subtitle, variant=variant, height=680))
     fig.update_yaxes(showgrid=False, ticks='')
     fig.update_xaxes(side='top', showgrid=False, ticks='')
     fig.update_layout(margin=dict(l=24, r=32, t=130, b=24))
@@ -386,8 +386,8 @@ def generate_session_length_plot(df, variant=ALL_SERVERS):
     save(fig, 'session_length.png', variant)
 
 
-# Weekly trend: is the scene growing or dying?
-def generate_weekly_trend_plot(df, variant=ALL_SERVERS):
+# % of checks each week (starting Monday) with a LOBBY_PLAYERS+ server
+def weekly_lobby_share(df):
     week = df['ts'].dt.tz_localize(None).dt.to_period('W-SUN').dt.start_time
     grouped = (df['online_players'] >= LOBBY_PLAYERS).groupby(week)
     # Skip weeks with under 3 days of checks (e.g. the week logging started) so they don't skew the line
@@ -395,7 +395,12 @@ def generate_weekly_trend_plot(df, variant=ALL_SERVERS):
     keep = grouped.size() >= min_checks
     if len(keep):
         keep.iloc[-1] = True  # always show the current week
-    weekly = (grouped.mean() * 100)[keep]
+    return (grouped.mean() * 100)[keep]
+
+
+# Weekly trend: is the scene growing or dying?
+def generate_weekly_trend_plot(df, variant=ALL_SERVERS):
+    weekly = weekly_lobby_share(df)
 
     fig = go.Figure(go.Scatter(
         x=weekly.index, y=weekly.values, mode='lines+markers',
@@ -527,13 +532,44 @@ def generate_correlation_plot(x, y, title, subtitle, x_title, y_title, filename,
     save(fig, filename, variant)
 
 
+# The weekly trend line with earthquakes worldwide that week overlaid on their own axis, and Pearson's r
+# between the two. Earthquakes per day, so the partial latest week lines up with the full ones.
 def generate_earthquake_correlation_plot(df, quakes, variant=ALL_SERVERS):
-    hourly_peak = df.groupby(df['ts'].dt.tz_convert('UTC').dt.floor('h'))['online_players'].max()
-    generate_correlation_plot(
-        quakes, hourly_peak, 'Earthquakes vs Balloon Race players',
-        'Each dot is one hour: earthquakes worldwide (USGS) vs most Balloon Race players seen at once',
-        'Earthquakes that hour', 'Peak players that hour', 'earthquake_correlation.png', variant,
-    )
+    weekly = weekly_lobby_share(df)
+    week = quakes.index.tz_localize(None).to_period('W-SUN').start_time
+    quakes_per_day = (quakes.groupby(week).mean() * 24).reindex(weekly.index)
+    pairs = pd.DataFrame({'lobby': weekly, 'quakes': quakes_per_day}).dropna()
+    fits = len(pairs) >= 3 and pairs['lobby'].nunique() > 1 and pairs['quakes'].nunique() > 1
+    r = np.corrcoef(pairs['lobby'], pairs['quakes'])[0, 1] if fits else None
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=weekly.index, y=weekly.values, mode='lines+markers', name=f'% of checks with a {LOBBY_PLAYERS}+ lobby',
+        line=dict(color=BAR, width=3), marker=dict(size=8, color=BAR, line=dict(color=SURFACE, width=2)),
+    ))
+    fig.add_trace(go.Scatter(
+        x=quakes_per_day.index, y=quakes_per_day.values, mode='lines+markers', name='Earthquakes per day',
+        yaxis='y2', line=dict(color=SERIES[1], width=3, dash='dot'),
+        marker=dict(size=8, color=SERIES[1], line=dict(color=SURFACE, width=2)),
+    ))
+    fig.update_layout(base_layout(
+        f"Earthquakes vs Balloon Race players (r = {f'{r:+.2f}' if fits else 'undefined'})",
+        f'Each week: % of checks with a server at {LOBBY_PLAYERS}+ players vs earthquakes per day worldwide (USGS)'
+        + ('' if fits else ' · needs 3 weeks to correlate'),
+        variant=variant, showlegend=True, margin=dict(l=24, r=80, t=96, b=80),
+        legend=dict(orientation='h', x=0.02, y=-0.1, yanchor='top', bgcolor='rgba(0,0,0,0)'),
+        yaxis2=dict(overlaying='y', side='right', showgrid=False, zeroline=False, rangemode='tozero', tickformat=',.0f',
+                    title=dict(text='Earthquakes per day', font=dict(color=SERIES[1])), tickfont=dict(color=SERIES[1])),
+    ))
+    if not len(weekly):
+        empty_state(fig)
+    fig.update_layout(yaxis=dict(title=dict(text=f'% of checks with {LOBBY_PLAYERS}+', font=dict(color=BAR)),
+                                 tickfont=dict(color=BAR), showgrid=True, gridcolor=GRID, zeroline=False,
+                                 ticksuffix='%', rangemode='tozero'))
+    fig.update_xaxes(showgrid=False, ticks='', tickformat='%b %d')
+    if len(weekly):
+        fig.update_xaxes(range=[weekly.index[0] - pd.Timedelta(days=3), weekly.index[-1] + pd.Timedelta(days=3)])
+    save(fig, 'earthquake_correlation.png', variant)
 
 
 def generate_unemployment_correlation_plot(df, unemployment, variant=ALL_SERVERS):
