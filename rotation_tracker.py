@@ -1,7 +1,8 @@
 from datetime import datetime, timezone
 from balloon.config import LOBBY_PLAYERS
 from balloon.log import LINE_RE, SERVER_RE
-from balloon.rotation import ROTATION_COLUMNS, ROTATION_LOG_PATH
+from balloon.rotation import BALLOON_MAP, ROTATION_COLUMNS, ROTATION_LOG_PATH
+from balloon.scores import ScoreKeeper
 from balloon.servers import clean_name, is_dedicated
 from balloon.voters import SNAPSHOT_LOG_PATH, VOTER_LOG_PATH
 import requests
@@ -21,6 +22,8 @@ import os
 #   to find the players who vote for Balloon Race (balloon/voters.py)
 # - every 5 minutes, logs who's on each one to data/rotation_snapshots.jsonl, so the lobby forecast can count
 #   how many of those voters are on a server that isn't on Balloon Race yet
+# - on every server that's on Balloon Race (dedicated ones too), follows each player's score and logs their
+#   best at the end of each game to data/balloon_scores.jsonl, for the top scorers (balloon/scores.py)
 # `python rotation_tracker.py --once` does a single check, for testing.
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 LOG_PATH = os.path.join(SCRIPT_DIR, 'data', 'tf2_balloon_log.txt')
@@ -62,6 +65,14 @@ def server_info(api_key, addr):
     r.raise_for_status()
     return next((s for s in r.json()['response'].get('servers', []) if s['addr'] == addr), None)
 
+def balloon_servers(api_key):
+    """Every server on Balloon Race right now."""
+    url = ('https://api.steampowered.com/IGameServersService/GetServerList/v1/'
+           f'?key={api_key}&limit=50&filter=\\appid\\440\\map\\{BALLOON_MAP}')
+    r = requests.get(url, timeout=30)
+    r.raise_for_status()
+    return r.json()['response'].get('servers', [])
+
 def a2s_query(addr, code, reply_code):
     """Reply body to an A2S query sent straight to the server (no Steam API), or None if it doesn't answer."""
     host, port = addr.rsplit(':', 1)
@@ -96,25 +107,25 @@ def next_map(addr):
     rules = dict(zip(fields[0::2], fields[1::2]))
     return rules.get(b'sm_nextmap', b'').decode('utf-8', errors='replace')
 
-def player_names(addr):
-    """Names of everyone on the server from an A2S_PLAYER query, or None if it doesn't answer.
+def player_scores(addr):
+    """{name: score} for everyone on the server from an A2S_PLAYER query, or None if it doesn't answer.
     Players still connecting have no name yet and are left out."""
     body = a2s_query(addr, b'U', b'D')
     if body is None:
         return None
-    names, i = set(), 1
+    players, i = {}, 1
     try:
         for _ in range(body[0]):
             end = body.index(b'\x00', i + 1)
             name = body[i + 1:end].decode('utf-8', errors='replace').strip()
             # Then a 4-byte score and 4-byte seconds connected
-            struct.unpack_from('<lf', body, end + 1)
+            score, _ = struct.unpack_from('<lf', body, end + 1)
             i = end + 9
             if name:
-                names.add(name)
+                players[name] = max(score, players.get(name, score))
     except (ValueError, struct.error):
         return None
-    return names
+    return players
 
 def append_jsonl(path, record):
     with open(path, 'a', encoding='utf-8') as f:
@@ -126,6 +137,7 @@ class Tracker:
         self.watch, self.watch_at = [], 0
         # addr -> what the last checks saw
         self.servers = {}
+        self.scores = ScoreKeeper()
 
     def check_all(self):
         if time.monotonic() - self.watch_at > WATCH_LIST_SECONDS or not self.watch:
@@ -136,6 +148,27 @@ class Tracker:
             except Exception as e:
                 # One bad server or reply shouldn't stop the others or the loop
                 print(f'Rotation tracker: error checking {addr}: {e!r}')
+        try:
+            self.check_balloon_scores()
+        except Exception as e:
+            print(f'Rotation tracker: error checking Balloon Race scores: {e!r}')
+
+    def check_balloon_scores(self):
+        """Scores on the Balloon Race servers check() doesn't already cover (dedicated, unproven rotating)."""
+        now = time.time()
+        for s in balloon_servers(self.api_key):
+            addr = s['addr']
+            # Relay addresses can't be queried directly
+            if addr in self.watch or addr.startswith(RELAY_PREFIX):
+                continue
+            if s['players'] - s.get('bots', 0) <= 0:
+                self.scores.leave(addr)
+                continue
+            players = player_scores(addr)
+            if players is not None:
+                self.scores.update(addr, clean_name(s['name']), players, now)
+        # Servers that dropped off the list (or left Balloon Race) stop being updated and time out here
+        self.scores.expire(now)
 
     def check(self, addr):
         try:
@@ -149,7 +182,8 @@ class Tracker:
                                             'logged_map': None, 'logged_at': 0, 'snapshot_at': 0, 'change': None})
         current = s.get('map', '') if s else ''
         humans = s['players'] - s.get('bots', 0) if s else 0
-        names = (player_names(addr) if humans else set()) if s else None
+        scores = (player_scores(addr) if humans else {}) if s else None
+        names = set(scores) if scores is not None else None
         changed = bool(current) and current != st['map']
 
         # Who's still on after the last map change
@@ -172,6 +206,11 @@ class Tracker:
             st['seen'] = now
             if names is not None:
                 st['players'] = names
+
+        if current == BALLOON_MAP and scores:
+            self.scores.update(addr, clean_name(s['name']), scores, now)
+        elif scores is not None:
+            self.scores.leave(addr)
 
         if current != st['logged_map'] or now - st['logged_at'] >= MAP_LOG_SECONDS:
             self.log_map(addr, s, current, humans)

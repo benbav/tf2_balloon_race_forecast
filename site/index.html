@@ -1801,7 +1801,7 @@
         "Next map" is what the server itself says is next, when it shares that.
         ${r.since ? `Tracking since ${esc(rotationTime(r.since))} ${zone.toUpperCase()}.` : ''}</p>`;
       if (!r.servers?.length) {
-        box.innerHTML = `${intro}<p class="empty">No map history yet.</p>${renderVoters(r.voters)}`;
+        box.innerHTML = `${intro}<p class="empty">No map history yet.</p>${renderVoters(r.voters)}${renderScorers(r.scorers)}`;
         return;
       }
       const counts = (list) => (list.length
@@ -1832,7 +1832,25 @@
           <th>Map before Balloon Race</th><th>Map after</th><th>Time between visits</th><th>Fixed cycle?</th></tr></thead>
         <tbody>${rows}</tbody></table></div>
       <div class="timelines">${timelines}</div>
-      ${renderVoters(r.voters)}`;
+      ${renderVoters(r.voters)}
+      ${renderScorers(r.scorers)}`;
+    }
+
+    // Best score anyone has reached in a single game of Balloon Race, from every server on the map
+    function renderScorers(sc) {
+      if (!sc) return '';
+      const intro = `<h2>Balloon Race top scorers</h2>
+      <p class="note">Every server on Balloon Race is checked every 30 seconds for each player's score. A game is one
+        stay on the map, from joining (or the map starting) until leaving or the map changing, and counts the best
+        score reached. Ranked by best single game. Names only, so players with the same name are counted together.
+        ${sc.games ? `${sc.games} game${sc.games === 1 ? '' : 's'} by ${sc.players} player${sc.players === 1 ? '' : 's'} so far.` : ''}</p>`;
+      if (!sc.top.length) return `${intro}<p class="empty">No scores yet, check back after the next Balloon Race lobby.</p>`;
+      return `${intro}<div class="table-wrap"><table>
+      <thead><tr><th class="num">#</th><th>Player</th><th class="num">Best game</th><th>On</th>
+        <th class="num">Total points</th><th class="num">Games</th></tr></thead>
+      <tbody>${sc.top.map((p, i) => `<tr><td class="num">${i + 1}</td><td><strong>${esc(p.name)}</strong></td>
+        <td class="num">${p.best}</td><td>${esc(p.best_server)}</td>
+        <td class="num">${p.total}</td><td class="num">${p.games}</td></tr>`).join('')}</tbody></table></div>`;
     }
 
     // Players who are on when the vote goes Balloon Race far more often than the average player

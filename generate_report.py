@@ -9,6 +9,7 @@ from balloon.config import LOBBY_PLAYERS
 from balloon.forecast import train_lobby_forecast
 from balloon.log import LOG_TIMEZONE, parse_log
 from balloon.rotation import rotation_summary
+from balloon.scores import score_summary
 from balloon.voters import voter_summary
 from balloon.servers import is_dedicated
 import subprocess
@@ -811,11 +812,12 @@ def write_site_data(stats_by_zone, windows, forecast):
         json.dump(data, f, ensure_ascii=False, indent=1)
 
 
-# The map rotation tracker's own section of the website (with the voter leaderboard), from its own logs
+# The map rotation tracker's own section of the website (with the voter and top scorer leaderboards),
+# from its own logs
 def write_rotation_data():
     summary = rotation_summary()
     with open(os.path.join(OUTPUT_FOLDER, 'rotation.json'), 'w', encoding='utf-8') as f:
-        json.dump(dict(summary or {}, voters=voter_summary(),
+        json.dump(dict(summary or {}, voters=voter_summary(), scorers=score_summary(),
                        updated=dt.datetime.now(dt.timezone.utc).isoformat(timespec='seconds')),
                   f, ensure_ascii=False, indent=1)
 
