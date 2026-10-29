@@ -204,6 +204,8 @@
                  border-bottom: 1px solid var(--line); }
   .hourly-head h2 { margin: 0; font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
   .hourly-head span { color: var(--muted); font-size: 12px; }
+  .hourly-says { margin: 0; padding: 14px 20px 0; font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
+  .hourly-says span { display: block; color: var(--muted); font-size: 13px; font-weight: 400; letter-spacing: 0; }
   .hourly-scroll { overflow-x: auto; padding: 14px 8px 16px; }
   .hourly-grid { display: grid; min-width: max-content; width: 100%; }
   .hour { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 6px 0; border-radius: 8px; }
@@ -366,6 +368,7 @@
       <h2>Balloon Race daily forecast</h2>
       <span id="hourly-note"></span>
     </div>
+    <p class="hourly-says" id="hourly-says"></p>
     <div class="hourly-scroll"><div class="hourly-grid" id="hourly-grid"></div></div>
   </section>
 
@@ -707,8 +710,17 @@
     grid.style.gridTemplateColumns = `repeat(${hours.length}, minmax(52px, 1fr))`;
     grid.innerHTML = cols.join('') + line;
     const b = hourParts(hours[best].ts);
-    $('#hourly-note').textContent = `Chance of a ${siteData.forecast.threshold}+ player lobby within each hour · `
-      + `likeliest ${best ? `${b.weekday} ${b.hour} ${b.dayPeriod}` : 'right now'} ${zone.toUpperCase()}`;
+    const bestAt = best ? `${b.weekday} ${b.hour} ${b.dayPeriod} ${zone.toUpperCase()}` : 'right now';
+    $('#hourly-note').textContent = `Chance of a ${siteData.forecast.threshold}+ player lobby within each hour · likeliest ${bestAt}`;
+    // The weatherman's verdict, from the likeliest hour against the average one
+    const peak = hours[best].chance;
+    const [says, sub] = live.players >= siteData.forecast.threshold
+      ? ['🎈 It\'s raining BALLOON RACE right now!', `${live.players} on the busiest server. Get in there.`]
+      : peak >= 4 * base ? ['🔥 Heat wave warning: BALLOON RACE is coming', `Best odds ${bestAt} (${pct(peak)}). Clear your schedule.`]
+      : peak >= 2 * base ? ['🎈 Cloudy with a chance of BALLOON RACE', `Best odds ${bestAt} (${pct(peak)}). Keep an eye on the sky.`]
+      : peak >= base ? ['⛅ Partly cloudy, slight chance of BALLOON RACE', `About an average day. Best odds ${bestAt} (${pct(peak)}).`]
+      : ['💤 Clear skies, no BALLOON RACE in sight', `Quieter than usual for the next day. Best odds ${bestAt} (${pct(peak)}).`];
+    $('#hourly-says').innerHTML = `${says}<span>${sub}</span>`;
   }
 
   async function loadLive() {
