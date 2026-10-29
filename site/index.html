@@ -50,7 +50,7 @@
 
     /* clip, not hidden, so the sticky filter bar keeps working while the alarm shakes */
     main {
-      max-width: 1400px;
+      max-width: 1800px;
       margin: 0 auto;
       padding: 32px 16px 64px;
       overflow-x: clip;
@@ -694,10 +694,72 @@
 
     /* Hourly outlook strip, laid out like a weather app's hourly forecast */
     .hourly {
+      position: relative;
       background: var(--card);
       border: 1px solid var(--line);
       border-radius: var(--radius);
       margin-top: 20px;
+    }
+
+    /* The weatherman stands at the right of the headline, head above the card, presenting the hours */
+    .weatherman {
+      position: absolute;
+      right: 8px;
+      top: -58px;
+      height: 196px;
+      pointer-events: none;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, .18));
+      /* The photo is cut off at the desk, so fade the bottom edge into the card */
+      mask-image: linear-gradient(to bottom, #000 82%, transparent);
+      z-index: 1;
+    }
+
+    /* The studio screen he's presenting, just to his left */
+    .weather-map {
+      position: absolute;
+      right: 196px;
+      top: -42px;
+      width: 168px;
+      border-radius: 6px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, .25);
+      pointer-events: none;
+    }
+
+    .hourly-head {
+      padding-right: 390px !important;
+    }
+
+    .hourly-says {
+      padding-right: 250px !important;
+    }
+
+    /* Room above the top row for his head */
+    .top {
+      margin-top: 72px !important;
+    }
+
+    @media (max-width: 600px) {
+      .weatherman {
+        top: -34px;
+        height: 120px;
+      }
+
+      /* No room for the screen beside him on a phone */
+      .weather-map {
+        display: none;
+      }
+
+      .hourly-head {
+        padding-right: 150px !important;
+      }
+
+      .hourly-says {
+        padding-right: 20px !important;
+      }
+
+      .top {
+        margin-top: 48px !important;
+      }
     }
 
     .hourly-head {
@@ -1251,6 +1313,8 @@
             <h2>Balloon Race daily forecast</h2>
             <span id="hourly-note"></span>
           </div>
+          <img class="weather-map" src="assets/weather_map.webp" alt="" aria-hidden="true">
+          <img class="weatherman" src="assets/weatherman.webp" alt="" aria-hidden="true">
           <p class="hourly-says" id="hourly-says"></p>
           <div class="hourly-scroll">
             <div class="hourly-grid" id="hourly-grid"></div>
