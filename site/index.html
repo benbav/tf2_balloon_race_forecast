@@ -198,6 +198,27 @@
   .forecast .next span { color: var(--muted); font-size: 13px; }
   .forecast .metrics { color: var(--muted); font-size: 11px; line-height: 1.45; border-top: 1px solid var(--line); padding-top: 10px; }
 
+  /* Hourly outlook strip, laid out like a weather app's hourly forecast */
+  .hourly { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); margin-top: 20px; }
+  .hourly-head { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; padding: 12px 20px;
+                 border-bottom: 1px solid var(--line); }
+  .hourly-head h2 { margin: 0; font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .hourly-head span { color: var(--muted); font-size: 12px; }
+  .hourly-scroll { overflow-x: auto; padding: 14px 8px 16px; }
+  .hourly-grid { display: grid; min-width: max-content; width: 100%; }
+  .hour { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 6px 0; border-radius: 8px; }
+  .hour.best { background: #fdece4; }
+  .hour .when { font-weight: 600; font-size: 15px; white-space: nowrap; }
+  .hour .when small { font-size: 10px; }
+  .hour .day { font-size: 10px; color: var(--muted); height: 12px; margin-top: -8px; }
+  .hour .icon { font-size: 24px; line-height: 1; }
+  .hour .chance { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .hourly-line { position: relative; height: 56px; grid-column: 1 / -1; }
+  .hourly-line svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .hourly-line i { position: absolute; width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px; border-radius: 50%;
+                   background: var(--card); border: 2px solid var(--rotating); }
+  .hourly-line i.now { width: 13px; height: 13px; margin: -6.5px 0 0 -6.5px; background: var(--rotating); }
+
   .server { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); }
   .server:first-child { border-top: 0; }
   .server .info { flex: 1; min-width: 0; }
@@ -339,6 +360,14 @@
     <div id="live-list"><p class="empty">Loading…</p></div>
   </section>
   </div>
+
+  <section class="hourly" id="hourly" hidden>
+    <div class="hourly-head">
+      <h2>Balloon Race daily forecast</h2>
+      <span id="hourly-note"></span>
+    </div>
+    <div class="hourly-scroll"><div class="hourly-grid" id="hourly-grid"></div></div>
+  </section>
 
   <div id="charts"></div>
 
@@ -638,6 +667,50 @@
     note.textContent = `${live.players} on the busiest server now${trend} · all servers`;
   }
 
+  // A weather-style strip: the live chance now, then each of the next hours scored by the poller as a quiet
+  // check (nobody on yet), so it follows the time of day and day of week. The likeliest hour is highlighted.
+  function renderHourly() {
+    const box = $('#hourly');
+    const live = liveData?.forecast;
+    const stale = !liveData || Date.now() - new Date(liveData.checked) > STALE_MINUTES * 60000;
+    box.hidden = !siteData?.forecast?.ready || !live?.hourly?.length || stale;
+    if (box.hidden) return;
+    const tz = ZONES[zone].tz;
+    const hours = [{ ts: live.as_of, chance: live.chance, now: true }, ...live.hourly.filter((h) => new Date(h.ts) > Date.now())];
+    const hourParts = (t) => Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone: tz, hour: 'numeric', weekday: 'short' })
+      .formatToParts(new Date(t)).map((p) => [p.type, p.value]));
+    // Lobbies are rare, so icons compare each hour to the average one (the share of training checks before a lobby)
+    const base = siteData.forecast.positives / siteData.forecast.examples;
+    const icon = (c) => (c >= 4 * base ? '🔥' : c >= 2 * base ? '🎈' : c >= base ? '⛅' : c >= base / 2 ? '☁️' : '💤');
+    const pct = (c) => (c < 0.01 ? '<1%' : `${Math.round(c * 100)}%`);
+    const best = hours.reduce((b, h, i) => (h.chance > hours[b].chance ? i : b), 0);
+    const cols = hours.map((h, i) => {
+      const p = hourParts(h.ts);
+      // Mark where a new day starts, like the weather strip's midnight
+      const day = !h.now && p.hour === '12' && p.dayPeriod === 'AM' ? p.weekday : '';
+      return `<div class="hour${i === best ? ' best' : ''}" title="${i === best ? 'Likeliest hour · ' : ''}${p.weekday} ${p.hour} ${p.dayPeriod}">
+        <div class="when">${h.now ? 'Now' : `${p.hour}<small>${p.dayPeriod}</small>`}</div>
+        <div class="day">${day}</div>
+        <div class="icon" aria-hidden="true">${icon(h.chance)}</div>
+        <div class="chance">${pct(h.chance)}</div>
+      </div>`;
+    });
+    // Line through every hour's chance, scaled to the busiest hour so the shape of the day shows
+    const top = Math.max(0.05, ...hours.map((h) => h.chance));
+    const pts = hours.map((h, i) => [(i + 0.5) / hours.length * 100, 90 - (h.chance / top) * 80]);
+    const line = `<div class="hourly-line" aria-hidden="true">
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none"><polyline points="${pts.map((p) => p.join(',')).join(' ')}"
+        fill="none" stroke="var(--rotating)" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></svg>
+      ${pts.map(([x, y], i) => `<i class="${i ? '' : 'now'}" style="left:${x}%;top:${y}%"></i>`).join('')}
+    </div>`;
+    const grid = $('#hourly-grid');
+    grid.style.gridTemplateColumns = `repeat(${hours.length}, minmax(52px, 1fr))`;
+    grid.innerHTML = cols.join('') + line;
+    const b = hourParts(hours[best].ts);
+    $('#hourly-note').textContent = `Chance of a ${siteData.forecast.threshold}+ player lobby within each hour · `
+      + `likeliest ${best ? `${b.weekday} ${b.hour} ${b.dayPeriod}` : 'right now'} ${zone.toUpperCase()}`;
+  }
+
   async function loadLive() {
     try {
       // Bust caches roughly once a minute
@@ -649,6 +722,7 @@
     }
     renderLive();
     renderForecast();
+    renderHourly();
   }
 
   function renderTable() {
@@ -783,6 +857,7 @@
     }
     renderLive();
     renderNextLobby();
+    renderHourly();
     renderCharts();
     renderRotation();
   }

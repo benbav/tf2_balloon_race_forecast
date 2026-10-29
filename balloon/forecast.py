@@ -38,6 +38,8 @@ FORECAST_MIN_VOTER_CHECKS = 25
 EVAL_MAX_DAYS = 14
 EVAL_MIN_TRAIN_DAYS = 2
 CALIBRATION_BINS = np.linspace(0, 1, 11)
+# The website's hourly strip: how many hours ahead (after "Now") the live status scores
+HOURLY_HOURS = 24
 
 
 # Address of the busiest server at each check. Older checks were logged before per-server lines
@@ -244,4 +246,20 @@ def predict_now(log_path, model_path, snapshot_path=SNAPSHOT_LOG_PATH):
     chance = float(saved['model'].predict_proba(feature_matrix(f, cfg))[0, 1])
     row = f.iloc[0]
     return {'chance': round(chance, 3), 'as_of': row['ts'].isoformat(), 'players': int(row['online_players']),
-            'change_15': int(row['change_15']), 'voters_waiting': int(row['voters_waiting']), 'trained': saved['trained']}
+            'change_15': int(row['change_15']), 'voters_waiting': int(row['voters_waiting']), 'trained': saved['trained'],
+            'hourly': hourly_outlook(saved['model'], cfg, row)}
+
+
+# The daily outlook: the chance of a lobby within the hour starting at each of the next HOURLY_HOURS hours.
+# Nobody can know who'll be on later, so each hour is scored as a quiet check (nobody on, no momentum, no voters
+# waiting) that far after the last lobby, which leaves the time of day, day of week and holidays to drive it.
+def hourly_outlook(model, cfg, row):
+    start = row['ts'].floor('h') + pd.Timedelta(hours=1)
+    hours = pd.date_range(start, periods=HOURLY_HOURS, freq='h')
+    gone = (hours - row['ts']).total_seconds() / 60
+    f = pd.DataFrame({'ts': hours, 'online_players': 0, 'addr': None, 'total_players': 0, 'servers_on': 0,
+                      **{f'change_{m}': 0 for m in MOMENTUM_MINUTES},
+                      'minutes_since_busy': np.minimum(row['minutes_since_busy'] + gone, SINCE_BUSY_CAP_MINUTES),
+                      'voters_waiting': 0.0, 'has_voter_data': row['has_voter_data']})
+    chances = model.predict_proba(feature_matrix(f, cfg))[:, 1]
+    return [{'ts': t.isoformat(), 'chance': round(float(c), 3)} for t, c in zip(hours, chances)]
