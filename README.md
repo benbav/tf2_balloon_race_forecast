@@ -3,7 +3,7 @@
 
 ##### Checks every 5 minutes, charts update every day (times in Mountain Time)
 
-**Get pinged when a 10+ player server is going: [join the Discord](https://discord.gg/gdDVEeH7Y)**
+**Get relentlessly pinged when a 10+ player server is going: [join the Discord](https://discord.gg/gdDVEeH7Y)**
 
 **Website with a live "who's on now" list and server filters: https://benbav.github.io/tf2_balloon_race_forecast/**
 

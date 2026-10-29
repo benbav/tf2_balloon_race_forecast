@@ -251,7 +251,7 @@ def generate_scorecard(df, variant=ALL_SERVERS):
 # through them and the actual share of lobbies in score bins to show how well the curve fits
 def generate_forecast_regression(fit, threshold):
     fig = go.Figure()
-    fig.update_layout(base_layout('How the forecast is fit', 'Logistic regression on every 5-minute check',
+    fig.update_layout(base_layout('How the PhD candidate forecast is fit', 'Logistic regression on every 5-minute check',
                                   width=640, height=480, margin=dict(l=24, r=24, t=88, b=48)))
     if fit is None:
         empty_state(fig)
@@ -323,13 +323,13 @@ def generate_heatmap(df, active, title, subtitle, filename, variant=ALL_SERVERS)
     z = heatmap_data.values
     zmax = max(float(z.max()), 1)
 
+    # Hours that round to 0% are left blank, and there are no gaps between cells, so only the busy hours show
     fig = go.Figure(go.Heatmap(
-        z=z,
+        z=np.where(z.round() > 0, z, np.nan),
         x=DAYS,
         y=[hour_label(h) for h in range(24)],
         colorscale=COLORSCALE,
         zmin=0, zmax=zmax,
-        xgap=2, ygap=2,
         hoverinfo='skip',
         colorbar=dict(title=dict(text='% of checks', side='top'), ticksuffix='%',
                       thickness=12, outlinewidth=0, len=0.8),
@@ -342,10 +342,16 @@ def generate_heatmap(df, active, title, subtitle, filename, variant=ALL_SERVERS)
                 fig.add_annotation(x=d, y=hour_label(h), text=f"{v:.0f}%", showarrow=False,
                                    font=dict(size=11, color='#ffffff' if v / zmax > 0.45 else TEXT_PRIMARY))
 
-    fig.update_layout(base_layout(title, subtitle, variant=variant, height=680))
+    # Close to square so it fills the card under the daily forecast at the top of the website
+    fig.update_layout(base_layout(title, subtitle, variant=variant, height=860))
     fig.update_yaxes(showgrid=False, ticks='')
     fig.update_xaxes(side='top', showgrid=False, ticks='')
-    fig.update_layout(margin=dict(l=24, r=32, t=130, b=24))
+    # With every cell blank the chart would be empty, so say why
+    if not (z.round() > 0).any():
+        fig.update_traces(showscale=False)
+        empty_state(fig, f'No {LOBBY_PLAYERS}+ player lobbies seen yet')
+    # Room on the right for the color bar's title
+    fig.update_layout(margin=dict(l=24, r=72, t=130, b=24))
     save(fig, filename, variant)
 
 
@@ -396,31 +402,6 @@ def weekly_lobby_share(df):
     if len(keep):
         keep.iloc[-1] = True  # always show the current week
     return (grouped.mean() * 100)[keep]
-
-
-# Weekly trend: is the scene growing or dying?
-def generate_weekly_trend_plot(df, variant=ALL_SERVERS):
-    weekly = weekly_lobby_share(df)
-
-    fig = go.Figure(go.Scatter(
-        x=weekly.index, y=weekly.values, mode='lines+markers',
-        line=dict(color=BAR, width=2), marker=dict(size=8, color=BAR, line=dict(color=SURFACE, width=2)),
-    ))
-    if len(weekly):
-        fig.add_annotation(x=weekly.index[-1], y=weekly.values[-1], text=f"<b>{weekly.values[-1]:.{0 if weekly.values[-1] >= 10 else 1}f}%</b>",
-                           yshift=16, showarrow=False, font=dict(color=TEXT_PRIMARY))
-    fig.update_layout(base_layout(
-        'Weekly trend',
-        f'% of checks each week with a server at {LOBBY_PLAYERS}+ players · latest week may be partial',
-        variant=variant,
-    ))
-    if len(weekly) < 2:
-        empty_state(fig, 'Needs at least 2 weeks of data')
-    fig.update_yaxes(showgrid=True, gridcolor=GRID, zeroline=False, ticksuffix='%', rangemode='tozero')
-    fig.update_xaxes(showgrid=False, ticks='', tickformat='%b %d')
-    if len(weekly):
-        fig.update_xaxes(range=[weekly.index[0] - pd.Timedelta(days=3), weekly.index[-1] + pd.Timedelta(days=3)])
-    save(fig, 'weekly_trend.png', variant)
 
 
 # Generate bar plot for monthly max
@@ -913,7 +894,6 @@ if __name__ == "__main__":
             if default_zone:
                 windows[variant[0].lstrip('_') or 'all'] = lobby_windows(df)
                 generate_session_length_plot(df, variant)
-                generate_weekly_trend_plot(df, variant)
                 generate_monthly_avg_plot(df, variant)
                 generate_holiday_table(df, variant)
                 generate_earthquake_correlation_plot(df, earthquakes, variant)
