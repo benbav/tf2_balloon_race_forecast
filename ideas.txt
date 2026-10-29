@@ -1,0 +1,5 @@
+IN PROGRES: seeing if rotating servers have fixed map pattern or if by vote (will know in a few weeks)
+- if no useful information than take out the charts from the site
+
+IN PROGRES: track players who are on the server before balloon race is voted for and rank them - then we can alert discord when enough are online
+- evenetuall add this in as a signal to the model
