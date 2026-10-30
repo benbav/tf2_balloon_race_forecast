@@ -8,3 +8,4 @@ site/charts/
 data/*
 !data/tf2_balloon_log.txt
 !data/rotation_players.jsonl
+!data/forecast_history.jsonl

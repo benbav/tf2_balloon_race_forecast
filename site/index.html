@@ -133,6 +133,25 @@
       outline-offset: 2px;
     }
 
+    /* Best 2-hour window for a lobby, centered in the filter bar's space after the pickers */
+    .best-time {
+      margin-inline: auto;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 7px 16px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .best-time:empty {
+      display: none;
+    }
+
+    .best-time strong {
+      color: var(--text);
+    }
+
     /* Live panel */
     .live {
       background: var(--card);
@@ -622,6 +641,34 @@
       margin-top: 0;
     }
 
+    /* Side by side, the columns dissolve into one 2x2 grid so each row's cards share a height:
+       daily forecast beside the live panel, heatmap beside the scorecard */
+    @media (min-width: 1201px) {
+
+      .main-col,
+      .side {
+        display: contents;
+      }
+
+      .main-col>* {
+        grid-column: 1;
+      }
+
+      .side>* {
+        grid-column: 2;
+      }
+
+      .main-col>.hourly,
+      .side>.live {
+        grid-row: 1;
+      }
+
+      #top-heatmap,
+      .side>.forecast {
+        grid-row: 2;
+      }
+    }
+
     /* Lobby forecast scorecard */
     .forecast {
       background: var(--card);
@@ -690,6 +737,61 @@
       line-height: 1.45;
       border-top: 1px solid var(--line);
       padding-top: 10px;
+    }
+
+    /* The model's strongest inputs, each with a bar for how much it moves the odds */
+    .drivers:empty {
+      display: none;
+    }
+
+    .drivers h3 {
+      margin: 0 0 6px;
+      font-size: 13px;
+    }
+
+    .drivers ol {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 5px;
+      font-size: 12px;
+    }
+
+    .drivers li {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 72px 92px;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .drivers .name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .drivers .bar {
+      height: 6px;
+      background: #f0efeb;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .drivers .bar i {
+      display: block;
+      height: 100%;
+      background: var(--dedicated);
+    }
+
+    .drivers .dir {
+      color: var(--muted);
+    }
+
+    .drivers p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 11px;
     }
 
     /* Hourly outlook strip, laid out like a weather app's hourly forecast */
@@ -1027,6 +1129,31 @@
       grid-column: 1 / -1;
     }
 
+    /* A chart with a picker above it */
+    .chart.picker {
+      flex-direction: column;
+    }
+
+    .chart .pick {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 16px 0;
+      font-weight: 600;
+    }
+
+    .chart .pick select {
+      font: inherit;
+      font-weight: 400;
+      min-width: 0;
+      max-width: 100%;
+      padding: 6px 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--card);
+      color: var(--text);
+    }
+
     .chart.wide img {
       width: auto;
       max-width: 100%;
@@ -1253,6 +1380,7 @@
     }
 
     @media (max-width: 900px) {
+
       .grid,
       .grid.three {
         grid-template-columns: 1fr;
@@ -1303,6 +1431,7 @@
           <button type="button" data-tz="ct" aria-pressed="false" title="Central Time">CT</button>
           <button type="button" data-tz="et" aria-pressed="false" title="Eastern Time">ET</button>
         </div>
+        <div class="best-time" id="best-time"></div>
       </div>
     </div>
 
@@ -1345,6 +1474,7 @@
             </div>
             <div class="next" id="next-lobby"></div>
             <div class="metrics" id="forecast-metrics"></div>
+            <div class="drivers" id="forecast-drivers"></div>
           </div>
           <figure class="forecast-chart" id="forecast-chart" hidden></figure>
         </section>
@@ -1416,13 +1546,17 @@
     const SECTIONS = [
       {
         title: 'When to play', charts: [
-          ['best_time', 'Best time for a {N}+ player lobby', true],
-          ['top_windows', 'Top 5 times to play', true],
+          ['top_windows', 'Top 5 times to play', true, true],
         ]
       },
       {
         title: 'Servers', table: true, charts: [
-          ['server_heatmaps', 'When the top servers are busy', true, true],
+          serverHeatmapFigure,
+        ]
+      },
+      {
+        title: 'Forecast model', charts: [
+          forecastHistoryFigure,
         ]
       },
       {
@@ -1443,6 +1577,8 @@
     let filter = 'all';
     let zone = DEFAULT_ZONE;
     let siteData = null;
+    // Server picked in the heatmap dropdown, by address so it sticks when the filter reorders the list
+    let heatmapAddr = null;
     let liveData = null;
 
     const lobbyPlayers = () => siteData?.lobby_players ?? DEFAULT_LOBBY_PLAYERS;
@@ -1622,6 +1758,44 @@
       box.innerHTML = `${when}<br><span>${Math.round(next.window.pct * 100)}% of recent checks in that window had a ${threshold}+ player server</span>`;
     }
 
+    // The single best 2-hour window of the recent checks, in the chosen timezone
+    function renderBestTime() {
+      const box = $('#best-time');
+      const data = siteData?.lobby_windows;
+      if (!data) {
+        box.textContent = '';
+        return;
+      }
+      const best = data[filter]?.[0];
+      const next = best && nextWindowStart([best], data.timezone);
+      if (!next) {
+        box.innerHTML = `Best time: <strong>not enough data yet</strong>`;
+        return;
+      }
+      const z = ZONES[zone];
+      const day = new Intl.DateTimeFormat('en-US', { timeZone: z.tz, weekday: 'short' }).format(next.start);
+      const hour = (t) => new Intl.DateTimeFormat('en-US', { timeZone: z.tz, hour: 'numeric' }).format(t);
+      const days = Math.min(data.recent_days, siteData.forecast?.days ?? data.recent_days);
+      box.innerHTML = `Statistical best time to get your fix: <strong>${day} ${hour(next.start)} – ${hour(next.start + 2 * HOUR_MS)} ${zone.toUpperCase()}</strong>`
+        + ` · ${Math.round(best.pct * 100)}% chance of ${lobbyPlayers()}+ lobby`;
+      box.title = `Share of checks in this window over the last ${days} days with a ${lobbyPlayers()}+ player server`;
+    }
+
+    function renderDrivers(f) {
+      const top = f?.ready ? f.top_features ?? [] : [];
+      if (!top.length) {
+        $('#forecast-drivers').innerHTML = '';
+        return;
+      }
+      const max = Math.max(...top.map((t) => t.weight));
+      const dir = { up: '↑ more likely', down: '↓ less likely' };
+      $('#forecast-drivers').innerHTML = `<h3>What the model weighs most</h3><ol>${top.map((t) => `<li>
+        <span class="name" title="${esc(t.name)}">${esc(t.name)}</span>
+        <span class="bar"><i style="width:${(t.weight / max) * 100}%"></i></span>
+        <span class="dir">${dir[t.direction] ?? 'depends'}</span></li>`).join('')}</ol>
+        <p>Bar: how much one standard deviation of it moves the odds of a lobby. Arrows: whether more of it raises or lowers them.</p>`;
+    }
+
     // The poller scores the latest check against the model on every run and publishes it with the live status
     function renderForecast() {
       const f = siteData?.forecast;
@@ -1629,7 +1803,9 @@
       const note = $('#forecast-note');
       $('#forecast-title').textContent = `Chance of a ${f?.threshold ?? lobbyPlayers()}+ player lobby in the next hour`;
       $('#forecast-metrics').textContent = f?.ready ? forecastMetrics(f) : '';
+      renderDrivers(f);
       renderNextLobby();
+      renderBestTime();
       // Redrawn with each daily update; versioned like the other charts
       const chart = $('#forecast-chart');
       chart.hidden = !f?.ready;
@@ -1767,13 +1943,52 @@
         <img src="${src}" alt="${esc(alt.replace('{N}', lobbyPlayers()))} (${label}${zoneNote})" loading="lazy"></a></figure>`;
     }
 
+    // One heatmap image per top server (server_heatmap_1 is the busiest), picked from a dropdown
+    function heatmapServers() {
+      return siteData?.heatmap_servers?.[filter] ?? [];
+    }
+
+    function heatmapSrc(i) {
+      const v = siteData ? `?v=${encodeURIComponent(siteData.updated)}` : '';
+      return `charts/server_heatmap_${i + 1}${FILTERS[filter].suffix}${ZONES[zone].suffix}.png${v}`;
+    }
+
+    function serverHeatmapFigure() {
+      const list = heatmapServers();
+      const i = Math.max(0, list.findIndex((s) => s.addr === heatmapAddr));
+      const src = heatmapSrc(i);
+      const pick = list.length ? `<label class="pick">Server <select id="heatmap-server">${list.map((s, n) =>
+        `<option value="${n}"${n === i ? ' selected' : ''}>#${n + 1} ${esc(s.name)}</option>`).join('')}</select></label>` : '';
+      return `<figure class="chart wide picker">${pick}<a href="${src}" target="_blank" rel="noopener">
+        <img src="${src}" alt="When ${esc(list[i]?.name ?? 'the top servers')} is busy (${FILTERS[filter].label}, ${ZONES[zone].label})"
+        loading="lazy"></a></figure>`;
+    }
+
+    // Doesn't follow the server type filter or timezone: the model is trained on all servers
+    function forecastHistoryFigure() {
+      const src = `charts/forecast_history.png?v=${encodeURIComponent(siteData?.updated ?? '')}`;
+      return `<figure class="chart wide"><a href="${src}" target="_blank" rel="noopener">
+        <img src="${src}" alt="Forecast AUC and log loss over time" loading="lazy"></a></figure>`;
+    }
+
+    document.addEventListener('change', (e) => {
+      if (e.target.id !== 'heatmap-server') return;
+      const i = Number(e.target.value);
+      heatmapAddr = heatmapServers()[i]?.addr ?? null;
+      const fig = e.target.closest('figure');
+      const src = heatmapSrc(i);
+      fig.querySelector('a').href = src;
+      fig.querySelector('img').src = src;
+      fig.querySelector('img').alt = `When ${heatmapServers()[i]?.name ?? 'the top servers'} is busy`;
+    });
+
     function renderCharts() {
       $('#top-heatmap').innerHTML = chartFigure(TOP_HEATMAP);
       $('#charts').innerHTML = SECTIONS.map((section) => `
       <h2>${section.title}</h2>
       <div class="grid${section.cols === 3 ? ' three' : ''}">
       ${section.table ? renderTable() : ''}
-      ${section.charts.map(chartFigure).join('')}
+      ${section.charts.map((c) => (typeof c === 'function' ? c() : chartFigure(c))).join('')}
       </div>`).join('');
     }
 
@@ -1839,7 +2054,7 @@
     // Best score anyone has reached in a single game of Balloon Race, from every server on the map
     function renderScorers(sc) {
       if (!sc) return '';
-      const intro = `<h2>Balloon Race top scorers</h2>
+      const intro = `<h2>Balloon Race top players (losers?)</h2>
       <p class="note">Every server on Balloon Race is checked every 30 seconds for each player's score. A game is one
         stay on the map, from joining (or the map starting) until leaving or the map changing, and counts the best
         score reached. Ranked by best single game. Names only, so players with the same name are counted together.
@@ -1856,7 +2071,7 @@
     // Players who are on when the vote goes Balloon Race far more often than the average player
     function renderVoters(v) {
       if (!v) return '';
-      const intro = `<h2>Balloon Race's most devoted voters</h2>
+      const intro = `<h2>Balloon Race's most devoted/pathetic voters</h2>
       <p class="note">At every map change on these servers we note who was on right before it. These players are
         there when the vote goes Balloon Race at least ${v.min_score}× as often as the average player, so they're
         probably the ones voting for it. A player shows up here after being around for ${v.min_balloon_changes}
@@ -1892,6 +2107,7 @@
       }
       renderLive();
       renderNextLobby();
+      renderBestTime();
       renderHourly();
       renderCharts();
       renderRotation();

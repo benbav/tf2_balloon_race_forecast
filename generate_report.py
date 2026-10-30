@@ -1,5 +1,6 @@
 from plotly.subplots import make_subplots
 import datetime as dt
+from zoneinfo import ZoneInfo
 import holidays
 import requests
 import plotly.graph_objects as go
@@ -30,6 +31,8 @@ LOG_PATH = os.path.join(DATA_DIR, 'tf2_balloon_log.txt')
 README_PATH = os.path.join(SCRIPT_DIR, 'README.md')
 # Lobby forecast model, trained here daily and used by main.py on every check
 FORECAST_MODEL_PATH = os.path.join(DATA_DIR, 'forecast_model.joblib')
+# One line per day: the forecast's rolling test scores, so the website can chart them over time
+FORECAST_HISTORY_PATH = os.path.join(DATA_DIR, 'forecast_history.jsonl')
 # BLS v1 has a tight daily request limit, so the series is cached and refetched at most once a day
 BLS_URL = 'https://api.bls.gov/publicAPI/v1/timeseries/data/LNS14000000'
 BLS_CACHE_PATH = os.path.join(DATA_DIR, 'bls_unemployment.json')
@@ -55,6 +58,8 @@ MIN_DAYS_FOR_SCORECARD = 7
 # Scorecard looks at this many recent days so it follows changing habits
 SCORECARD_RECENT_DAYS = 28
 TOP_SERVER_COUNT = 5
+# The website's server heatmap has a dropdown with this many servers
+HEATMAP_SERVER_COUNT = 10
 # Windows the website's "next likely lobby" countdown picks from
 LOBBY_WINDOW_COUNT = 5
 # The website's server table has room for more
@@ -209,42 +214,63 @@ def lobby_windows(df):
     return [{'start': p, 'pct': round(float(window.loc[p, 'pct']), 3)} for p in top_windows(window, LOBBY_WINDOW_COUNT)]
 
 
-# Big scorecard: the single 2-hour window of the week most likely to have a LOBBY_PLAYERS+ lobby
-def generate_scorecard(df, variant=ALL_SERVERS):
-    total_days = days_of_data(df)
-    recent = recent_checks(df)
-    window = window_rates(recent, recent['online_players'] >= LOBBY_PLAYERS)
-    all_time = window_rates(df, df['online_players'] >= LOBBY_PLAYERS)
+# The day's rolling test scores from the forecast info, or None if it couldn't be tested
+def forecast_history_row(forecast, date):
+    e = forecast.get('evaluation')
+    if not e:
+        return None
+    a, o = e['all'], e['no_lobby_yet']
+    return {'date': date.isoformat(), 'test_days': len(e['test_days']), 'days': forecast['days'],
+            'auc': a.get('auc'), 'log_loss': a['log_loss'], 'baseline_log_loss': a['baseline_log_loss'],
+            'no_lobby_yet_auc': o.get('auc'), 'no_lobby_yet_log_loss': o.get('log_loss'),
+            'no_lobby_yet_baseline_log_loss': o.get('baseline_log_loss')}
 
-    fig = go.Figure()
-    fig.update_layout(base_layout('', height=480), xaxis=dict(visible=False), yaxis=dict(visible=False))
-    fig.update_layout(title=None, margin=dict(l=0, r=0, t=0, b=0))
 
-    def text(y, s, size, color, bold=False):
-        fig.add_annotation(
-            x=0.5, y=y, xref='paper', yref='paper', showarrow=False,
-            text=f"<b>{s}</b>" if bold else s, font=dict(size=size, color=color, family=FONT),
-        )
+def read_forecast_history():
+    if not os.path.exists(FORECAST_HISTORY_PATH):
+        return []
+    with open(FORECAST_HISTORY_PATH, encoding='utf-8') as f:
+        return [json.loads(line) for line in f if line.strip()]
 
-    text(0.88, f'BEST TIME FOR A {LOBBY_PLAYERS}+ PLAYER BALLOON RACE LOBBY', 16, TEXT_SECONDARY, bold=True)
-    if variant[1]:
-        text(0.77, variant[1].upper(), 14, variant[2], bold=True)
-    if total_days < MIN_DAYS_FOR_SCORECARD:
-        text(0.55, 'Not enough data yet', 56, TEXT_PRIMARY, bold=True)
-        text(0.28, f'{total_days} of {MIN_DAYS_FOR_SCORECARD} days of checks collected', 18, TEXT_SECONDARY)
-    elif window['sum'].max() == 0:
-        text(0.55, f'No {LOBBY_PLAYERS}+ lobbies yet', 56, TEXT_PRIMARY, bold=True)
-        text(0.28, f'None seen in the last {min(SCORECARD_RECENT_DAYS, total_days)} days', 18, TEXT_SECONDARY)
-    else:
-        best = int(window['pct'].idxmax())
-        all_time_best = int(all_time['pct'].idxmax())
-        text(0.62, f"{window_label(best)} {TZ_LABEL}", 60, TEXT_PRIMARY, bold=True)
-        text(0.4, f"<b>{window.loc[best, 'pct']:.0%}</b> chance a server has {LOBBY_PLAYERS}+ players", 30, TEXT_PRIMARY)
-        text(0.24, f"Based on checks in this window over the last {min(SCORECARD_RECENT_DAYS, total_days)} days",
-             16, TEXT_SECONDARY)
-        text(0.1, f"All-time best: {window_label(all_time_best)} ({all_time.loc[all_time_best, 'pct']:.0%}) "
-                  f"· {total_days} days of data", 14, TEXT_SECONDARY)
-    save(fig, 'best_time.png', variant)
+
+# Adds (or replaces) the row for its date, keeping the file in date order
+def save_forecast_history(row):
+    rows = {r['date']: r for r in read_forecast_history()}
+    rows[row['date']] = row
+    with open(FORECAST_HISTORY_PATH, 'w', encoding='utf-8') as f:
+        for date in sorted(rows):
+            f.write(json.dumps(rows[date]) + '\n')
+
+
+# AUC and log loss of the forecast's rolling test, as scored each day, to see whether it improves with more data
+def generate_forecast_history(history):
+    fig = make_subplots(rows=1, cols=2, horizontal_spacing=0.1, subplot_titles=(
+        '<b>AUC</b> · higher is better, 0.5 is a coin flip', '<b>Log loss</b> · lower is better'))
+    fig.update_layout(base_layout(
+        'Is the forecast getting better?',
+        'Each day, the last 14 days are each predicted by a model trained only on the days before',
+        height=460, showlegend=True,
+        legend=dict(orientation='h', x=0, y=-0.18, font=dict(size=13, color=TEXT_PRIMARY)),
+    ))
+    fig.update_annotations(font=dict(size=14, color=TEXT_PRIMARY))
+    if not history:
+        empty_state(fig, 'No scores yet')
+        save(fig, 'forecast_history.png')
+        return
+    dates = [r['date'] for r in history]
+    line = lambda key, name, color, dash, legend=True: go.Scatter(
+        x=dates, y=[r.get(key) for r in history], name=name, mode='lines+markers', showlegend=legend,
+        line=dict(color=color, width=3, dash=dash), marker=dict(size=6), hoverinfo='skip')
+    fig.add_trace(line('auc', 'All checks', SERIES[0], 'solid'), row=1, col=1)
+    fig.add_trace(line('no_lobby_yet_auc', 'Checks with no lobby up yet', SERIES[1], 'solid'), row=1, col=1)
+    fig.add_trace(line('log_loss', 'All checks', SERIES[0], 'solid', False), row=1, col=2)
+    fig.add_trace(line('no_lobby_yet_log_loss', 'No lobby yet', SERIES[1], 'solid', False), row=1, col=2)
+    fig.add_trace(line('baseline_log_loss', 'Always guessing the average', TEXT_SECONDARY, 'dot'), row=1, col=2)
+    fig.add_hline(y=0.5, line=dict(color=GRID, width=2), row=1, col=1)
+    fig.update_xaxes(showgrid=False, tickformat='%b %d', ticks='')
+    fig.update_yaxes(gridcolor=GRID, zeroline=False, ticks='')
+    fig.update_yaxes(range=[0.4, 1], row=1, col=1)
+    save(fig, 'forecast_history.png')
 
 
 # The forecast's logistic regression, drawn like the classic best-fit-line chart: every training check is a
@@ -713,17 +739,18 @@ def top_server_stats(df, server_df):
     return stats
 
 
-# Small multiples: one day x hour heatmap per top server, on a shared scale
+# One day x hour heatmap per top server, on a shared scale, picked from a dropdown on the website.
+# Returns the servers drawn, in order, so the dropdown can name them
 def generate_server_heatmaps(stats, variant=ALL_SERVERS):
     # Pick the servers that most often have a busy lobby, not just someone on
     stats = sorted((s for s in stats if s['busy'].any()), key=lambda s: s['busy'].mean(), reverse=True)
-    stats = stats[:TOP_SERVER_COUNT]
+    stats = stats[:HEATMAP_SERVER_COUNT]
     if not stats:
         fig = go.Figure()
         fig.update_layout(base_layout('When the top servers are busy', height=300, variant=variant))
         empty_state(fig, 'No busy lobbies seen yet')
-        save(fig, 'server_heatmaps.png', variant)
-        return
+        save(fig, 'server_heatmap_1.png', variant)
+        return []
 
     grids = []
     for s in stats:
@@ -733,29 +760,22 @@ def generate_server_heatmaps(stats, variant=ALL_SERVERS):
         )
     zmax = max(max(float(g.values.max()) for g in grids), 1)
 
-    titles = [f"<b>#{i + 1} {s['name'][:60]}</b>  ·  {s['addr']}" for i, s in enumerate(stats)]
-    fig = make_subplots(rows=len(stats), cols=1, subplot_titles=titles, vertical_spacing=0.32 / len(stats))
-    for i, g in enumerate(grids):
-        fig.add_trace(go.Heatmap(
+    for i, (s, g) in enumerate(zip(stats, grids)):
+        fig = go.Figure(go.Heatmap(
             z=g.values, x=[hour_label(h) for h in range(24)], y=[d[:3] for d in DAYS],
             colorscale=COLORSCALE, zmin=0, zmax=zmax, xgap=2, ygap=2, hoverinfo='skip',
-            showscale=(i == 0),
-            colorbar=dict(title=dict(text='% of checks', side='top'), ticksuffix='%',
-                          thickness=12, outlinewidth=0, len=0.3, y=1, yanchor='top'),
-        ), row=i + 1, col=1)
-        fig.update_yaxes(autorange='reversed', row=i + 1, col=1)
-
-    fig.update_layout(base_layout(
-        'When the top servers are busy',
-        f'% of checks each server had {LOBBY_PLAYERS}+ human players · times in {TZ_LABEL}',
-        height=170 + 260 * len(stats),
-        variant=variant,
-    ))
-    fig.update_annotations(font=dict(size=14, color=TEXT_PRIMARY), xanchor='left', x=0)
-    fig.update_xaxes(showgrid=False, ticks='', tickfont=dict(size=10), tickangle=-45)
-    fig.update_yaxes(showgrid=False, ticks='')
-    fig.update_layout(margin=dict(l=24, r=32, t=130, b=40))
-    save(fig, 'server_heatmaps.png', variant)
+            colorbar=dict(title=dict(text='% of checks', side='top'), ticksuffix='%', thickness=12, outlinewidth=0),
+        ))
+        fig.update_layout(base_layout(
+            f"#{i + 1} {s['name'][:50]}",
+            f"{s['addr']} · % of checks with {LOBBY_PLAYERS}+ human players · times in {TZ_LABEL}",
+            height=440,
+            variant=variant,
+        ))
+        fig.update_xaxes(showgrid=False, ticks='', tickangle=-45)
+        fig.update_yaxes(showgrid=False, ticks='', autorange='reversed')
+        save(fig, f'server_heatmap_{i + 1}.png', variant)
+    return [{'name': s['name'], 'addr': s['addr']} for s in stats]
 
 
 # Write the top servers table into the README between the marker comments
@@ -792,10 +812,10 @@ def update_readme(stats):
 
 
 # Top servers for each timezone and filter on the website
-def write_site_data(stats_by_zone, windows, forecast):
+def write_site_data(stats_by_zone, windows, forecast, heatmap_servers):
     data = {'updated': dt.datetime.now(dt.timezone.utc).isoformat(timespec='seconds'), 'lobby_players': LOBBY_PLAYERS,
-            'top_servers': {},
-            'lobby_windows': {'timezone': ZONES[0][0], **windows}, 'forecast': forecast}
+            'top_servers': {}, 'heatmap_servers': heatmap_servers,
+            'lobby_windows': {'timezone': ZONES[0][0], 'recent_days': SCORECARD_RECENT_DAYS, **windows}, 'forecast': forecast}
     for (zone_key, key), (stats, label) in stats_by_zone.items():
         data['top_servers'].setdefault(zone_key, {})[key] = [{
             'name': s['name'],
@@ -828,6 +848,7 @@ def push_to_github():
     os.system("git add README.md data/tf2_balloon_log.txt")
     # On their own, so a missing voter log can't stop the main log from being added
     os.system("git add data/rotation_players.jsonl")
+    os.system("git add data/forecast_history.jsonl")
     os.system("git commit -m 'update log'")
     os.system("git push origin main")
     publish_site()
@@ -871,6 +892,7 @@ if __name__ == "__main__":
     earthquakes = load_earthquakes(graph_df['ts'].min())
     stats_by_zone = {}
     windows = {}
+    heatmap_servers = {}
     for DISPLAY_TIMEZONE, TZ_LABEL, ZONE_SUFFIX in ZONES:
         default_zone = ZONE_SUFFIX == ZONES[0][2]
         zone_df, zone_servers = in_zone(graph_df), in_zone(server_df)
@@ -880,7 +902,6 @@ if __name__ == "__main__":
             (ROTATING, split_checks(zone_df, zone_servers, False), zone_servers[~zone_servers['dedicated']]),
         ]
         for variant, df, servers in variants:
-            generate_scorecard(df, variant)
             generate_top_windows_plot(df, variant)
             generate_heatmap(
                 df, df['online_players'] >= LOBBY_PLAYERS,
@@ -889,12 +910,13 @@ if __name__ == "__main__":
                 'busy_heatmap.png', variant,
             )
             all_server_stats = top_server_stats(zone_df, servers)
-            generate_server_heatmaps(all_server_stats, variant)
+            drawn = generate_server_heatmaps(all_server_stats, variant)
             stats_by_zone[(TZ_LABEL.lower(), variant[0].lstrip('_') or 'all')] = (all_server_stats[:SITE_SERVER_COUNT],
                                                                                     TZ_LABEL)
             # These don't depend on the time of day, so they're only drawn once
             if default_zone:
                 windows[variant[0].lstrip('_') or 'all'] = lobby_windows(df)
+                heatmap_servers[variant[0].lstrip('_') or 'all'] = drawn
                 generate_session_length_plot(df, variant)
                 generate_monthly_avg_plot(df, variant)
                 generate_holiday_table(df, variant)
@@ -907,7 +929,11 @@ if __name__ == "__main__":
     forecast, fit = train_lobby_forecast(graph_df, server_df, holiday_dates, LOBBY_PLAYERS, CHECK_MINUTES,
                                          ZONES[0][0], FORECAST_MODEL_PATH)
     generate_forecast_regression(fit, LOBBY_PLAYERS)
-    write_site_data(stats_by_zone, windows, forecast)
+    history_row = forecast_history_row(forecast, dt.datetime.now(ZoneInfo(ZONES[0][0])).date())
+    if history_row:
+        save_forecast_history(history_row)
+    generate_forecast_history(read_forecast_history())
+    write_site_data(stats_by_zone, windows, forecast, heatmap_servers)
     write_rotation_data()
     if '--no-readme' not in sys.argv:
         update_readme(stats)

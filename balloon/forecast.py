@@ -112,6 +112,35 @@ def feature_matrix(f, cfg):
     ])
 
 
+# What each column of feature_matrix means, as (label, columns). Inputs spread over several columns (time of
+# day, day of week) are one entry, so they can be ranked as a whole
+def feature_groups(cfg, server_names=None):
+    names = server_names or {}
+    return [
+        ('Players on the busiest server', 1), ('A lobby is already up', 1), ('Players on all servers', 1),
+        ('Servers with anyone on', 1),
+        *[(f'Change on the busiest server, last {m} min', 1) for m in MOMENTUM_MINUTES],
+        ('Time since the last lobby', 1), ('Time of day', 4),
+        ('Day of the week', 7) if cfg['use_days'] else ('Weekend', 1),
+        *[(f"Busiest server is {names.get(s, s)}", 1) for s in cfg['servers']],
+        *([('Holiday', 1)] if cfg['use_holidays'] else []),
+        *([('Balloon Race voters waiting', 2)] if cfg.get('use_voters') else []),
+    ]
+
+
+# The model's strongest inputs. Features are standardized, so a weight is the change in log-odds of a lobby
+# for one standard deviation of that input; a multi-column input gets the length of its weights and no direction
+def top_features(model, cfg, server_names=None, count=6):
+    coefs = model[-1].coef_[0]
+    out, col = [], 0
+    for label, width in feature_groups(cfg, server_names):
+        w = coefs[col:col + width]
+        col += width
+        out.append({'name': label, 'weight': round(float(np.sqrt((w ** 2).sum())), 3),
+                    'direction': None if width > 1 else ('up' if w[0] > 0 else 'down')})
+    return sorted(out, key=lambda f: f['weight'], reverse=True)[:count]
+
+
 # 1 if a later check within the next hour is busy; checks whose next hour is mostly missing (end of the
 # log, or the tracker was down) are dropped
 def lobby_labels(f, threshold, check_minutes):
@@ -220,6 +249,7 @@ def train_lobby_forecast(df, server_df, holiday_dates, threshold, check_minutes,
               f"(base rate guess {a['baseline_log_loss']:.3f}), AUC {a.get('auc')}, Gini {a.get('gini')}; "
               f"no lobby yet: AUC {o.get('auc')}, Gini {o.get('gini')}, {o['lobbies']} lobbies")
     model = new_forecast_model().fit(X, y)
+    info['top_features'] = top_features(model, cfg, server_df.groupby('addr')['name'].last().to_dict())
     trained = dt.datetime.now(dt.timezone.utc).isoformat(timespec='seconds')
     joblib.dump({'model': model, 'cfg': cfg, 'trained': trained}, model_path)
     # Each training check's score (log-odds of a lobby) and what happened, for the regression chart
