@@ -605,6 +605,43 @@
       }
     }
 
+    /* Two airships always flying left to right over the page; flyAirships() moves them. Under the chaos overlays;
+       clicks pass through */
+    .airships {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .airship {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: var(--width);
+      transform: translateX(-100%);
+      will-change: transform;
+    }
+
+    .airship img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    @media (max-width: 700px) {
+      .airship {
+        width: calc(var(--width) * .6);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .airships {
+        display: none;
+      }
+    }
+
     /* Daily forecast and lobby heatmap on the left; live panel with the scorecard under it on the right.
        Stacks on narrow screens */
     .top {
@@ -760,7 +797,7 @@
 
     .drivers li {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 72px 92px;
+      grid-template-columns: minmax(0, 1fr) 72px;
       gap: 8px;
       align-items: center;
     }
@@ -782,16 +819,6 @@
       display: block;
       height: 100%;
       background: var(--dedicated);
-    }
-
-    .drivers .dir {
-      color: var(--muted);
-    }
-
-    .drivers p {
-      margin: 6px 0 0;
-      color: var(--muted);
-      font-size: 11px;
     }
 
     /* Hourly outlook strip, laid out like a weather app's hourly forecast */
@@ -1274,95 +1301,16 @@
       font-weight: 600;
     }
 
-    /* Map rotation tracker */
+    /* Voter and top scorer leaderboards */
     .note {
       color: var(--muted);
       margin: -8px 0 16px;
       max-width: 80ch;
     }
 
-    td .map {
-      font-family: ui-monospace, Menlo, Consolas, monospace;
-      font-size: 13px;
-      overflow-wrap: anywhere;
-    }
-
     td .sub {
       color: var(--muted);
       font-size: 12px;
-    }
-
-    .tag.fixed {
-      color: var(--live);
-      background: #e3f4ea;
-    }
-
-    .tag.varies {
-      color: var(--muted);
-      background: #f0efeb;
-    }
-
-    .tag.waiting {
-      color: var(--dedicated);
-      background: #e7f0fb;
-    }
-
-    .tag.verdict {
-      margin-left: 0;
-    }
-
-    .timelines {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .timeline {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 14px 16px;
-    }
-
-    .timeline h3 {
-      font-size: 14px;
-      margin: 0 0 10px;
-    }
-
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .chip {
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      padding: 4px 8px;
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .chip b {
-      display: block;
-      color: var(--text);
-      font-weight: 600;
-      font-family: ui-monospace, Menlo, Consolas, monospace;
-      overflow-wrap: anywhere;
-    }
-
-    .chip.balloon {
-      background: #fdece4;
-      border-color: var(--rotating);
-    }
-
-    .chip.offline {
-      border-style: dashed;
-    }
-
-    .chip.offline b {
-      color: var(--muted);
-      font-weight: 500;
     }
 
     footer {
@@ -1492,6 +1440,10 @@
       · <a href="https://github.com/benbav/tf2_balloon_race_forecast">Source on GitHub</a>
     </footer>
   </main>
+  <div class="airships" id="airships" aria-hidden="true">
+    <div class="airship" style="--width: 190px"><img src="assets/ship_red.png" alt=""></div>
+    <div class="airship" style="--width: 170px"><img src="assets/ship_blue.png" alt=""></div>
+  </div>
   <div class="chaos-omg" aria-hidden="true">
     <div>🚨🚨 OH MY GOD 🚨🚨<br>PEOPLE ARE ON BALLOON RACE RIGHT NOW<br>🚨🚨🚨🚨🚨<small id="chaos-server"></small></div>
   </div>
@@ -1788,12 +1740,9 @@
         return;
       }
       const max = Math.max(...top.map((t) => t.weight));
-      const dir = { up: '↑ more likely', down: '↓ less likely' };
       $('#forecast-drivers').innerHTML = `<h3>What the model weighs most</h3><ol>${top.map((t) => `<li>
         <span class="name" title="${esc(t.name)}">${esc(t.name)}</span>
-        <span class="bar"><i style="width:${(t.weight / max) * 100}%"></i></span>
-        <span class="dir">${dir[t.direction] ?? 'depends'}</span></li>`).join('')}</ol>
-        <p>Bar: how much one standard deviation of it moves the odds of a lobby. Arrows: whether more of it raises or lowers them.</p>`;
+        <span class="bar"><i style="width:${(t.weight / max) * 100}%"></i></span></li>`).join('')}</ol>`;
     }
 
     // The poller scores the latest check against the model on every run and publishes it with the live status
@@ -1992,63 +1941,13 @@
       </div>`).join('');
     }
 
-    // Map rotation tracker: its own log and section, so it doesn't follow the server type filter
+    // Voter and top scorer leaderboards, from the rotation tracker's file, so they don't follow the server type filter
     let rotationData = null;
-    const mapName = (m) => (m ? esc(m) : 'offline');
-
-    function rotationTime(iso) {
-      return new Intl.DateTimeFormat('en-US', { timeZone: ZONES[zone].tz, weekday: 'short', hour: 'numeric', minute: '2-digit' })
-        .format(new Date(iso));
-    }
-
-    function minutesLabel(mins) {
-      return mins < 60 ? `${mins} min` : `${Math.floor(mins / 60)} hr ${mins % 60} min`;
-    }
 
     function renderRotation() {
       const box = $('#rotation');
-      const r = rotationData;
-      box.hidden = !r;
-      if (!r) return;
-      const intro = `<h2>Map rotation tracker</h2>
-      <p class="note">Rotating servers that have had a ${lobbyPlayers()}+ player lobby on Balloon Race, checked every 30 seconds
-        for whatever map they're on, to see if Balloon Race always comes up at the same spot in their map cycle.
-        "Next map" is what the server itself says is next, when it shares that.
-        ${r.since ? `Tracking since ${esc(rotationTime(r.since))} ${zone.toUpperCase()}.` : ''}</p>`;
-      if (!r.servers?.length) {
-        box.innerHTML = `${intro}<p class="empty">No map history yet.</p>${renderVoters(r.voters)}${renderScorers(r.scorers)}`;
-        return;
-      }
-      const counts = (list) => (list.length
-        ? list.map(([m, n]) => `<div><span class="map">${esc(m)}</span> <span class="sub">×${n}</span></div>`).join('')
-        : '<span class="sub">–</span>');
-      const rows = r.servers.map((s) => `<tr>
-      <td><strong>${esc(s.name)}</strong><div class="addr">${esc(s.addr)}</div></td>
-      <td><div class="map">${mapName(s.current.map)}</div>
-        <div class="sub">${s.current.map ? `${s.current.players} players · ` : ''}since ${esc(rotationTime(s.current.since))}</div></td>
-      <td>${s.current.next_map ? `<span class="map">${esc(s.current.next_map)}</span>` : '<span class="sub">not shared</span>'}</td>
-      <td class="num">${s.visits}</td>
-      <td>${counts(s.before)}</td>
-      <td>${counts(s.after)}</td>
-      <td>${s.gaps.length
-          ? s.gaps.map((g) => `<div>${g.hours} hr <span class="sub">· ${g.maps_between} map${g.maps_between === 1 ? '' : 's'}</span></div>`).join('')
-          : '<span class="sub">–</span>'}</td>
-      <td><span class="tag verdict ${esc(s.verdict)}">${esc(s.verdict)}</span><div class="sub">${esc(s.verdict_text)}</div></td>
-    </tr>`).join('');
-      const timelines = r.servers.map((s) => `<div class="timeline">
-      <h3>${esc(s.name)} · recent maps, oldest first (${zone.toUpperCase()})</h3>
-      <div class="chips">${s.recent.map((m) => `<span class="chip${m.map === r.balloon_map ? ' balloon' : ''}${m.map ? '' : ' offline'}"
-        title="${m.map ? `Peak ${m.peak} players${m.next_map ? ` · next map: ${esc(m.next_map)}` : ''}` : 'Not listed on Steam'}">
-        <b>${mapName(m.map)}</b>${esc(rotationTime(m.start))} · ${minutesLabel(m.minutes)}</span>`).join('')}</div>
-    </div>`).join('');
-      box.innerHTML = `${intro}
-      <div class="table-wrap"><table>
-        <thead><tr><th>Server</th><th>Last seen on</th><th>Next map</th><th class="num">Balloon Race visits</th>
-          <th>Map before Balloon Race</th><th>Map after</th><th>Time between visits</th><th>Fixed cycle?</th></tr></thead>
-        <tbody>${rows}</tbody></table></div>
-      <div class="timelines">${timelines}</div>
-      ${renderVoters(r.voters)}
-      ${renderScorers(r.scorers)}`;
+      box.innerHTML = rotationData ? `${renderVoters(rotationData.voters)}${renderScorers(rotationData.scorers)}` : '';
+      box.hidden = !box.innerHTML;
     }
 
     // Best score anyone has reached in a single game of Balloon Race, from every server on the map
@@ -2072,8 +1971,9 @@
     function renderVoters(v) {
       if (!v) return '';
       const intro = `<h2>Balloon Race's most devoted/pathetic voters</h2>
-      <p class="note">At every map change on these servers we note who was on right before it. These players are
-        there when the vote goes Balloon Race at least ${v.min_score}× as often as the average player, so they're
+      <p class="note">At every map change on the rotating servers that have had a ${lobbyPlayers()}+ player Balloon Race
+        lobby, we note who was on right before it. These players are there when the vote goes Balloon Race at least
+        ${v.min_score}× as often as the average player, so they're
         probably the ones voting for it. A player shows up here after being around for ${v.min_balloon_changes}
         changes to Balloon Race.
         ${v.changes} map change${v.changes === 1 ? '' : 's'} watched so far, ${v.balloon_changes} to Balloon Race.</p>`;
@@ -2139,7 +2039,81 @@
     window.addEventListener('resize', renderHourly);
     window.addEventListener('popstate', () => setView(viewFromUrl(), false));
 
+    // Airships: each crossing gets a new flight plan. Both ships fly the same path (straight, diagonal, wave or
+    // arc); the trailing one either follows at the same speed or catches up and overtakes in a lane beside it
+    const AIRSHIP_MAX_STEP = 0.1;
+    const rand = (a, b) => a + Math.random() * (b - a);
+    const pick = (list) => list[Math.floor(Math.random() * list.length)];
+
+    // Height on screen, as a share of the viewport, at progress p (0 to 1) across it
+    function flightPath() {
+      const kind = pick(['straight', 'diagonal', 'wave', 'wave', 'arc']);
+      if (kind === 'straight') {
+        const at = rand(0.1, 0.7);
+        return () => at;
+      }
+      if (kind === 'diagonal') {
+        const [from, to] = Math.random() < 0.5 ? [rand(0.08, 0.3), rand(0.5, 0.75)] : [rand(0.5, 0.75), rand(0.08, 0.3)];
+        return (p) => from + (to - from) * p;
+      }
+      if (kind === 'arc') {
+        const base = rand(0.45, 0.7);
+        const lift = rand(0.15, base - 0.1);
+        return (p) => base - lift * Math.sin(Math.PI * p);
+      }
+      const amp = rand(0.06, 0.16);
+      const base = rand(0.1 + amp, 0.72 - amp);
+      const waves = rand(1.5, 4);
+      const phase = rand(0, 2 * Math.PI);
+      return (p) => base + amp * Math.sin(2 * Math.PI * waves * p + phase);
+    }
+
+    function flightPlan(ships) {
+      const time = rand(16, 26);
+      const [lead, trail] = Math.random() < 0.5 ? ships : [...ships].reverse();
+      Object.assign(lead, { start: 0, time, lane: 0 });
+      if (Math.random() < 0.4) {
+        // Starts a bit later but faster, so it catches the leader somewhere mid-screen
+        const meet = rand(0.35, 0.65) * time;
+        const lag = rand(0.15, 0.3) * meet;
+        Object.assign(trail, { start: lag, time: time - lag / (meet / time), lane: pick([-1, 1]) * 0.1 });
+      } else {
+        Object.assign(trail, { start: rand(3.5, 6), time, lane: 0 });
+      }
+      return flightPath();
+    }
+
+    function flyAirships() {
+      if (reducedMotion.matches) return;
+      const ships = [...$('#airships').children].map((el) => ({ el }));
+      let path = flightPlan(ships);
+      // Start partway through so the ships are already in the sky
+      let t = rand(4, 8);
+      let last = null;
+      const height = (s, p) => (path(Math.min(1, Math.max(0, p))) + s.lane) * innerHeight;
+      function frame(now) {
+        // Capped so a backgrounded tab doesn't jump the ships when it comes back
+        t += last === null ? 0 : Math.min(AIRSHIP_MAX_STEP, (now - last) / 1000);
+        last = now;
+        if (ships.every((s) => t - s.start >= s.time)) {
+          path = flightPlan(ships);
+          t = -rand(0, 3);
+        }
+        for (const s of ships) {
+          const span = innerWidth + s.el.offsetWidth;
+          const p = (t - s.start) / s.time;
+          const slope = (height(s, p + 0.01) - height(s, p - 0.01)) / (0.02 * span);
+          const tilt = Math.max(-8, Math.min(8, (Math.atan(slope) * 180) / Math.PI));
+          const bob = Math.sin(t * 1.6 + s.time) * 4;
+          s.el.style.transform = `translate(${p * span - s.el.offsetWidth}px, ${height(s, p) + bob}px) rotate(${tilt}deg)`;
+        }
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }
+
     async function init() {
+      flyAirships();
       setView(viewFromUrl(), false);
       try {
         const res = await fetch('charts/site_data.json', { cache: 'no-cache' });

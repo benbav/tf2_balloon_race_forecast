@@ -60,6 +60,8 @@ SCORECARD_RECENT_DAYS = 28
 TOP_SERVER_COUNT = 5
 # The website's server heatmap has a dropdown with this many servers
 HEATMAP_SERVER_COUNT = 10
+# The busy lobby heatmap groups the day into blocks this many hours long
+HEATMAP_BLOCK_HOURS = 3
 # Windows the website's "next likely lobby" countdown picks from
 LOBBY_WINDOW_COUNT = 5
 # The website's server table has room for more
@@ -338,43 +340,54 @@ def generate_top_windows_plot(df, variant=ALL_SERVERS):
     save(fig, 'top_windows.png', variant)
 
 
-# Day x hour heatmap of how often a condition held
-def generate_heatmap(df, active, title, subtitle, filename, variant=ALL_SERVERS):
-    heatmap_data = (
-        df.assign(active=active * 100)
-        .pivot_table(index='hour', columns='day_of_week', values='active',
-                     aggfunc='mean', observed=False)
-        .reindex(index=range(24), columns=DAYS)
-        .fillna(0)
-    )
-    z = heatmap_data.values
-    zmax = max(float(z.max()), 1)
+# "9 AM–12 PM", or "6–9 PM" when both ends share AM/PM
+def block_label(h, hours):
+    a, b = hour_label(h), hour_label(h + hours)
+    if a[-2:] == b[-2:]:
+        a = a[:-3]
+    return f'{a}–{b}'
 
-    # Hours that round to 0% are left blank, and there are no gaps between cells, so only the busy hours show
+
+# Day x 3-hour block heatmap of how many days the condition held at least once.
+# Counting days, not checks, keeps one long lobby from looking like a weekly habit
+def generate_heatmap(df, active, title, subtitle, filename, variant=ALL_SERVERS):
+    blocks = range(0, 24, HEATMAP_BLOCK_HOURS)
+    per_day = (
+        df.assign(active=active, date=df['ts'].dt.date, block=df['hour'] // HEATMAP_BLOCK_HOURS * HEATMAP_BLOCK_HOURS)
+        .groupby(['block', 'day_of_week', 'date'], observed=True)['active'].any()
+        .groupby(level=['block', 'day_of_week'], observed=True)
+    )
+    hit = per_day.sum().unstack().reindex(index=blocks, columns=DAYS).fillna(0).values
+    seen = per_day.size().unstack().reindex(index=blocks, columns=DAYS).fillna(0).values
+    frac = np.divide(hit, seen, out=np.zeros_like(hit, dtype=float), where=seen > 0)
+    labels = [block_label(h, HEATMAP_BLOCK_HOURS) for h in blocks]
+
+    # Blocks with no lobby on any day are left blank so only the busy ones show
     fig = go.Figure(go.Heatmap(
-        z=np.where(z.round() > 0, z, np.nan),
+        z=np.where(hit > 0, frac, np.nan),
         x=DAYS,
-        y=[hour_label(h) for h in range(24)],
+        y=labels,
         colorscale=COLORSCALE,
-        zmin=0, zmax=zmax,
+        zmin=0, zmax=1,
+        xgap=2, ygap=2,
         hoverinfo='skip',
-        colorbar=dict(title=dict(text='% of checks', side='top'), ticksuffix='%',
+        colorbar=dict(title=dict(text='% of days', side='top'), tickformat='.0%',
                       thickness=12, outlinewidth=0, len=0.8),
     ))
-    # Label non-zero cells, with ink that stays readable on light and dark steps
-    for yi, h in enumerate(range(24)):
+    # Label busy cells with the % of days that had a lobby, with ink that stays readable on light and dark steps
+    for yi, label in enumerate(labels):
         for xi, d in enumerate(DAYS):
-            v = z[yi, xi]
-            if round(v) > 0:
-                fig.add_annotation(x=d, y=hour_label(h), text=f"{v:.0f}%", showarrow=False,
-                                   font=dict(size=11, color='#ffffff' if v / zmax > 0.45 else TEXT_PRIMARY))
+            if hit[yi, xi] > 0:
+                fig.add_annotation(x=d, y=label, text=f'{frac[yi, xi]:.0%}', showarrow=False,
+                                   font=dict(size=14, color='#ffffff' if frac[yi, xi] > 0.45 else TEXT_PRIMARY))
 
     # Close to square so it fills the card under the daily forecast at the top of the website
-    fig.update_layout(base_layout(title, subtitle, variant=variant, height=860))
-    fig.update_yaxes(showgrid=False, ticks='')
+    fig.update_layout(base_layout(title, subtitle, variant=variant, height=620))
+    # Midnight at the top, so the day reads downward like a calendar
+    fig.update_yaxes(showgrid=False, ticks='', autorange='reversed')
     fig.update_xaxes(side='top', showgrid=False, ticks='')
     # With every cell blank the chart would be empty, so say why
-    if not (z.round() > 0).any():
+    if not (hit > 0).any():
         fig.update_traces(showscale=False)
         empty_state(fig, f'No {LOBBY_PLAYERS}+ player lobbies seen yet')
     # Room on the right for the color bar's title
@@ -906,7 +919,8 @@ if __name__ == "__main__":
             generate_heatmap(
                 df, df['online_players'] >= LOBBY_PLAYERS,
                 f'How often there is a busy lobby ({LOBBY_PLAYERS}+ players)',
-                f'% of 5-minute checks with a server at {LOBBY_PLAYERS}+ human players · times in {TZ_LABEL}',
+                f'% of days a server hit {LOBBY_PLAYERS}+ human players in each {HEATMAP_BLOCK_HOURS}-hour block, '
+                f'e.g. 75% = 3 of the 4 Saturdays checked · times in {TZ_LABEL}',
                 'busy_heatmap.png', variant,
             )
             all_server_stats = top_server_stats(zone_df, servers)
