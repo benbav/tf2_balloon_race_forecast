@@ -3,7 +3,7 @@ from balloon.config import LOBBY_PLAYERS
 from balloon.log import LINE_RE, SERVER_RE
 from balloon.rotation import BALLOON_MAP, ROTATION_COLUMNS, ROTATION_LOG_PATH
 from balloon.scores import ScoreKeeper
-from balloon.servers import clean_name, is_dedicated
+from balloon.servers import RELAY_PREFIX, clean_name, is_dedicated
 from balloon.voters import SNAPSHOT_LOG_PATH, VOTER_LOG_PATH
 import requests
 import socket
@@ -27,8 +27,6 @@ import os
 # `python rotation_tracker.py --once` does a single check, for testing.
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 LOG_PATH = os.path.join(SCRIPT_DIR, 'data', 'tf2_balloon_log.txt')
-# Steam Datagram Relay addresses change, so those servers can't be found again by address
-RELAY_PREFIX = '169.254.'
 A2S_TIMEOUT = 2
 CHECK_SECONDS = 30
 # A map is logged at least this often per server, plus on every map change

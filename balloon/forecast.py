@@ -7,6 +7,7 @@ from sklearn.metrics import brier_score_loss, log_loss, roc_auc_score
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from balloon.log import LOG_TIMEZONE, parse_log, tail_lines
+from balloon.servers import merge_relay_addresses, relay_targets
 from balloon.voters import (SNAPSHOT_LOG_PATH, SNAPSHOT_STALE_MINUTES, read_changes, read_snapshots,
                             recent_snapshots, voters_waiting)
 
@@ -221,11 +222,14 @@ def rolling_evaluation(ts, X, y, players, threshold):
 # Returns (info for the website, fit for the regression chart or None)
 def train_lobby_forecast(df, server_df, holiday_dates, threshold, check_minutes, timezone, model_path):
     voter_rows = voters_waiting(read_snapshots(), read_changes())
+    # One relay server under several addresses counts as one server; the mapping is saved for live scoring
+    targets = relay_targets(server_df)
+    server_df = merge_relay_addresses(server_df, targets)
     f = check_frame(df, server_df, threshold, check_minutes, voter_rows)
     dates = f['ts'].dt.date.drop_duplicates()
     weekday_dates = pd.to_datetime(dates).dt.dayofweek.value_counts().reindex(range(7), fill_value=0)
     cfg = {'threshold': threshold, 'check_minutes': check_minutes, 'timezone': timezone,
-           'servers': pick_servers(f['addr'], f['online_players']),
+           'servers': pick_servers(f['addr'], f['online_players']), 'relay_targets': targets,
            'use_days': bool(len(dates)) and bool(weekday_dates.min() >= FORECAST_MIN_DATES_PER_WEEKDAY),
            'use_holidays': bool(dates.isin(holiday_dates).sum() >= FORECAST_MIN_HOLIDAY_DATES),
            'holiday_dates': set(holiday_dates),
@@ -272,6 +276,8 @@ def predict_now(log_path, model_path, snapshot_path=SNAPSHOT_LOG_PATH):
     voter_rows = None
     if cfg.get('use_voters'):
         voter_rows = voters_waiting(recent_snapshots(snapshot_path), read_changes())
+    # Models saved before relay merging have no relay_targets
+    servers = merge_relay_addresses(servers, cfg.get('relay_targets', {}))
     f = check_frame(checks, servers, cfg['threshold'], cfg['check_minutes'], voter_rows).tail(1)
     chance = float(saved['model'].predict_proba(feature_matrix(f, cfg))[0, 1])
     row = f.iloc[0]

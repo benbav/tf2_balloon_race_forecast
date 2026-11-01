@@ -665,11 +665,14 @@
       flex: 1;
     }
 
+    /* Busy lobby heatmap with the top times to play under it */
     #top-heatmap {
       display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
 
-    #top-heatmap .chart {
+    #top-heatmap .chart:first-child {
       flex: 1;
     }
 
@@ -1124,6 +1127,19 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
+    /* Server table: the first SERVER_ROWS_VISIBLE rows show, the rest scroll under a sticky header */
+    .servers-table {
+      position: relative;
+      overflow-y: auto;
+    }
+
+    .servers-table th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: var(--card);
+    }
+
     .grid>.table-wrap {
       grid-column: 1 / -1;
       margin-bottom: 0;
@@ -1466,6 +1482,10 @@
     const PAGE_TITLE = document.title;
     // Windows where under this share of checks had a lobby aren't "likely"; the best one is still shown
     const NEXT_LOBBY_MIN_PCT = 0.15;
+    // The live list shows only the busiest few
+    const LIVE_SERVER_LIMIT = 2;
+    // The server table shows this many rows; the rest scroll
+    const SERVER_ROWS_VISIBLE = 5;
 
     const FILTERS = {
       all: { suffix: '', label: 'All servers' },
@@ -1496,11 +1516,6 @@
     const DEFAULT_ZONE = detectZone();
 
     const SECTIONS = [
-      {
-        title: 'When to play', charts: [
-          ['top_windows', 'Top 5 times to play', true, true],
-        ]
-      },
       {
         title: 'Servers', table: true, charts: [
           serverHeatmapFigure,
@@ -1628,7 +1643,8 @@
         return;
       }
       const intro = playing.length ? '' : '<p class="empty">Servers are up but nobody\'s playing. Be the change. Be someone. Be someone who plays Balloon Race.</p>';
-      list.innerHTML = intro + servers.map((s) => `
+      const more = servers.length - LIVE_SERVER_LIMIT;
+      list.innerHTML = intro + servers.slice(0, LIVE_SERVER_LIMIT).map((s) => `
       <div class="server">
         <div class="info">
           <div class="name">${esc(s.name)}${tag(s.dedicated)}</div>
@@ -1636,7 +1652,7 @@
         </div>
         <div class="count${s.players ? '' : ' zero'}">${s.players}${s.max_players ? `<small>/${s.max_players}</small>` : ''}</div>
         ${connectButtons(s.addr)}
-      </div>`).join('');
+      </div>`).join('') + (more > 0 ? `<p class="empty">+${more} more server${more === 1 ? '' : 's'} on Balloon Race</p>` : '');
     }
 
     // How the model did on the most recent checks it wasn't trained on
@@ -1851,7 +1867,7 @@
       if (!rows) return '';
       if (!rows.length) return '<p class="empty">No server data yet.</p>';
       const maxPeak = Math.max(1, ...rows.map((s) => s.peak));
-      return `<div class="table-wrap"><table>
+      return `<div class="table-wrap servers-table"><table>
       <thead><tr><th>#</th><th>Server</th><th>Best time for ${lobbyPlayers()}+</th><th>Best day</th>
         <th class="num">Has ${lobbyPlayers()}+</th><th class="num">Has players</th>
         <th class="players">Players when on<span class="key"><i class="avg"></i>avg</span><span class="key"><i class="peak"></i>peak</span></th>
@@ -1871,8 +1887,9 @@
       </tr>`).join('')}</tbody></table></div>`;
     }
 
-    // Fills the space under the daily forecast at the top of the page
+    // Fill the space under the daily forecast at the top of the page
     const TOP_HEATMAP = ['busy_heatmap', 'How often there is a {N}+ player lobby', true];
+    const TOP_WINDOWS = ['top_windows', 'Top 3 times to play', true];
 
     function chartFigure([file, alt, timed, wide, fit]) {
       const { suffix, label } = FILTERS[filter];
@@ -1924,13 +1941,24 @@
     });
 
     function renderCharts() {
-      $('#top-heatmap').innerHTML = chartFigure(TOP_HEATMAP);
+      $('#top-heatmap').innerHTML = chartFigure(TOP_HEATMAP) + chartFigure(TOP_WINDOWS);
       $('#charts').innerHTML = SECTIONS.map((section) => `
       <h2>${section.title}</h2>
       <div class="grid${section.cols === 3 ? ' three' : ''}">
       ${section.table ? renderTable() : ''}
       ${section.charts.map((c) => (typeof c === 'function' ? c() : chartFigure(c))).join('')}
       </div>`).join('');
+      fitServerTable();
+    }
+
+    // Rows can wrap to two lines, so the cutoff is measured rather than a fixed height
+    function fitServerTable() {
+      const wrap = $('.servers-table');
+      const rows = wrap?.querySelectorAll('tbody tr') ?? [];
+      if (rows.length <= SERVER_ROWS_VISIBLE) return;
+      wrap.style.maxHeight = '';
+      const last = rows[SERVER_ROWS_VISIBLE - 1];
+      wrap.style.maxHeight = `${last.offsetTop + last.offsetHeight}px`;
     }
 
     // Voter and top scorer leaderboards, from the rotation tracker's file, so they don't follow the server type filter
@@ -2029,6 +2057,7 @@
       }
     });
     window.addEventListener('resize', renderHourly);
+    window.addEventListener('resize', fitServerTable);
     window.addEventListener('popstate', () => setView(viewFromUrl(), false));
 
     // Airships: each crossing gets a new flight plan. Both ships fly the same path (straight, diagonal, wave or
