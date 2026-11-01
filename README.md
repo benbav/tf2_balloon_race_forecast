@@ -22,7 +22,7 @@ Ranked by how often they have a lobby going (as many players as the Discord ping
 | 2 | shounic trenches (USA Chicago) | `connect 193.243.190.25:27015` | Thu · 11 PM – 1 AM MT (4%) | Sunday | 0% of checks | 1% of checks | 23.6 | 91 |
 | 3 | Server hosted by Physgun.com | `connect 45.45.238.134:27105` | Fri · 6 PM – 8 PM MT (9%) | Friday | 0% of checks | 0% of checks | 21.8 | 23 |
 | 4 | Aar's Server \| Map Testing \| Virginia | `connect 169.254.112.56:12184` | Sat · 2 PM – 4 PM MT (8%) | Saturday | 0% of checks | 0% of checks | 24.7 | 26 |
-| 5 | Server Testing | `connect 69.41.182.173:27015` | Sat · 7 PM – 9 PM MT (3%) | Saturday | 0% of checks | 0% of checks | 4.8 | 12 |
+| 5 | Server Testing | `connect 69.41.182.173:27015` | Sat · 6 PM – 8 PM MT (2%) | Saturday | 0% of checks | 0% of checks | 4.8 | 12 |
 
 To favorite one: Steam → View → Game Servers → Favorites → **+** and paste the address.
 <!-- TOP_SERVERS_END -->
