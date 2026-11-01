@@ -1639,22 +1639,14 @@
       </div>`).join('');
     }
 
-    // How the model did on the most recent checks it wasn't trained on, vs always guessing the average
+    // How the model did on the most recent checks it wasn't trained on
     function forecastMetrics(f) {
-      const n = (v) => v.toLocaleString();
-      let text = `${f.model} · trained on ${f.days} day${f.days === 1 ? '' : 's'} of data `
-        + `(${n(f.examples)} checks, ${n(f.positives)} followed by a lobby).`;
+      let text = `Trained on ${f.days} day${f.days === 1 ? '' : 's'} (${f.positives.toLocaleString()} checks before a lobby).`;
       const e = f.evaluation;
-      if (e) {
-        const score = (s) => (s.auc != null ? `AUC ${s.auc.toFixed(2)} (Gini ${s.gini.toFixed(2)}), ` : '')
-          + `log loss ${s.log_loss.toFixed(3)} vs ${s.baseline_log_loss.toFixed(3)}, Brier ${s.brier.toFixed(3)} vs ${s.baseline_brier.toFixed(3)}`;
-        const days = e.test_days.length;
-        text += ` Each of the last ${days} day${days === 1 ? '' : 's'} predicted by a model trained only on the days before it:`
-          + ` ${score(e.all)}`;
-        if (e.no_lobby_yet.log_loss != null) {
-          text += `; when no lobby is up yet (${n(e.no_lobby_yet.lobbies)} lobbies formed): ${score(e.no_lobby_yet)}`;
-        }
-        text += '. Second numbers are always guessing the average; lower is better.';
+      if (e?.all.auc != null) {
+        text += ` Tested on the last ${e.test_days.length} days: AUC ${e.all.auc.toFixed(2)}`;
+        if (e.no_lobby_yet.auc != null) text += `, ${e.no_lobby_yet.auc.toFixed(2)} when no lobby is up yet`;
+        text += ' (0.5 = coin flip).';
       }
       return text;
     }
