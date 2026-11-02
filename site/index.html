@@ -937,6 +937,18 @@
       padding: 14px 8px 16px;
     }
 
+    .hourly-explain {
+      margin: 0;
+      padding: 0 20px 16px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .hourly-explain b {
+      color: var(--text);
+    }
+
     .hourly-grid {
       display: grid;
       width: 100%;
@@ -1412,6 +1424,7 @@
           <div class="hourly-scroll">
             <div class="hourly-grid" id="hourly-grid"></div>
           </div>
+          <p class="hourly-explain" id="hourly-explain"></p>
         </section>
         <div id="top-heatmap"></div>
       </div>
@@ -1811,12 +1824,16 @@
       const base = siteData.forecast.positives / siteData.forecast.examples;
       const icon = (c) => (c >= 4 * base ? '🔥' : c >= 2 * base ? '🎈' : c >= base ? '⛅' : c >= base / 2 ? '☁️' : '💤');
       const pct = (c) => (c < 0.01 ? '<1%' : `${Math.round(c * 100)}%`);
+      // "1 in N" reads easier than a percentage
+      const odds = (c) => (c < 0.01 ? 'fewer than 1 in 100' : c >= 0.5 ? `about ${Math.round(c * 10)} in 10` : `about 1 in ${Math.round(1 / c)}`);
+      const n = siteData.forecast.threshold;
       const best = hours.reduce((b, h, i) => (h.chance > hours[b].chance ? i : b), 0);
       const cols = hours.map((h, i) => {
         const p = hourParts(h.ts);
         // Mark where a new day starts, like the weather strip's midnight
         const day = !h.now && p.hour === '12' && p.dayPeriod === 'AM' ? p.weekday : '';
-        return `<div class="hour${i === best ? ' best' : ''}" title="${i === best ? 'Likeliest hour · ' : ''}${p.weekday} ${p.hour} ${p.dayPeriod}">
+        const tip = `${i === best ? 'Likeliest hour · ' : ''}${p.weekday} ${p.hour} ${p.dayPeriod}: ${pct(h.chance)} means ${odds(h.chance)} days like this, some server hits ${n}+ players within the hour`;
+        return `<div class="hour${i === best ? ' best' : ''}" title="${tip}">
         <div class="when">${h.now ? 'Now' : `${p.hour}<small>${p.dayPeriod}</small>`}</div>
         <div class="day">${day}</div>
         <div class="icon" aria-hidden="true">${icon(h.chance)}</div>
@@ -1836,7 +1853,13 @@
       grid.innerHTML = cols.join('') + line;
       const b = hourParts(hours[best].ts);
       const bestAt = best ? `${b.weekday} ${b.hour} ${b.dayPeriod} ${zone.toUpperCase()}` : 'right now';
-      $('#hourly-note').textContent = `Chance of a ${siteData.forecast.threshold}+ player lobby within each hour · likeliest ${bestAt}`;
+      $('#hourly-note').textContent = `Chance of a ${n}+ player lobby within each hour · likeliest ${bestAt}`;
+      const bh = hours[best];
+      const next = hourParts(new Date(bh.ts).getTime() + 3600000);
+      $('#hourly-explain').innerHTML = `<b>What the % means:</b> the chance that at least one server gets to ${n}+ players
+        sometime in the hour after that time, if nobody's playing yet. For example, <b>${pct(bh.chance)}</b> at
+        ${best ? `${b.hour} ${b.dayPeriod}` : 'right now'} means ${odds(bh.chance)} days like this, a ${n}+ lobby shows up by
+        ${next.hour} ${next.dayPeriod}. A typical hour is around ${pct(base)} (${odds(base)}).`;
       // The weatherman's verdict, from the likeliest hour against the average one
       const peak = hours[best].chance;
       const [says, sub] = live.players >= siteData.forecast.threshold
