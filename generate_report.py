@@ -16,6 +16,8 @@ from balloon.servers import is_dedicated, merge_relay_addresses
 import subprocess
 import json
 import io
+import email.utils
+import xml.etree.ElementTree as ET
 import re
 import os
 import sys
@@ -41,6 +43,12 @@ USGS_URL = 'https://earthquake.usgs.gov/fdsnws/event/1/query'
 QUAKE_CACHE_PATH = os.path.join(DATA_DIR, 'earthquakes_hourly.json')
 # Late reports keep trickling in, so this much of the end of the cache is refetched each run
 QUAKE_REFETCH = pd.Timedelta(days=2)
+
+# BuzzFeed's public RSS feed, for the "Around the web" strip of their latest headlines (each links back to them)
+BUZZFEED_RSS_URL = 'https://www.buzzfeed.com/index.xml'
+# Enough to fill a rail as tall as the page; posts older than BUZZFEED_MAX_DAYS are skipped
+BUZZFEED_COUNT = 40
+BUZZFEED_MAX_DAYS = 30
 
 # Charts are shown in these zones (the log itself is in LOG_TIMEZONE).
 # The first zone is the default (README, all charts); the rest only redraw the charts that depend on the hour.
@@ -216,6 +224,17 @@ def lobby_windows(df):
     recent = recent_checks(df)
     window = window_rates(recent, recent['online_players'] >= LOBBY_PLAYERS)
     return [{'start': p, 'pct': round(float(window.loc[p, 'pct']), 3)} for p in top_windows(window, LOBBY_WINDOW_COUNT)]
+
+
+# The website's hourly strip: for each hour of the week (Monday midnight = 0, in DISPLAY_TIMEZONE), how many of
+# the recent days had a LOBBY_PLAYERS+ server at some point in that hour, out of the days that hour was checked
+def hourly_history(df):
+    recent = recent_checks(df)
+    per_day = (recent.assign(busy=recent['online_players'] >= LOBBY_PLAYERS, date=recent['ts'].dt.date)
+               .groupby(['hour_of_week', 'date'])['busy'].any().groupby(level='hour_of_week'))
+    hit = per_day.sum().reindex(range(168), fill_value=0)
+    seen = per_day.size().reindex(range(168), fill_value=0)
+    return [[int(h), int(n)] for h, n in zip(hit, seen)]
 
 
 # The day's rolling test scores from the forecast info, or None if it couldn't be tested
@@ -826,11 +845,39 @@ def update_readme(stats):
         f.write(pattern.sub(lambda _: section, readme))
 
 
+# BuzzFeed's newest headlines for the website. The feed isn't in date order and keeps some years-old posts, so
+# it's sorted newest first. If the fetch fails, yesterday's file stays.
+def write_buzzfeed_data():
+    media = '{http://search.yahoo.com/mrss/}'
+    try:
+        r = requests.get(BUZZFEED_RSS_URL, timeout=30, headers={'User-Agent': 'tf2-balloon-race-forecast'})
+        r.raise_for_status()
+        items = []
+        for item in ET.fromstring(r.content).iter('item'):
+            link, title = item.findtext('link', ''), item.findtext('title', '').strip()
+            thumb = item.find(f'{media}thumbnail')
+            image = thumb.get('url', '') if thumb is not None else ''
+            if not title or not link.startswith('https://') or not image.startswith('https://'):
+                continue
+            items.append({'title': title, 'link': link, 'image': image, 'category': item.findtext('category', ''),
+                          'published': email.utils.parsedate_to_datetime(item.findtext('pubDate')).isoformat()})
+        cutoff = dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=BUZZFEED_MAX_DAYS)
+        items = [i for i in items if dt.datetime.fromisoformat(i['published']) >= cutoff]
+        items.sort(key=lambda i: dt.datetime.fromisoformat(i['published']), reverse=True)
+        if not items:
+            raise ValueError('no usable items')
+        with open(os.path.join(OUTPUT_FOLDER, 'buzzfeed.json'), 'w', encoding='utf-8') as f:
+            json.dump({'items': items[:BUZZFEED_COUNT]}, f, ensure_ascii=False, indent=1)
+    except Exception as e:
+        print(f'Error fetching BuzzFeed feed: {e}')
+
+
 # Top servers for each timezone and filter on the website
-def write_site_data(stats_by_zone, windows, forecast, heatmap_servers):
+def write_site_data(stats_by_zone, windows, forecast, heatmap_servers, hourly):
     data = {'updated': dt.datetime.now(dt.timezone.utc).isoformat(timespec='seconds'), 'lobby_players': LOBBY_PLAYERS,
             'top_servers': {}, 'heatmap_servers': heatmap_servers,
-            'lobby_windows': {'timezone': ZONES[0][0], 'recent_days': SCORECARD_RECENT_DAYS, **windows}, 'forecast': forecast}
+            'lobby_windows': {'timezone': ZONES[0][0], 'recent_days': SCORECARD_RECENT_DAYS, **windows}, 'forecast': forecast,
+            'hourly_history': {'timezone': ZONES[0][0], 'recent_days': SCORECARD_RECENT_DAYS, **hourly}}
     for (zone_key, key), (stats, label) in stats_by_zone.items():
         data['top_servers'].setdefault(zone_key, {})[key] = [{
             'name': s['name'],
@@ -908,6 +955,7 @@ if __name__ == "__main__":
     stats_by_zone = {}
     windows = {}
     heatmap_servers = {}
+    hourly = {}
     for DISPLAY_TIMEZONE, TZ_LABEL, ZONE_SUFFIX in ZONES:
         default_zone = ZONE_SUFFIX == ZONES[0][2]
         zone_df, zone_servers = in_zone(graph_df), in_zone(server_df)
@@ -933,6 +981,7 @@ if __name__ == "__main__":
             # These don't depend on the time of day, so they're only drawn once
             if default_zone:
                 windows[variant[0].lstrip('_') or 'all'] = lobby_windows(df)
+                hourly[variant[0].lstrip('_') or 'all'] = hourly_history(df)
                 heatmap_servers[variant[0].lstrip('_') or 'all'] = drawn
                 generate_session_length_plot(df, variant)
                 generate_monthly_avg_plot(df, variant)
@@ -950,8 +999,9 @@ if __name__ == "__main__":
     if history_row:
         save_forecast_history(history_row)
     generate_forecast_history(read_forecast_history())
-    write_site_data(stats_by_zone, windows, forecast, heatmap_servers)
+    write_site_data(stats_by_zone, windows, forecast, heatmap_servers, hourly)
     write_rotation_data()
+    write_buzzfeed_data()
     if '--no-readme' not in sys.argv:
         update_readme(stats)
     if '--no-push' not in sys.argv:

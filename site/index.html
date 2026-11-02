@@ -50,7 +50,7 @@
 
     /* clip, not hidden, so the sticky filter bar keeps working while the alarm shakes */
     main {
-      max-width: 1800px;
+      max-width: 2124px;
       margin: 0 auto;
       padding: 32px 16px 64px;
       overflow-x: clip;
@@ -438,6 +438,48 @@
       animation: ticker 10s linear infinite;
     }
 
+    /* Chaos mode's soundtrack. The YouTube player stays on the page at full size so the browser keeps playing it,
+       but it's see-through and ignores clicks: only the unmute button shows, above the ticker and the overlays */
+    .chaos-jam {
+      display: none;
+    }
+
+    body.chaos .chaos-jam {
+      display: block;
+      position: fixed;
+      right: 16px;
+      bottom: 64px;
+      z-index: 48;
+    }
+
+    .chaos-jam #chaos-jam-player {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 240px;
+      height: 135px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Shown while the song is muted or blocked, until the visitor clicks */
+    .chaos-jam button {
+      position: relative;
+      display: block;
+      border: 4px solid #ffe600;
+      padding: 10px 16px;
+      background: #ff0040;
+      color: #fff;
+      font: 800 18px Impact, "Arial Black", sans-serif;
+      letter-spacing: .03em;
+      box-shadow: 6px 8px 0 rgba(0, 0, 0, .6);
+      cursor: pointer;
+    }
+
+    .chaos-jam button[hidden] {
+      display: none;
+    }
+
     /* Big sloppy sign slapped over the middle of the page; clicks pass through */
     body.chaos .chaos-omg {
       display: block;
@@ -706,6 +748,105 @@
       #top-heatmap,
       .side>.forecast {
         grid-row: 2;
+      }
+    }
+
+    /* Headline rail down the whole right side of the page, filled from the daily report's RSS pull.
+       The list is clipped to the page's height, so the rail ends with the footer. */
+    .page {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 300px;
+      gap: 24px;
+    }
+
+    .page>.content {
+      min-width: 0;
+    }
+
+    .buzz {
+      position: relative;
+      margin-top: 24px;
+    }
+
+    .buzz[hidden] {
+      display: none;
+    }
+
+    /* Deliberately cheap-looking, like a 2012 "around the web" ad box: square corners, Arial, crowded rows */
+    .buzz-inner {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #f1f1f1;
+      border: 1px solid #bbb;
+      padding: 6px;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .buzz ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .buzz li {
+      border-bottom: 1px dotted #999;
+      padding: 6px 0;
+    }
+
+    .buzz a {
+      display: grid;
+      grid-template-columns: 110px minmax(0, 1fr);
+      gap: 6px;
+      align-items: start;
+      color: #1a0dab;
+      text-decoration: none;
+    }
+
+    .buzz a:hover .buzz-title {
+      text-decoration: underline;
+      color: #c00;
+    }
+
+    .buzz img {
+      width: 110px;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      border: 1px solid #999;
+      background: #ddd;
+    }
+
+    .buzz-cat {
+      display: block;
+      color: #888;
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+
+    .buzz-title {
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    /* Narrower screens: the rail drops below the page as a short grid instead */
+    @media (max-width: 1100px) {
+      .page {
+        display: block;
+      }
+
+      .buzz-inner {
+        position: static;
+      }
+
+      .buzz ul {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        column-gap: 8px;
+      }
+
+      .buzz li:nth-child(n+7) {
+        display: none;
       }
     }
 
@@ -1390,6 +1531,8 @@
 
 <body>
   <main>
+  <div class="page">
+  <div class="content">
     <h1>WHEN ARE PEOPLE PLAYING BALLOON RACE????</h1>
     <p class="lede">Every TF2 server on <code>balloon_race_v2b</code> is checked every 5 minutes. Charts update daily until AWS declines my credit card.</p>
     <p class="discord">Get relentlesly pinged when a <span class="lobby-players">10</span>+ player server is going: <a href="https://discord.gg/gdDVEeH7Y">join the Discord</a></p>
@@ -1468,6 +1611,9 @@
       <span id="updated"></span>
       · <a href="https://github.com/benbav/tf2_balloon_race_forecast">Source on GitHub</a>
     </footer>
+  </div>
+  <aside class="buzz" id="buzz" hidden aria-label="Headlines"><div class="buzz-inner" id="buzz-inner"></div></aside>
+  </div>
   </main>
   <div class="airships" id="airships" aria-hidden="true">
     <div class="airship" style="--width: 190px"><img src="assets/ship_red.png" alt=""></div>
@@ -1477,6 +1623,7 @@
     <div>🚨🚨 OH MY GOD 🚨🚨<br>PEOPLE ARE ON BALLOON RACE RIGHT NOW<br>🚨🚨🚨🚨🚨<small id="chaos-server"></small></div>
   </div>
   <div class="chaos-balloons" id="chaos-balloons" aria-hidden="true"></div>
+  <div class="chaos-jam" id="chaos-jam"><div id="chaos-jam-player"></div><button type="button" id="chaos-jam-play" hidden>🔊 PLAY THE JAM</button></div>
   <div class="chaos-ticker" aria-hidden="true"><span id="chaos-ticker"></span></div>
 
   <script>
@@ -1490,6 +1637,12 @@
     const DEFAULT_LOBBY_PLAYERS = 10;
     // Set to true to keep chaos mode on all the time, for testing
     const FORCE_CHAOS = false;
+    // Chaos mode's soundtrack: James Brown, "Sex Machine", from the official
+    // James Brown - Topic channel on YouTube. It loops between these two points, in seconds into the video;
+    // JAM_END = null plays to the end before looping.
+    const JAM_VIDEO = 'mcVrIRDC5IA';
+    const JAM_START = 13;
+    const JAM_END = 40;
     const CHAOS_EMOJI = ['🎈', '🎈', '🎈', '🚨', '🔥', '💥', '🎉', '🫃', '🤰'];
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const PAGE_TITLE = document.title;
@@ -1609,9 +1762,65 @@
       box.append(b);
     }
 
+    // The soundtrack's YouTube player, made the first time chaos mode turns on
+    let jamPlayer = null;
+    let jamLoop = null;
+    let jamOn = false;
+
+    function loadJamPlayer() {
+      if (jamPlayer) return;
+      jamPlayer = 'loading';
+      window.onYouTubeIframeAPIReady = () => {
+        jamPlayer = new YT.Player('chaos-jam-player', {
+          videoId: JAM_VIDEO,
+          playerVars: { start: JAM_START, playsinline: 1, rel: 0 },
+          events: {
+            onReady: () => setJam(jamOn),
+            // Browsers won't play sound before the visitor has clicked on the page, so offer a button
+            onAutoplayBlocked: () => { $('#chaos-jam-play').hidden = false; },
+            onStateChange: (e) => {
+              if (e.data === YT.PlayerState.PLAYING && !jamPlayer.isMuted()) $('#chaos-jam-play').hidden = true;
+              if (e.data === YT.PlayerState.ENDED && jamOn) { jamPlayer.seekTo(JAM_START, true); jamPlayer.playVideo(); }
+            },
+          },
+        });
+      };
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      document.head.append(tag);
+    }
+
+    function setJam(on) {
+      jamOn = on;
+      if (on) loadJamPlayer();
+      if (typeof jamPlayer?.playVideo !== 'function') return;
+      clearInterval(jamLoop);
+      jamLoop = null;
+      if (!on) {
+        jamPlayer.pauseVideo();
+        return;
+      }
+      // Sound can't start before the visitor has clicked or pressed a key on the page, but muted video always may.
+      // So it starts muted when the page hasn't been touched yet, and unmutes on the first click or key.
+      if (!navigator.userActivation?.hasBeenActive) jamPlayer.mute();
+      jamPlayer.seekTo(JAM_START, true);
+      jamPlayer.playVideo();
+      // Back to the start of the loop once it passes the end point
+      if (JAM_END != null) {
+        jamLoop = setInterval(() => {
+          if (jamPlayer.getCurrentTime() >= JAM_END) jamPlayer.seekTo(JAM_START, true);
+        }, 200);
+      }
+      // Some browsers block even muted playback quietly, or it's still muted, so offer the button
+      setTimeout(() => {
+        if (jamOn && (jamPlayer.getPlayerState() !== YT.PlayerState.PLAYING || jamPlayer.isMuted())) $('#chaos-jam-play').hidden = false;
+      }, 2000);
+    }
+
     // Whole page goes off: strobing, shaking, balloons floating up and a ticker along the bottom
     function setChaos(server) {
       const on = FORCE_CHAOS || !!server;
+      if (on !== jamOn) setJam(on);
       document.body.classList.toggle('chaos', on);
       const msg = server
         ? `🚨 ${server.players} PLAYERS ON ${server.name.toUpperCase()} 🎈 GET IN HERE 🎈 `
@@ -1805,69 +2014,99 @@
     const HOURLY_MAX_HOURS = 12;
     const HOURLY_MIN_COL_PX = 44;
 
-    // A weather-style strip: the live chance now, then each of the next hours scored by the poller as a quiet
-    // check (nobody on yet), so it follows the time of day and day of week. The likeliest hour is highlighted.
+    // A weather-style strip of the coming hours, each with how many of the last few weeks had a lobby during that
+    // hour (from the daily report). The busiest hour is highlighted.
     function renderHourly() {
       const box = $('#hourly');
-      const live = liveData?.forecast;
-      const stale = !liveData || Date.now() - new Date(liveData.checked) > STALE_MINUTES * 60000;
-      box.hidden = !siteData?.forecast?.ready || !live?.hourly?.length || stale;
+      const hist = siteData?.hourly_history;
+      const rows = hist?.[filter];
+      box.hidden = !rows?.some(([, seen]) => seen);
       if (box.hidden) return;
       const tz = ZONES[zone].tz;
+      const n = lobbyPlayers();
       // As many hours as fit without scrolling, up to HOURLY_MAX_HOURS ahead
       const fit = Math.floor($('#hourly-grid').clientWidth / HOURLY_MIN_COL_PX) - 1;
-      const ahead = live.hourly.filter((h) => new Date(h.ts) > Date.now()).slice(0, Math.max(3, Math.min(HOURLY_MAX_HOURS, fit)));
-      const hours = [{ ts: live.as_of, chance: live.chance, now: true }, ...ahead];
-      const hourParts = (t) => Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone: tz, hour: 'numeric', weekday: 'short' })
+      const count = 1 + Math.max(3, Math.min(HOURLY_MAX_HOURS, fit));
+      const thisHour = Math.floor(Date.now() / HOUR_MS) * HOUR_MS;
+      // The history is stored by hour of the week in its own timezone, Monday midnight = 0
+      const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      const histParts = new Intl.DateTimeFormat('en-US', { timeZone: hist.timezone, weekday: 'short', hour: 'numeric', hourCycle: 'h23' });
+      const hourOfWeek = (t) => {
+        const p = Object.fromEntries(histParts.formatToParts(new Date(t)).map((x) => [x.type, x.value]));
+        return WEEKDAYS.indexOf(p.weekday) * 24 + (Number(p.hour) % 24);
+      };
+      const hours = Array.from({ length: count }, (_, i) => {
+        const ts = thisHour + i * HOUR_MS;
+        const how = hourOfWeek(ts);
+        const [hit, seen] = rows[how];
+        // The line follows a 1-2-1 blend with the neighboring hours so it rolls instead of jumping between steps
+        const rate = (k) => { const [a, b] = rows[(k + 168) % 168]; return b ? a / b : 0; };
+        const smooth = (rate(how - 1) + 2 * rate(how) + rate(how + 1)) / 4;
+        return { ts, hit, seen, frac: seen ? hit / seen : 0, smooth, now: i === 0 };
+      });
+      const hourParts = (t) => Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone: tz, hour: 'numeric', weekday: 'long' })
         .formatToParts(new Date(t)).map((p) => [p.type, p.value]));
-      // Lobbies are rare, so icons compare each hour to the average one (the share of training checks before a lobby)
-      const base = siteData.forecast.positives / siteData.forecast.examples;
-      const icon = (c) => (c >= 4 * base ? '🔥' : c >= 2 * base ? '🎈' : c >= base ? '⛅' : c >= base / 2 ? '☁️' : '💤');
-      const pct = (c) => (c < 0.01 ? '<1%' : `${Math.round(c * 100)}%`);
-      // "1 in N" reads easier than a percentage
-      const odds = (c) => (c < 0.01 ? 'fewer than 1 in 100' : c >= 0.5 ? `about ${Math.round(c * 10)} in 10` : `about 1 in ${Math.round(1 / c)}`);
-      const n = siteData.forecast.threshold;
-      const best = hours.reduce((b, h, i) => (h.chance > hours[b].chance ? i : b), 0);
+      // Icons compare each hour to the average hour of the week
+      const totals = rows.reduce(([h, s], [a, b]) => [h + a, s + b], [0, 0]);
+      const base = Math.max(totals[0] / Math.max(totals[1], 1), 0.01);
+      const icon = (h) => (!h.hit ? '💤' : h.frac >= 4 * base ? '🔥' : h.frac >= 2 * base ? '🎈' : '⛅');
+      const best = hours.reduce((b, h, i) => (h.frac > hours[b].frac ? i : b), 0);
+      const pct = (f) => `${Math.round(f * 100)}%`;
+      const weeks = Math.round(hist.recent_days / 7);
       const cols = hours.map((h, i) => {
         const p = hourParts(h.ts);
+        const end = hourParts(h.ts + HOUR_MS);
         // Mark where a new day starts, like the weather strip's midnight
-        const day = !h.now && p.hour === '12' && p.dayPeriod === 'AM' ? p.weekday : '';
-        const tip = `${i === best ? 'Likeliest hour · ' : ''}${p.weekday} ${p.hour} ${p.dayPeriod}: ${pct(h.chance)} means ${odds(h.chance)} days like this, some server hits ${n}+ players within the hour`;
-        return `<div class="hour${i === best ? ' best' : ''}" title="${tip}">
+        const day = !h.now && p.hour === '12' && p.dayPeriod === 'AM' ? p.weekday.slice(0, 3) : '';
+        const tip = `${p.weekday}s ${p.hour}–${end.hour} ${end.dayPeriod}: ${h.hit} of the last ${h.seen} had a ${n}+ player server`;
+        return `<div class="hour${h.hit && i === best ? ' best' : ''}" title="${tip}">
         <div class="when">${h.now ? 'Now' : `${p.hour}<small>${p.dayPeriod}</small>`}</div>
         <div class="day">${day}</div>
-        <div class="icon" aria-hidden="true">${icon(h.chance)}</div>
-        <div class="chance">${pct(h.chance)}</div>
+        <div class="icon" aria-hidden="true">${icon(h)}</div>
+        <div class="chance">${h.seen ? pct(h.frac) : '–'}</div>
       </div>`;
       });
-      // Line through every hour's chance, scaled to the busiest hour so the shape of the day shows
-      const top = Math.max(0.05, ...hours.map((h) => h.chance));
-      const pts = hours.map((h, i) => [(i + 0.5) / hours.length * 100, 90 - (h.chance / top) * 80]);
+      // Line through every hour's share, scaled to the busiest hour so the shape of the day shows
+      const top = Math.max(0.25, ...hours.map((h) => h.smooth));
+      const pts = hours.map((h, i) => [(i + 0.5) / hours.length * 100, 90 - (h.smooth / top) * 80]);
+      // Catmull-Rom through the points, as cubic Béziers, for a curve with no corners
+      const curve = pts.map(([x, y], i) => {
+        if (!i) return `M${x},${y}`;
+        const [p0, p1, p2, p3] = [pts[i - 2] ?? pts[i - 1], pts[i - 1], pts[i], pts[i + 1] ?? pts[i]];
+        const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6];
+        const c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
+        return `C${c1.join(',')} ${c2.join(',')} ${x},${y}`;
+      }).join(' ');
       const line = `<div class="hourly-line" aria-hidden="true">
-      <svg viewBox="0 0 100 100" preserveAspectRatio="none"><polyline points="${pts.map((p) => p.join(',')).join(' ')}"
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="${curve}"
         fill="none" stroke="var(--rotating)" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></svg>
       ${pts.map(([x, y], i) => `<i class="${i ? '' : 'now'}" style="left:${x}%;top:${y}%"></i>`).join('')}
     </div>`;
       const grid = $('#hourly-grid');
       grid.style.gridTemplateColumns = `repeat(${hours.length}, minmax(0, 1fr))`;
       grid.innerHTML = cols.join('') + line;
-      const b = hourParts(hours[best].ts);
-      const bestAt = best ? `${b.weekday} ${b.hour} ${b.dayPeriod} ${zone.toUpperCase()}` : 'right now';
-      $('#hourly-note').textContent = `Chance of a ${n}+ player lobby within each hour · likeliest ${bestAt}`;
       const bh = hours[best];
-      const next = hourParts(new Date(bh.ts).getTime() + 3600000);
-      $('#hourly-explain').innerHTML = `<b>What the % means:</b> the chance that at least one server gets to ${n}+ players
-        sometime in the hour after that time, if nobody's playing yet. For example, <b>${pct(bh.chance)}</b> at
-        ${best ? `${b.hour} ${b.dayPeriod}` : 'right now'} means ${odds(bh.chance)} days like this, a ${n}+ lobby shows up by
-        ${next.hour} ${next.dayPeriod}. A typical hour is around ${pct(base)} (${odds(base)}).`;
-      // The weatherman's verdict, from the likeliest hour against the average one
-      const peak = hours[best].chance;
-      const [says, sub] = live.players >= siteData.forecast.threshold
-        ? ['🎈 It\'s raining BALLOON RACE right now!', `${live.players} on the busiest server. Get in there.`]
-        : peak >= 4 * base ? ['🔥 Heat wave warning: BALLOON RACE is coming', `Best odds ${bestAt} (${pct(peak)}). Clear your schedule.`]
-          : peak >= 2 * base ? ['🎈 Cloudy with a chance of BALLOON RACE', `Best odds ${bestAt} (${pct(peak)}). Keep an eye on the sky.`]
-            : peak >= base ? ['⛅ Partly cloudy, slight chance of BALLOON RACE', `About an average day. Best odds ${bestAt} (${pct(peak)}).`]
-              : ['💤 Clear skies, no BALLOON RACE in sight', `Quieter than usual for the next ${hours.length - 1} hours. Best odds ${bestAt} (${pct(peak)}).`];
+      const b = hourParts(bh.ts);
+      const be = hourParts(bh.ts + HOUR_MS);
+      const bestAt = best ? `${b.weekday.slice(0, 3)} ${b.hour} ${b.dayPeriod} ${zone.toUpperCase()}` : 'right now';
+      $('#hourly-note').textContent = bh.hit
+        ? `% of the last ${weeks} weeks with a ${n}+ player lobby in each hour · busiest ${bestAt}`
+        : `% of the last ${weeks} weeks with a ${n}+ player lobby in each hour`;
+      $('#hourly-explain').innerHTML = bh.hit
+        ? `<b>How to read it:</b> <b>${pct(bh.frac)}</b> at ${b.hour} ${b.dayPeriod} means on ${bh.hit} of the last
+          ${bh.seen} ${b.weekday}s, at least one server had ${n}+ players at some point between ${b.hour} and ${be.hour} ${be.dayPeriod}.`
+        : `<b>How to read it:</b> each % is the share of the last ${weeks} weeks that had a server with ${n}+ players
+          during that hour. None of the next ${hours.length} hours has had one lately.`;
+      // The weatherman's verdict, from the busiest coming hour
+      const fresh = liveData && Date.now() - new Date(liveData.checked) <= STALE_MINUTES * 60000;
+      const players = fresh ? liveData.forecast?.players ?? 0 : 0;
+      const record = `${pct(bh.frac)} of recent ${b.weekday}s`;
+      const [says, sub] = players >= n
+        ? ['🎈 It\'s raining BALLOON RACE right now!', `${players} on the busiest server. Get in there.`]
+        : bh.frac >= 4 * base ? ['🔥 Heat wave warning: BALLOON RACE is coming', `Best bet ${bestAt}: a lobby on ${record}. Clear your schedule.`]
+          : bh.frac >= 2 * base ? ['🎈 Cloudy with a chance of BALLOON RACE', `Best bet ${bestAt}: a lobby on ${record}. Keep an eye on the sky.`]
+            : bh.hit ? ['⛅ Partly cloudy, slight chance of BALLOON RACE', `Best bet ${bestAt}: a lobby on ${record}.`]
+              : ['💤 Clear skies, no BALLOON RACE in sight', `No lobbies in the next ${hours.length} hours in the last ${weeks} weeks.`];
       $('#hourly-says').innerHTML = `${says}<span>${sub}</span>`;
     }
 
@@ -2156,6 +2395,43 @@
       requestAnimationFrame(frame);
     }
 
+    // The right rail's headlines, fetched from BuzzFeed's RSS feed by the daily report. Every link goes back to them.
+    async function loadBuzz() {
+      try {
+        const res = await fetch('charts/buzzfeed.json', { cache: 'no-cache' });
+        if (!res.ok) return;
+        const items = (await res.json()).items || [];
+        const safe = (u) => (/^https:\/\//.test(u) ? u : '');
+        const box = $('#buzz');
+        $('#buzz-inner').innerHTML = `
+        <ul>${items.filter((i) => safe(i.link)).map((i) => `<li><a href="${esc(safe(i.link))}" target="_blank" rel="noopener">
+          <img src="${esc(safe(i.image))}" alt="" loading="lazy">
+          <span>${i.category ? `<span class="buzz-cat">${esc(i.category)}</span>` : ''}<span class="buzz-title">${esc(i.title)}</span></span>
+        </a></li>`).join('')}</ul>`;
+        box.hidden = !items.length;
+        alignBuzz();
+        new ResizeObserver(alignBuzz).observe($('.page>.content'));
+      } catch { /* the sidebar just stays hidden */ }
+    }
+
+    // The rail starts level with the top row of cards (the daily forecast) rather than the page title
+    function alignBuzz() {
+      const box = $('#buzz');
+      const side = getComputedStyle($('.page')).display === 'grid';
+      box.style.marginTop = side
+        ? `${$('.top').getBoundingClientRect().top - $('.page').getBoundingClientRect().top}px` : '';
+    }
+
+    function unmuteJam() {
+      if (!jamOn || typeof jamPlayer?.unMute !== 'function') return;
+      jamPlayer.unMute();
+      jamPlayer.playVideo();
+      $('#chaos-jam-play').hidden = true;
+    }
+    $('#chaos-jam-play').addEventListener('click', unmuteJam);
+    // The first click, tap or key anywhere on the page turns the sound on
+    ['pointerdown', 'keydown'].forEach((type) => document.addEventListener(type, unmuteJam, { capture: true }));
+
     async function init() {
       flyAirships();
       setView(viewFromUrl(), false);
@@ -2171,6 +2447,7 @@
         if (res.ok) rotationData = await res.json();
       } catch { /* the section just stays hidden */ }
       renderRotation();
+      loadBuzz();
       loadLive();
       setInterval(loadLive, LIVE_REFRESH_MS);
     }

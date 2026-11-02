@@ -3,3 +3,13 @@ IN PROGRES: seeing if rotating servers have fixed map pattern or if by vote (wil
 
 IN PROGRES: track players who are on the server before balloon race is voted for and rank them - then we can alert discord when enough are online
 - evenetuall add this in as a signal to the model
+
+
+
+
+In the last X days, how many times was there a 10+ balloon race server at that time?
+he chance that at least one server gets to 10+ players sometime in the hour after that time, if nobody's playing yet. For example, 7% at 7 PM means about 1 in 15 days like this, a 10+ lobby shows up by 8 PM. A typical hour is around 6% (about 1 in 17).
+
+
+
+would be funny to have google ad sense on there
