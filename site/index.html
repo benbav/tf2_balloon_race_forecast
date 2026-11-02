@@ -2409,17 +2409,7 @@
           <span>${i.category ? `<span class="buzz-cat">${esc(i.category)}</span>` : ''}<span class="buzz-title">${esc(i.title)}</span></span>
         </a></li>`).join('')}</ul>`;
         box.hidden = !items.length;
-        alignBuzz();
-        new ResizeObserver(alignBuzz).observe($('.page>.content'));
       } catch { /* the sidebar just stays hidden */ }
-    }
-
-    // The rail starts level with the top row of cards (the daily forecast) rather than the page title
-    function alignBuzz() {
-      const box = $('#buzz');
-      const side = getComputedStyle($('.page')).display === 'grid';
-      box.style.marginTop = side
-        ? `${$('.top').getBoundingClientRect().top - $('.page').getBoundingClientRect().top}px` : '';
     }
 
     function unmuteJam() {
