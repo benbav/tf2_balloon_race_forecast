@@ -480,6 +480,131 @@
       display: none;
     }
 
+    /* Rare joke popup in the style of a 2005 "you won!" scam. There is no form: every button lands the punchline */
+    .shirt-popup {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      background: rgba(0, 0, 0, .45);
+    }
+
+    .shirt-popup[hidden] {
+      display: none;
+    }
+
+    .shirt-box {
+      width: min(420px, 100%);
+      background: #ffffe0;
+      border: 3px outset #c0c0c0;
+      font-family: "Comic Sans MS", "Comic Sans", Arial, sans-serif;
+      color: #000;
+      box-shadow: 8px 8px 0 rgba(0, 0, 0, .5);
+      text-align: center;
+    }
+
+    .shirt-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(90deg, #000080, #1084d0);
+      color: #fff;
+      font: 700 13px Tahoma, Arial, sans-serif;
+      padding: 3px 4px 3px 8px;
+      text-align: left;
+    }
+
+    .shirt-bar button {
+      width: 20px;
+      height: 18px;
+      padding: 0;
+      border: 2px outset #c0c0c0;
+      background: #c0c0c0;
+      font: 700 12px Tahoma, Arial, sans-serif;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .shirt-body {
+      padding: 16px 18px 18px;
+    }
+
+    .shirt-body .blink {
+      color: #e00000;
+      font-size: 22px;
+      font-weight: 700;
+      animation: shirt-blink 1s steps(1) infinite;
+    }
+
+    @keyframes shirt-blink {
+      50% {
+        visibility: hidden;
+      }
+    }
+
+    .shirt-body p {
+      margin: 10px 0;
+      font-size: 17px;
+      line-height: 1.3;
+    }
+
+    .shirt-body .shirt {
+      font-size: 64px;
+      line-height: 1;
+    }
+
+    .shirt-claim {
+      display: block;
+      width: 100%;
+      margin-top: 8px;
+      padding: 10px;
+      border: 3px outset #00c000;
+      background: #00e000;
+      color: #000;
+      font: 900 20px Impact, "Arial Black", sans-serif;
+      cursor: pointer;
+    }
+
+    .shirt-nope {
+      margin-top: 8px;
+      border: 0;
+      background: none;
+      color: #00e;
+      font: 12px Arial, sans-serif;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    /* Fake Windows progress bar: chunky green blocks */
+    .shirt-progress {
+      height: 22px;
+      margin: 12px 0 6px;
+      border: 2px inset #c0c0c0;
+      background: #fff;
+      padding: 2px;
+    }
+
+    .shirt-progress i {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: repeating-linear-gradient(90deg, #00a000 0 10px, transparent 10px 12px);
+    }
+
+    .shirt-status {
+      font: 12px "Courier New", monospace;
+      text-align: left;
+      min-height: 3em;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .shirt-body .blink {
+        animation: none;
+      }
+    }
+
     /* Big sloppy sign slapped over the middle of the page; clicks pass through */
     body.chaos .chaos-omg {
       display: block;
@@ -1623,6 +1748,12 @@
     <div>🚨🚨 OH MY GOD 🚨🚨<br>PEOPLE ARE ON BALLOON RACE RIGHT NOW<br>🚨🚨🚨🚨🚨<small id="chaos-server"></small></div>
   </div>
   <div class="chaos-balloons" id="chaos-balloons" aria-hidden="true"></div>
+  <div class="shirt-popup" id="shirt-popup" hidden role="dialog" aria-modal="true" aria-labelledby="shirt-title">
+    <div class="shirt-box">
+      <div class="shirt-bar"><span id="shirt-title">🎈 CONGRATULATIONS!!! 🎈</span><button type="button" data-shirt-close aria-label="Close">×</button></div>
+      <div class="shirt-body" id="shirt-body"></div>
+    </div>
+  </div>
   <div class="chaos-jam" id="chaos-jam"><div id="chaos-jam-player"></div><button type="button" id="chaos-jam-play" hidden>🔊 PLAY THE JAM</button></div>
   <div class="chaos-ticker" aria-hidden="true"><span id="chaos-ticker"></span></div>
 
@@ -1817,10 +1948,21 @@
       }, 2000);
     }
 
+    // The t-shirt popup's "virus" plays the song (no chaos screen) until then
+    let virusJamUntil = 0;
+    let chaosOn = false;
+
+    // The song plays during chaos mode, and for a while after the t-shirt popup's "enter info" click
+    function updateJam() {
+      const on = chaosOn || Date.now() < virusJamUntil;
+      if (on !== jamOn) setJam(on);
+    }
+
     // Whole page goes off: strobing, shaking, balloons floating up and a ticker along the bottom
     function setChaos(server) {
       const on = FORCE_CHAOS || !!server;
-      if (on !== jamOn) setJam(on);
+      chaosOn = on;
+      updateJam();
       document.body.classList.toggle('chaos', on);
       const msg = server
         ? `🚨 ${server.players} PLAYERS ON ${server.name.toUpperCase()} 🎈 GET IN HERE 🎈 `
@@ -2422,6 +2564,72 @@
     // The first click, tap or key anywhere on the page turns the sound on
     ['pointerdown', 'keydown'].forEach((type) => document.addEventListener(type, unmuteJam, { capture: true }));
 
+    // A rare joke popup: about 1 in SHIRT_ODDS visits, a while after the page loads, at most once a browser session.
+    // It never asks for anything: clicking claim just reveals the joke.
+    const SHIRT_ODDS = 25;
+    const SHIRT_DELAY_MS = [20000, 60000];
+
+    function showShirt() {
+      $('#shirt-body').innerHTML = `<div class="blink">⚠ YOU HAVE BEEN SELECTED ⚠</div>
+        <div class="shirt" aria-hidden="true">👕</div>
+        <p><b>Enter your credit card for a FREE Balloon Race collector t-shirt!</b></p>
+        <p style="font-size:13px">Only 3 left!!! Offer expires in 00:59</p>
+        <button type="button" class="shirt-claim" id="shirt-claim">ENTER INFO</button>
+        <button type="button" class="shirt-nope" data-shirt-close>No thanks, I don't like free shirts</button>`;
+      $('#shirt-claim').addEventListener('click', downloadVirus);
+      // Get the song's player ready now, so the last button can start it straight from the click
+      loadJamPlayer();
+      $('#shirt-popup').hidden = false;
+    }
+
+    // The joke's second act: the song starts (the click lets it play with sound), a fake virus download runs,
+    // and the window closes itself when it's done
+    const VIRUS_STEPS = ['Contacting server...', 'Bypassing firewall...', 'Disabling antivirus (lol)...',
+      'Downloading FUNK.DLL...', 'Installing JAMES_BROWN.EXE...', 'Getting up...', 'Getting on up...'];
+    // How long the song keeps looping after the click
+    const VIRUS_JAM_MS = 60000;
+
+    function downloadVirus() {
+      virusJamUntil = Date.now() + VIRUS_JAM_MS;
+      updateJam();
+      setTimeout(updateJam, VIRUS_JAM_MS + 100);
+      $('#shirt-title').textContent = '⚠ DOWNLOADING VIRUS ⚠';
+      $('#shirt-body').innerHTML = `<p><b>Downloading virus...</b></p>
+        <div class="shirt-progress"><i id="virus-bar"></i></div>
+        <div class="shirt-status" id="virus-status"></div>
+        <p style="font-size:11px;color:#666">(parody: there's no virus and no shirt)</p>`;
+      let pct = 0;
+      const tick = setInterval(() => {
+        pct = Math.min(100, pct + 1 + Math.random() * 5);
+        $('#virus-bar').style.width = `${pct}%`;
+        $('#virus-status').textContent = `${Math.floor(pct)}% · ${VIRUS_STEPS[Math.min(VIRUS_STEPS.length - 1, Math.floor(pct / 100 * VIRUS_STEPS.length))]}`;
+        if (pct < 100) return;
+        clearInterval(tick);
+        setTimeout(() => { $('#shirt-popup').hidden = true; }, 700);
+      }, 180);
+    }
+
+    $('#shirt-popup').addEventListener('click', (e) => {
+      if (e.target.closest('[data-shirt-close]') || e.target.id === 'shirt-popup') $('#shirt-popup').hidden = true;
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') $('#shirt-popup').hidden = true;
+    });
+
+    function maybeShowShirt() {
+      const force = new URLSearchParams(location.search).has('shirt');
+      let seen = false;
+      try {
+        seen = sessionStorage.getItem('shirt-popup') === '1';
+      } catch { /* no storage: still rare */ }
+      if (!force && (seen || Math.random() >= 1 / SHIRT_ODDS)) return;
+      try {
+        sessionStorage.setItem('shirt-popup', '1');
+      } catch { /* fine */ }
+      const [lo, hi] = SHIRT_DELAY_MS;
+      setTimeout(showShirt, force ? 1000 : lo + Math.random() * (hi - lo));
+    }
+
     async function init() {
       flyAirships();
       setView(viewFromUrl(), false);
@@ -2438,6 +2646,7 @@
       } catch { /* the section just stays hidden */ }
       renderRotation();
       loadBuzz();
+      maybeShowShirt();
       loadLive();
       setInterval(loadLive, LIVE_REFRESH_MS);
     }
