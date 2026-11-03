@@ -888,6 +888,11 @@
       min-width: 0;
     }
 
+    /* No empty right column while the rail is hidden */
+    .page:has(> .buzz[hidden]) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
     .buzz {
       position: relative;
       margin-top: 24px;
@@ -2537,6 +2542,9 @@
       requestAnimationFrame(frame);
     }
 
+    // Sidebar switched off for now; flip to true to bring it back.
+    const SHOW_BUZZ = false;
+
     // The right rail's headlines, fetched from BuzzFeed's RSS feed by the daily report. Every link goes back to them.
     async function loadBuzz() {
       try {
@@ -2645,7 +2653,7 @@
         if (res.ok) rotationData = await res.json();
       } catch { /* the section just stays hidden */ }
       renderRotation();
-      loadBuzz();
+      if (SHOW_BUZZ) loadBuzz();
       maybeShowShirt();
       loadLive();
       setInterval(loadLive, LIVE_REFRESH_MS);
