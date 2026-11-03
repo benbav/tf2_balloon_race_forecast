@@ -20,3 +20,4 @@
 {"date": "2026-10-30", "test_days": 14, "days": 21, "auc": 0.714, "log_loss": 0.196, "baseline_log_loss": 0.2252, "no_lobby_yet_auc": 0.65, "no_lobby_yet_log_loss": 0.1882, "no_lobby_yet_baseline_log_loss": 0.1955}
 {"date": "2026-10-31", "test_days": 14, "days": 22, "auc": 0.678, "log_loss": 0.1967, "baseline_log_loss": 0.2137, "no_lobby_yet_auc": 0.605, "no_lobby_yet_log_loss": 0.19, "no_lobby_yet_baseline_log_loss": 0.1857}
 {"date": "2026-11-01", "test_days": 14, "days": 23, "auc": 0.673, "log_loss": 0.2044, "baseline_log_loss": 0.22, "no_lobby_yet_auc": 0.602, "no_lobby_yet_log_loss": 0.1975, "no_lobby_yet_baseline_log_loss": 0.1919}
+{"date": "2026-11-02", "test_days": 14, "days": 24, "auc": 0.663, "log_loss": 0.1959, "baseline_log_loss": 0.2116, "no_lobby_yet_auc": 0.585, "no_lobby_yet_log_loss": 0.1889, "no_lobby_yet_baseline_log_loss": 0.1834}
