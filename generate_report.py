@@ -492,7 +492,9 @@ def load_unemployment():
     if os.path.exists(BLS_CACHE_PATH):
         with open(BLS_CACHE_PATH, encoding='utf-8') as f:
             cached = json.load(f)
-    fresh = cached and dt.datetime.now().timestamp() - os.path.getmtime(BLS_CACHE_PATH) < 86400
+    # 20h, not 24h: the cache is written a few seconds after the 06:00 run, so a 24h limit made
+    # the next day's run see it as fresh and only refetched every other day
+    fresh = cached and dt.datetime.now().timestamp() - os.path.getmtime(BLS_CACHE_PATH) < 20 * 3600
     if not fresh:
         try:
             r = requests.get(BLS_URL, timeout=30)
