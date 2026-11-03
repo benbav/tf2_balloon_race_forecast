@@ -2161,61 +2161,44 @@
     const HOURLY_MAX_HOURS = 12;
     const HOURLY_MIN_COL_PX = 44;
 
-    // A weather-style strip of the coming hours, each with how many of the last few weeks had a lobby during that
-    // hour (from the daily report). The busiest hour is highlighted.
+    // A weather-style strip: the live chance now, then each of the next hours scored by the poller as a quiet
+    // check (nobody on yet), so it follows the time of day and day of week. The likeliest hour is highlighted.
     function renderHourly() {
       const box = $('#hourly');
-      const hist = siteData?.hourly_history;
-      const rows = hist?.[filter];
-      box.hidden = !rows?.some(([, seen]) => seen);
+      const live = liveData?.forecast;
+      const stale = !liveData || Date.now() - new Date(liveData.checked) > STALE_MINUTES * 60000;
+      box.hidden = !siteData?.forecast?.ready || !live?.hourly?.length || stale;
       if (box.hidden) return;
       const tz = ZONES[zone].tz;
-      const n = lobbyPlayers();
       // As many hours as fit without scrolling, up to HOURLY_MAX_HOURS ahead
       const fit = Math.floor($('#hourly-grid').clientWidth / HOURLY_MIN_COL_PX) - 1;
-      const count = 1 + Math.max(3, Math.min(HOURLY_MAX_HOURS, fit));
-      const thisHour = Math.floor(Date.now() / HOUR_MS) * HOUR_MS;
-      // The history is stored by hour of the week in its own timezone, Monday midnight = 0
-      const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-      const histParts = new Intl.DateTimeFormat('en-US', { timeZone: hist.timezone, weekday: 'short', hour: 'numeric', hourCycle: 'h23' });
-      const hourOfWeek = (t) => {
-        const p = Object.fromEntries(histParts.formatToParts(new Date(t)).map((x) => [x.type, x.value]));
-        return WEEKDAYS.indexOf(p.weekday) * 24 + (Number(p.hour) % 24);
-      };
-      const hours = Array.from({ length: count }, (_, i) => {
-        const ts = thisHour + i * HOUR_MS;
-        const how = hourOfWeek(ts);
-        const [hit, seen] = rows[how];
-        // The line follows a 1-2-1 blend with the neighboring hours so it rolls instead of jumping between steps
-        const rate = (k) => { const [a, b] = rows[(k + 168) % 168]; return b ? a / b : 0; };
-        const smooth = (rate(how - 1) + 2 * rate(how) + rate(how + 1)) / 4;
-        return { ts, hit, seen, frac: seen ? hit / seen : 0, smooth, now: i === 0 };
-      });
-      const hourParts = (t) => Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone: tz, hour: 'numeric', weekday: 'long' })
+      const ahead = live.hourly.filter((h) => new Date(h.ts) > Date.now()).slice(0, Math.max(3, Math.min(HOURLY_MAX_HOURS, fit)));
+      const hours = [{ ts: live.as_of, chance: live.chance, now: true }, ...ahead];
+      const hourParts = (t) => Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone: tz, hour: 'numeric', weekday: 'short' })
         .formatToParts(new Date(t)).map((p) => [p.type, p.value]));
-      // Icons compare each hour to the average hour of the week
-      const totals = rows.reduce(([h, s], [a, b]) => [h + a, s + b], [0, 0]);
-      const base = Math.max(totals[0] / Math.max(totals[1], 1), 0.01);
-      const icon = (h) => (!h.hit ? '💤' : h.frac >= 4 * base ? '🔥' : h.frac >= 2 * base ? '🎈' : '⛅');
-      const best = hours.reduce((b, h, i) => (h.frac > hours[b].frac ? i : b), 0);
-      const pct = (f) => `${Math.round(f * 100)}%`;
-      const weeks = Math.round(hist.recent_days / 7);
+      // Lobbies are rare, so icons compare each hour to the average one (the share of training checks before a lobby)
+      const base = siteData.forecast.positives / siteData.forecast.examples;
+      const icon = (c) => (c >= 4 * base ? '🔥' : c >= 2 * base ? '🎈' : c >= base ? '⛅' : c >= base / 2 ? '☁️' : '💤');
+      const pct = (c) => (c < 0.01 ? '<1%' : `${Math.round(c * 100)}%`);
+      // "1 in N" reads easier than a percentage
+      const odds = (c) => (c < 0.01 ? 'fewer than 1 in 100' : c >= 0.5 ? `about ${Math.round(c * 10)} in 10` : `about 1 in ${Math.round(1 / c)}`);
+      const n = siteData.forecast.threshold;
+      const best = hours.reduce((b, h, i) => (h.chance > hours[b].chance ? i : b), 0);
       const cols = hours.map((h, i) => {
         const p = hourParts(h.ts);
-        const end = hourParts(h.ts + HOUR_MS);
         // Mark where a new day starts, like the weather strip's midnight
-        const day = !h.now && p.hour === '12' && p.dayPeriod === 'AM' ? p.weekday.slice(0, 3) : '';
-        const tip = `${p.weekday}s ${p.hour}–${end.hour} ${end.dayPeriod}: ${h.hit} of the last ${h.seen} had a ${n}+ player server`;
-        return `<div class="hour${h.hit && i === best ? ' best' : ''}" title="${tip}">
+        const day = !h.now && p.hour === '12' && p.dayPeriod === 'AM' ? p.weekday : '';
+        const tip = `${i === best ? 'Likeliest hour · ' : ''}${p.weekday} ${p.hour} ${p.dayPeriod}: ${pct(h.chance)} means ${odds(h.chance)} days like this, some server hits ${n}+ players within the hour`;
+        return `<div class="hour${i === best ? ' best' : ''}" title="${tip}">
         <div class="when">${h.now ? 'Now' : `${p.hour}<small>${p.dayPeriod}</small>`}</div>
         <div class="day">${day}</div>
-        <div class="icon" aria-hidden="true">${icon(h)}</div>
-        <div class="chance">${h.seen ? pct(h.frac) : '–'}</div>
+        <div class="icon" aria-hidden="true">${icon(h.chance)}</div>
+        <div class="chance">${pct(h.chance)}</div>
       </div>`;
       });
-      // Line through every hour's share, scaled to the busiest hour so the shape of the day shows
-      const top = Math.max(0.25, ...hours.map((h) => h.smooth));
-      const pts = hours.map((h, i) => [(i + 0.5) / hours.length * 100, 90 - (h.smooth / top) * 80]);
+      // Line through every hour's chance, scaled to the busiest hour so the shape of the day shows
+      const top = Math.max(0.05, ...hours.map((h) => h.chance));
+      const pts = hours.map((h, i) => [(i + 0.5) / hours.length * 100, 90 - (h.chance / top) * 80]);
       // Catmull-Rom through the points, as cubic Béziers, for a curve with no corners
       const curve = pts.map(([x, y], i) => {
         if (!i) return `M${x},${y}`;
@@ -2232,28 +2215,23 @@
       const grid = $('#hourly-grid');
       grid.style.gridTemplateColumns = `repeat(${hours.length}, minmax(0, 1fr))`;
       grid.innerHTML = cols.join('') + line;
+      const b = hourParts(hours[best].ts);
+      const bestAt = best ? `${b.weekday} ${b.hour} ${b.dayPeriod} ${zone.toUpperCase()}` : 'right now';
+      $('#hourly-note').textContent = `Chance of a ${n}+ player lobby within each hour · likeliest ${bestAt}`;
       const bh = hours[best];
-      const b = hourParts(bh.ts);
-      const be = hourParts(bh.ts + HOUR_MS);
-      const bestAt = best ? `${b.weekday.slice(0, 3)} ${b.hour} ${b.dayPeriod} ${zone.toUpperCase()}` : 'right now';
-      $('#hourly-note').textContent = bh.hit
-        ? `% of the last ${weeks} weeks with a ${n}+ player lobby in each hour · busiest ${bestAt}`
-        : `% of the last ${weeks} weeks with a ${n}+ player lobby in each hour`;
-      $('#hourly-explain').innerHTML = bh.hit
-        ? `<b>How to read it:</b> <b>${pct(bh.frac)}</b> at ${b.hour} ${b.dayPeriod} means on ${bh.hit} of the last
-          ${bh.seen} ${b.weekday}s, at least one server had ${n}+ players at some point between ${b.hour} and ${be.hour} ${be.dayPeriod}.`
-        : `<b>How to read it:</b> each % is the share of the last ${weeks} weeks that had a server with ${n}+ players
-          during that hour. None of the next ${hours.length} hours has had one lately.`;
-      // The weatherman's verdict, from the busiest coming hour
-      const fresh = liveData && Date.now() - new Date(liveData.checked) <= STALE_MINUTES * 60000;
-      const players = fresh ? liveData.forecast?.players ?? 0 : 0;
-      const record = `${pct(bh.frac)} of recent ${b.weekday}s`;
-      const [says, sub] = players >= n
-        ? ['🎈 It\'s raining BALLOON RACE right now!', `${players} on the busiest server. Get in there.`]
-        : bh.frac >= 4 * base ? ['🔥 Heat wave warning: BALLOON RACE is coming', `Best bet ${bestAt}: a lobby on ${record}. Clear your schedule.`]
-          : bh.frac >= 2 * base ? ['🎈 Cloudy with a chance of BALLOON RACE', `Best bet ${bestAt}: a lobby on ${record}. Keep an eye on the sky.`]
-            : bh.hit ? ['⛅ Partly cloudy, slight chance of BALLOON RACE', `Best bet ${bestAt}: a lobby on ${record}.`]
-              : ['💤 Clear skies, no BALLOON RACE in sight', `No lobbies in the next ${hours.length} hours in the last ${weeks} weeks.`];
+      const next = hourParts(new Date(bh.ts).getTime() + 3600000);
+      $('#hourly-explain').innerHTML = `<b>What the % means:</b> the chance that at least one server gets to ${n}+ players
+        sometime in the hour after that time, if nobody's playing yet. For example, <b>${pct(bh.chance)}</b> at
+        ${best ? `${b.hour} ${b.dayPeriod}` : 'right now'} means ${odds(bh.chance)} days like this, a ${n}+ lobby shows up by
+        ${next.hour} ${next.dayPeriod}. A typical hour is around ${pct(base)} (${odds(base)}).`;
+      // The weatherman's verdict, from the likeliest hour against the average one
+      const peak = hours[best].chance;
+      const [says, sub] = live.players >= siteData.forecast.threshold
+        ? ['🎈 It\'s raining BALLOON RACE right now!', `${live.players} on the busiest server. Get in there.`]
+        : peak >= 4 * base ? ['🔥 Heat wave warning: BALLOON RACE is coming', `Best odds ${bestAt} (${pct(peak)}). Clear your schedule.`]
+          : peak >= 2 * base ? ['🎈 Cloudy with a chance of BALLOON RACE', `Best odds ${bestAt} (${pct(peak)}). Keep an eye on the sky.`]
+            : peak >= base ? ['⛅ Partly cloudy, slight chance of BALLOON RACE', `About an average day. Best odds ${bestAt} (${pct(peak)}).`]
+              : ['💤 Clear skies, no BALLOON RACE in sight', `Quieter than usual for the next ${hours.length - 1} hours. Best odds ${bestAt} (${pct(peak)}).`];
       $('#hourly-says').innerHTML = `${says}<span>${sub}</span>`;
     }
 
