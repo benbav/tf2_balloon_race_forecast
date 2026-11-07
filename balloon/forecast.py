@@ -1,4 +1,5 @@
 import datetime as dt
+import io
 import joblib
 import numpy as np
 import pandas as pd
@@ -7,6 +8,7 @@ from sklearn.metrics import brier_score_loss, log_loss, roc_auc_score
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from balloon.log import LOG_TIMEZONE, parse_log, tail_lines
+from balloon.rotation import ROTATION_COLUMNS, ROTATION_LOG_PATH
 from balloon.servers import merge_relay_addresses, relay_targets
 from balloon.voters import (SNAPSHOT_LOG_PATH, SNAPSHOT_STALE_MINUTES, read_changes, read_snapshots,
                             recent_snapshots, voters_waiting)
@@ -34,6 +36,14 @@ TAIL_BYTES = 2_000_000
 # waiting: with 10 days and 38 such checks it made the rolling test slightly worse.
 FORECAST_MIN_VOTER_DATES = 14
 FORECAST_MIN_VOTER_CHECKS = 25
+# Players on rotating servers: humans on all the rotating servers the tracker watches (rotation_tracker.py), whatever
+# map they're on. On 2026-11-07 it was the only one of 15 candidate inputs that helped the rolling test on most days
+# (model_test/test_features.py). Each server's latest reading counts for this long; left out until the tracker's
+# log covers this many days.
+ROTATION_STALE_MINUTES = 10
+FORECAST_MIN_ROTATION_DATES = 14
+# Live scoring reads this much of the end of the rotation log, many hours of every server
+ROTATION_TAIL_BYTES = 200_000
 # Rolling evaluation: each of the latest days (up to this many) is predicted by a model trained only
 # on the days before it, and at least this many earlier days are needed before a day is tested
 EVAL_MAX_DAYS = 14
@@ -66,8 +76,43 @@ def add_voters(f, voter_rows):
     f['has_voter_data'] = (f['ts'] >= v['ts'].iloc[0]).astype(float)
 
 
+# The tracker's rotation log as rows of (ts in UTC, addr, humans); `tail_bytes` reads just the end of it
+def read_rotation(path=ROTATION_LOG_PATH, tail_bytes=None):
+    try:
+        if tail_bytes:
+            text = '\n'.join(tail_lines(path, tail_bytes))
+        else:
+            with open(path, encoding='utf-8', errors='replace') as f:
+                text = f.read()
+    except FileNotFoundError:
+        return pd.DataFrame(columns=['ts', 'addr', 'humans'])
+    r = pd.read_csv(io.StringIO(text), names=ROTATION_COLUMNS, header=None, usecols=['ts', 'addr', 'players', 'bots'])
+    r = r[r['ts'] != 'ts']
+    r['ts'] = pd.to_datetime(r['ts'], errors='coerce').dt.tz_localize('UTC')
+    # Offline servers are logged with 0 players
+    players, bots = (pd.to_numeric(r[c], errors='coerce').fillna(0) for c in ('players', 'bots'))
+    r['humans'] = (players - bots).clip(lower=0)
+    return r.dropna(subset=['ts'])[['ts', 'addr', 'humans']]
+
+
+# Humans on all the watched rotating servers at each check, and whether the tracker had any of them then
+def add_rotation(f, rotation_rows):
+    f['rotation_players'], f['has_rotation_data'] = 0.0, 0.0
+    if rotation_rows is None or rotation_rows.empty:
+        return
+    r = rotation_rows.copy()
+    r['ts'] = r['ts'].dt.tz_convert(f['ts'].dt.tz).astype(f['ts'].dtype)
+    r = r.sort_values('ts')
+    tolerance, seen = pd.Timedelta(minutes=ROTATION_STALE_MINUTES), np.zeros(len(f), dtype=bool)
+    for _, rows in r.groupby('addr'):
+        on = pd.merge_asof(f[['ts']], rows[['ts', 'humans']], on='ts', direction='backward', tolerance=tolerance)
+        f['rotation_players'] += on['humans'].fillna(0).to_numpy()
+        seen |= on['humans'].notna().to_numpy()
+    f['has_rotation_data'] = seen.astype(float)
+
+
 # One row per check with everything the features need, each computed only from that check and earlier ones
-def check_frame(df, server_df, threshold, check_minutes, voter_rows=None):
+def check_frame(df, server_df, threshold, check_minutes, voter_rows=None, rotation_rows=None):
     f = df.sort_values('ts').reset_index(drop=True)
     f['addr'] = busiest_addrs(f, server_df)
     per_check = server_df.groupby('ts')['players'].agg(['sum', 'size'])
@@ -86,6 +131,7 @@ def check_frame(df, server_df, threshold, check_minutes, voter_rows=None):
     since = (f['ts'] - last['last_busy']).dt.total_seconds() / 60
     f['minutes_since_busy'] = since.fillna(SINCE_BUSY_CAP_MINUTES).clip(upper=SINCE_BUSY_CAP_MINUTES)
     add_voters(f, voter_rows)
+    add_rotation(f, rotation_rows)
     return f
 
 
@@ -103,13 +149,16 @@ def feature_matrix(f, cfg):
     # Models saved before this feature existed have no use_voters.
     voters = ([f['has_voter_data'].to_numpy(dtype=float), f['voters_waiting'].to_numpy(dtype=float)]
               if cfg.get('use_voters') else [])
+    # Same flag for checks from before the rotation tracker started
+    rotation = ([f['has_rotation_data'].to_numpy(dtype=float), np.log1p(f['rotation_players'].to_numpy(dtype=float))]
+                if cfg.get('use_rotation') else [])
     return np.column_stack([
         np.log1p(players), (players >= cfg['threshold']).astype(float),
         np.log1p(f['total_players'].to_numpy(dtype=float)), f['servers_on'].to_numpy(dtype=float),
         *[f[f'change_{m}'].to_numpy(dtype=float) for m in MOMENTUM_MINUTES],
         np.log1p(f['minutes_since_busy'].to_numpy(dtype=float)),
         np.sin(angle), np.cos(angle), np.sin(2 * angle), np.cos(2 * angle),
-        *days, *servers, *holidays, *voters,
+        *days, *servers, *holidays, *voters, *rotation,
     ])
 
 
@@ -126,6 +175,7 @@ def feature_groups(cfg, server_names=None):
         *[(f"Busiest server is {names.get(s, s)}", 1) for s in cfg['servers']],
         *([('Holiday', 1)] if cfg['use_holidays'] else []),
         *([('Balloon Race voters waiting', 2)] if cfg.get('use_voters') else []),
+        *([('Players on rotating servers', 2)] if cfg.get('use_rotation') else []),
     ]
 
 
@@ -225,8 +275,9 @@ def train_lobby_forecast(df, server_df, holiday_dates, threshold, check_minutes,
     # One relay server under several addresses counts as one server; the mapping is saved for live scoring
     targets = relay_targets(server_df)
     server_df = merge_relay_addresses(server_df, targets)
-    f = check_frame(df, server_df, threshold, check_minutes, voter_rows)
+    f = check_frame(df, server_df, threshold, check_minutes, voter_rows, read_rotation())
     dates = f['ts'].dt.date.drop_duplicates()
+    rotation_on = f['has_rotation_data'] > 0
     weekday_dates = pd.to_datetime(dates).dt.dayofweek.value_counts().reindex(range(7), fill_value=0)
     cfg = {'threshold': threshold, 'check_minutes': check_minutes, 'timezone': timezone,
            'servers': pick_servers(f['addr'], f['online_players']), 'relay_targets': targets,
@@ -234,14 +285,19 @@ def train_lobby_forecast(df, server_df, holiday_dates, threshold, check_minutes,
            'use_holidays': bool(dates.isin(holiday_dates).sum() >= FORECAST_MIN_HOLIDAY_DATES),
            'holiday_dates': set(holiday_dates),
            'use_voters': len({r['ts'][:10] for r in voter_rows}) >= FORECAST_MIN_VOTER_DATES
-                         and int((f['voters_waiting'] > 0).sum()) >= FORECAST_MIN_VOTER_CHECKS}
+                         and int((f['voters_waiting'] > 0).sum()) >= FORECAST_MIN_VOTER_CHECKS,
+           'use_rotation': f.loc[rotation_on, 'ts'].dt.date.nunique() >= FORECAST_MIN_ROTATION_DATES,
+           # The outlook can't know who'll be on later, so it assumes the usual count for each hour of the day
+           'rotation_by_hour': [float(v) for v in f.loc[rotation_on].groupby(f['ts'].dt.hour)['rotation_players']
+                                .median().reindex(range(24)).fillna(0)]}
     keep, y = lobby_labels(f, threshold, check_minutes)
     examples = f.iloc[keep].reset_index(drop=True)
     X = feature_matrix(examples, cfg)
     days = (f['ts'].max() - f['ts'].min()).days if len(f) else 0
     info = {'model': 'Logistic regression', 'horizon_minutes': FORECAST_MINUTES, 'threshold': threshold, 'timezone': timezone,
             'days': days, 'examples': int(len(y)), 'positives': int(y.sum()), 'servers': cfg['servers'],
-            'uses_day_of_week': cfg['use_days'], 'uses_holidays': cfg['use_holidays'], 'uses_voters': cfg['use_voters']}
+            'uses_day_of_week': cfg['use_days'], 'uses_holidays': cfg['use_holidays'], 'uses_voters': cfg['use_voters'],
+            'uses_rotation': cfg['use_rotation']}
     if len(y) < 100 or y.sum() < 3 or y.sum() == len(y):
         print('Lobby forecast: not enough data to train')
         return dict(info, ready=False), None
@@ -276,19 +332,22 @@ def predict_now(log_path, model_path, snapshot_path=SNAPSHOT_LOG_PATH):
     voter_rows = None
     if cfg.get('use_voters'):
         voter_rows = voters_waiting(recent_snapshots(snapshot_path), read_changes())
+    rotation_rows = read_rotation(tail_bytes=ROTATION_TAIL_BYTES) if cfg.get('use_rotation') else None
     # Models saved before relay merging have no relay_targets
     servers = merge_relay_addresses(servers, cfg.get('relay_targets', {}))
-    f = check_frame(checks, servers, cfg['threshold'], cfg['check_minutes'], voter_rows).tail(1)
+    f = check_frame(checks, servers, cfg['threshold'], cfg['check_minutes'], voter_rows, rotation_rows).tail(1)
     chance = float(saved['model'].predict_proba(feature_matrix(f, cfg))[0, 1])
     row = f.iloc[0]
     return {'chance': round(chance, 3), 'as_of': row['ts'].isoformat(), 'players': int(row['online_players']),
-            'change_15': int(row['change_15']), 'voters_waiting': int(row['voters_waiting']), 'trained': saved['trained'],
+            'change_15': int(row['change_15']), 'voters_waiting': int(row['voters_waiting']),
+            'rotation_players': int(row['rotation_players']), 'trained': saved['trained'],
             'hourly': hourly_outlook(saved['model'], cfg, row)}
 
 
 # The daily outlook: the chance of a lobby within the hour starting at each of the next HOURLY_HOURS hours.
 # Nobody can know who'll be on later, so each hour is scored as a quiet check (nobody on, no momentum, no voters
-# waiting) that far after the last lobby, which leaves the time of day, day of week and holidays to drive it.
+# waiting, the usual crowd for that hour on the rotating servers) that far after the last lobby, which leaves the
+# time of day, day of week and holidays to drive it.
 def hourly_outlook(model, cfg, row):
     start = row['ts'].floor('h') + pd.Timedelta(hours=1)
     hours = pd.date_range(start, periods=HOURLY_HOURS, freq='h')
@@ -296,6 +355,9 @@ def hourly_outlook(model, cfg, row):
     f = pd.DataFrame({'ts': hours, 'online_players': 0, 'addr': None, 'total_players': 0, 'servers_on': 0,
                       **{f'change_{m}': 0 for m in MOMENTUM_MINUTES},
                       'minutes_since_busy': np.minimum(row['minutes_since_busy'] + gone, SINCE_BUSY_CAP_MINUTES),
-                      'voters_waiting': 0.0, 'has_voter_data': row['has_voter_data']})
+                      'voters_waiting': 0.0, 'has_voter_data': row['has_voter_data'],
+                      # Models saved before this input have no rotation_by_hour
+                      'rotation_players': [cfg.get('rotation_by_hour', [0.0] * 24)[t.hour] for t in hours],
+                      'has_rotation_data': 1.0})
     chances = model.predict_proba(feature_matrix(f, cfg))[:, 1]
     return [{'ts': t.isoformat(), 'chance': round(float(c), 3)} for t, c in zip(hours, chances)]
