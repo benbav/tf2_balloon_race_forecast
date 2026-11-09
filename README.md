@@ -18,8 +18,8 @@ Ranked by how often they have a lobby going (as many players as the Discord ping
 <!-- TOP_SERVERS_START -->
 | # | Server | Connect (paste in TF2 console) | Best time for a 10+ lobby | Best day | Has 10+ players | Has players | Avg players when on | Peak |
 |---|---|---|---|---|---|---|---|---|
-| 1 | [TR]  Türk Ninjalar sunucusu | `connect 88.233.138.82:27017` | Sun · 6 AM – 8 AM MT (11%) | Saturday | 1% of checks | 1% of checks | 13.3 | 24 |
-| 2 | shounic trenches (USA Chicago) | `connect 193.243.190.25:27015` | Sun · 9 PM – 11 PM MT (4%) | Sunday | 0% of checks | 1% of checks | 29.2 | 98 |
+| 1 | [TR]  Türk Ninjalar sunucusu | `connect 88.233.138.82:27017` | Tue · 11 AM – 1 PM MT (9%) | Saturday | 1% of checks | 1% of checks | 13.3 | 24 |
+| 2 | shounic trenches (USA Chicago) | `connect 193.243.190.25:27015` | Sun · 9 PM – 11 PM MT (5%) | Sunday | 0% of checks | 1% of checks | 30.3 | 98 |
 | 3 | Aar's Server \| Map Testing \| Virginia | `connect 169.254.112.56:12184` | Sat · 2 PM – 4 PM MT (6%) | Saturday | 0% of checks | 0% of checks | 24.7 | 26 |
 | 4 | Server hosted by Physgun.com | `connect 45.45.238.134:27105` | Fri · 6 PM – 8 PM MT (6%) | Friday | 0% of checks | 0% of checks | 21.8 | 23 |
 | 5 | Server Testing | `connect 69.41.182.173:27015` | Sat · 6 PM – 8 PM MT (2%) | Saturday | 0% of checks | 0% of checks | 4.8 | 12 |
