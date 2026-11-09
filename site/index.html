@@ -1782,8 +1782,11 @@
     const CHAOS_EMOJI = ['🎈', '🎈', '🎈', '🚨', '🔥', '💥', '🎉', '🫃', '🤰'];
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const PAGE_TITLE = document.title;
-    // Windows where under this share of checks had a lobby aren't "likely"; the best one is still shown
-    const NEXT_LOBBY_MIN_PCT = 0.15;
+    // Windows that had a lobby in under this share of recent weeks aren't "likely"; the best one is still shown
+    const NEXT_LOBBY_MIN_PCT = 0.5;
+    // The best time also names windows within this much of the best one, up to this many
+    const BEST_TIME_TIE_PCT = 0.02;
+    const BEST_TIME_MAX_SHOWN = 2;
     // The live list shows only the busiest few
     const LIVE_SERVER_LIMIT = 2;
     // The server table shows this many rows; the rest scroll
@@ -1838,7 +1841,7 @@
       {
         title: 'Totally unrelated', charts: [
           ['earthquake_correlation', 'Earthquakes vs Balloon Race players'],
-          ['unemployment_correlation', 'Unemployment vs Balloon Race players, correlated'],
+          ['unemployment_correlation', 'Unemployment vs Balloon Race players'],
         ]
       },
     ];
@@ -2084,10 +2087,16 @@
       const when = next.start <= Date.now()
         ? `<strong>Likely lobby time now</strong>, until ${hour(end)} ${zone.toUpperCase()}`
         : `<strong>Next likely lobby: ${day} ${hour(next.start)} – ${hour(end)} ${zone.toUpperCase()}</strong>, in ${countdown(next.start - Date.now())}`;
-      box.innerHTML = `${when}<br><span>${Math.round(next.window.pct * 100)}% of recent checks in that window had a ${threshold}+ player server</span>`;
+      box.innerHTML = `${when}<br><span>A ${threshold}+ player server showed up in that window ${weeksNote(next.window)}</span>`;
     }
 
-    // The single best 2-hour window of the recent checks, in the chosen timezone
+    // "in 3 of the last 4 weeks": a window comes around once a week, so its days are weeks
+    function weeksNote(w) {
+      return w.seen ? `in ${w.days} of the last ${w.seen} week${w.seen === 1 ? '' : 's'}`
+        : `${Math.round(w.pct * 100)}% of recent weeks`;
+    }
+
+    // The best 2-hour window of the recent days in the chosen timezone, plus any within a near tie of it
     function renderBestTime() {
       const box = $('#best-time');
       const data = siteData?.lobby_windows;
@@ -2095,19 +2104,22 @@
         box.textContent = '';
         return;
       }
-      const best = data[filter]?.[0];
-      const next = best && nextWindowStart([best], data.timezone);
-      if (!next) {
+      const ranked = data[filter] ?? [];
+      const best = ranked[0];
+      const z = ZONES[zone];
+      const day = (t) => new Intl.DateTimeFormat('en-US', { timeZone: z.tz, weekday: 'short' }).format(t);
+      const hour = (t) => new Intl.DateTimeFormat('en-US', { timeZone: z.tz, hour: 'numeric' }).format(t);
+      const shown = ranked.filter((w) => best.pct - w.pct <= BEST_TIME_TIE_PCT).slice(0, BEST_TIME_MAX_SHOWN)
+        .map((w) => nextWindowStart([w], data.timezone)).filter(Boolean);
+      if (!best || !shown.length) {
         box.innerHTML = `Best time: <strong>not enough data yet</strong>`;
         return;
       }
-      const z = ZONES[zone];
-      const day = new Intl.DateTimeFormat('en-US', { timeZone: z.tz, weekday: 'short' }).format(next.start);
-      const hour = (t) => new Intl.DateTimeFormat('en-US', { timeZone: z.tz, hour: 'numeric' }).format(t);
-      const days = Math.min(data.recent_days, siteData.forecast?.days ?? data.recent_days);
-      box.innerHTML = `Statistical best time to get your fix: <strong>${day} ${hour(next.start)} – ${hour(next.start + 2 * HOUR_MS)} ${zone.toUpperCase()}</strong>`
-        + ` · ${Math.round(best.pct * 100)}% chance of ${lobbyPlayers()}+ lobby`;
-      box.title = `Share of checks in this window over the last ${days} days with a ${lobbyPlayers()}+ player server`;
+      const times = shown.map((n) => `<strong>${day(n.start)} ${hour(n.start)} – ${hour(n.start + 2 * HOUR_MS)} ${zone.toUpperCase()}</strong>`);
+      box.innerHTML = `Statistical best time to get your fix: ${times.join(' or ')}`
+        + ` · ${lobbyPlayers()}+ lobby ${weeksNote(best)}`;
+      box.title = `Weeks over the last ${data.recent_days} days with a ${lobbyPlayers()}+ player server at some point in the window`
+        + (shown.length > 1 ? `, tied within ${Math.round(BEST_TIME_TIE_PCT * 100)} points` : '');
     }
 
     function renderDrivers(f) {

@@ -185,25 +185,33 @@ def days_of_data(df):
     return (df['ts'].max() - df['ts'].min()).days if len(df) else 0
 
 
-# % of checks with someone on, for every 2-hour window of the week (wrapping Sunday night into Monday)
+# For every 2-hour window of the week (wrapping Sunday night into Monday): the days `active` held at some point in
+# the window ('hit') out of the days the window was checked ('seen'), as 'pct', the same way the busy lobby heatmap
+# counts. A window comes around once a week, so 'pct' is also the share of weeks. 'checks' is the share of checks
+# in the window that were active, i.e. how long the lobbies lasted, and only breaks ties.
 def window_rates(df, active):
-    rate = (
-        df.assign(active=active)
-        .groupby('hour_of_week')['active']
-        .agg(['sum', 'count'])
-        .reindex(range(168), fill_value=0)
-    )
-    nxt = rate.shift(-1)
-    nxt.iloc[-1] = rate.iloc[0]
-    window = rate + nxt
-    window['pct'] = (window['sum'] / window['count'].where(window['count'] > 0)).fillna(0)
+    # Each check falls in the window starting its own hour and the one starting the hour before
+    spans = pd.concat([
+        pd.DataFrame({'start': df['hour_of_week'], 'date': df['ts'].dt.date, 'active': active}),
+        pd.DataFrame({'start': (df['hour_of_week'] - 1) % 168, 'date': (df['ts'] - pd.Timedelta(hours=1)).dt.date,
+                      'active': active}),
+    ])
+    per_day = spans.groupby(['start', 'date'])['active'].any().groupby(level='start')
+    window = pd.DataFrame({
+        'hit': per_day.sum(), 'seen': per_day.size(), 'checks': spans.groupby('start')['active'].mean(),
+    }).reindex(range(168), fill_value=0)
+    window['pct'] = (window['hit'] / window['seen'].where(window['seen'] > 0)).fillna(0)
     return window
 
 
-# Best non-overlapping 2-hour windows, best first
+# Best non-overlapping 2-hour windows, best first. Ties on the share of days go to the window whose lobbies
+# lasted longer, then the one checked on more days, then the earlier one in the week, so the order never
+# depends on how the sort happened to land
 def top_windows(window, n):
+    ranked = window.rename_axis(None).assign(start=window.index).sort_values(
+        ['pct', 'checks', 'seen', 'start'], ascending=[False, False, False, True])
     picked = []
-    for start in window['pct'].sort_values(ascending=False).index:
+    for start in ranked.index:
         if len(picked) == n or window.loc[start, 'pct'] == 0:
             break
         if all(min((start - p) % 168, (p - start) % 168) >= 2 for p in picked):
@@ -223,7 +231,9 @@ def lobby_windows(df):
         return []
     recent = recent_checks(df)
     window = window_rates(recent, recent['online_players'] >= LOBBY_PLAYERS)
-    return [{'start': p, 'pct': round(float(window.loc[p, 'pct']), 3)} for p in top_windows(window, LOBBY_WINDOW_COUNT)]
+    return [{'start': p, 'pct': round(float(window.loc[p, 'pct']), 3),
+             'days': int(window.loc[p, 'hit']), 'seen': int(window.loc[p, 'seen'])}
+            for p in top_windows(window, LOBBY_WINDOW_COUNT)]
 
 
 # The website's hourly strip: for each hour of the week (Monday midnight = 0, in DISPLAY_TIMEZONE), how many of
@@ -336,9 +346,10 @@ def generate_forecast_regression(fit, threshold):
     save(fig, 'forecast_regression.png')
 
 
-# Ranked bars: the TOP_WINDOW_COUNT best non-overlapping 2-hour windows
+# Ranked bars: the TOP_WINDOW_COUNT best non-overlapping 2-hour windows of the recent checks
 def generate_top_windows_plot(df, variant=ALL_SERVERS):
-    window = window_rates(df, df['online_players'] >= LOBBY_PLAYERS)
+    recent = recent_checks(df)
+    window = window_rates(recent, recent['online_players'] >= LOBBY_PLAYERS)
     picked = top_windows(window, TOP_WINDOW_COUNT) if days_of_data(df) >= MIN_DAYS_FOR_SCORECARD else []
     picked = picked[::-1]
     pcts = [window.loc[p, 'pct'] * 100 for p in picked]
@@ -350,7 +361,8 @@ def generate_top_windows_plot(df, variant=ALL_SERVERS):
     ))
     fig.update_layout(base_layout(
         f'Top {TOP_WINDOW_COUNT} times to play',
-        f'Best 2-hour windows (no overlaps) · % of checks with a server at {LOBBY_PLAYERS}+ players',
+        f'Best 2-hour windows (no overlaps) · % of weeks a server hit {LOBBY_PLAYERS}+ players in the window'
+        f' · last {SCORECARD_RECENT_DAYS} days',
         height=340, barcornerradius=4, bargap=0.35,
         variant=variant,
     ))
@@ -548,34 +560,6 @@ def load_earthquakes(start):
 
 # Balloon Race players against something that has nothing to do with them,
 # with a dotted least-squares line and Pearson's r to prove it
-def generate_correlation_plot(x, y, title, subtitle, x_title, y_title, filename, variant=ALL_SERVERS, x_suffix=''):
-    pairs = pd.DataFrame({'x': x, 'y': y}).dropna()
-    fits = len(pairs) >= 3 and pairs['x'].nunique() > 1 and pairs['y'].nunique() > 1
-    r = np.corrcoef(pairs['x'], pairs['y'])[0, 1] if fits else None
-
-    fig = go.Figure(go.Scatter(
-        x=pairs['x'], y=pairs['y'], mode='markers',
-        marker=dict(color=BAR, size=9, opacity=0.45, line=dict(width=0)),
-    ))
-    if fits:
-        slope, intercept = np.polyfit(pairs['x'], pairs['y'], 1)
-        ends = np.array([pairs['x'].min(), pairs['x'].max()])
-        fig.add_trace(go.Scatter(x=ends, y=slope * ends + intercept, mode='lines',
-                                 line=dict(color=SERIES[1], width=3, dash='dot')))
-        fig.add_annotation(x=ends[1], y=slope * ends[1] + intercept, text=f'<b>r = {r:+.2f}</b>',
-                           showarrow=False, xanchor='left', xshift=10, font=dict(color=TEXT_PRIMARY, size=15))
-    fig.update_layout(base_layout(
-        f"{title} (r = {f'{r:+.2f}' if fits else 'undefined'})",
-        f"{subtitle} · {len(pairs):,} points" + ('' if fits else f' · {x_title.lower()} hasn\'t moved yet'),
-        variant=variant, margin=dict(l=24, r=90, t=96, b=48),
-    ))
-    if not len(pairs):
-        empty_state(fig)
-    fig.update_xaxes(title=x_title, showgrid=False, zeroline=False, ticksuffix=x_suffix)
-    fig.update_yaxes(title=y_title, showgrid=True, gridcolor=GRID, zeroline=False, rangemode='tozero')
-    save(fig, filename, variant)
-
-
 # The weekly trend line with earthquakes worldwide that week overlaid on their own axis, and Pearson's r
 # between the two. Earthquakes per day, so the partial latest week lines up with the full ones.
 def generate_earthquake_correlation_plot(df, quakes, variant=ALL_SERVERS):
@@ -616,16 +600,50 @@ def generate_earthquake_correlation_plot(df, quakes, variant=ALL_SERVERS):
     save(fig, 'earthquake_correlation.png', variant)
 
 
+# Monthly lobby share with the US unemployment rate for that month overlaid on its own axis, and Pearson's r
+# between the two. BLS publishes a month's rate early the next month, so the current month has no rate yet.
 def generate_unemployment_correlation_plot(df, unemployment, variant=ALL_SERVERS):
-    daily_peak = df.groupby(df['ts'].dt.date)['online_players'].max()
-    daily_peak.index = pd.to_datetime(daily_peak.index)
-    # Each day gets the latest rate BLS had published for it, since the current month comes out a month late
-    rate = unemployment.reindex(daily_peak.index, method='ffill') if len(unemployment) else daily_peak * np.nan
-    generate_correlation_plot(
-        rate, daily_peak, 'Unemployment vs Balloon Race players',
-        'Each dot is one day: US unemployment rate (BLS) vs most Balloon Race players seen at once',
-        'Unemployment rate', 'Peak players that day', 'unemployment_correlation.png', variant, x_suffix='%',
-    )
+    month = df['ts'].dt.tz_localize(None).dt.to_period('M').dt.start_time
+    monthly = ((df['online_players'] >= LOBBY_PLAYERS).groupby(month).mean() * 100).sort_index()
+    pairs = pd.DataFrame({'lobby': monthly, 'rate': unemployment.reindex(monthly.index)}).dropna()
+    # The rate line also covers the months before logging started, for context
+    rate = unemployment[unemployment.index >= monthly.index[0] - pd.DateOffset(months=6)] if len(monthly) else unemployment
+    fits = len(pairs) >= 3 and pairs['lobby'].nunique() > 1 and pairs['rate'].nunique() > 1
+    r = np.corrcoef(pairs['lobby'], pairs['rate'])[0, 1] if fits else None
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=monthly.index, y=monthly.values, mode='lines+markers', name=f'% of checks with a {LOBBY_PLAYERS}+ lobby',
+        line=dict(color=BAR, width=3), marker=dict(size=8, color=BAR, line=dict(color=SURFACE, width=2)),
+    ))
+    fig.add_trace(go.Scatter(
+        x=rate.index, y=rate.values, mode='lines+markers', name='US unemployment rate',
+        yaxis='y2', line=dict(color=SERIES[1], width=3, dash='dot'),
+        marker=dict(size=8, color=SERIES[1], line=dict(color=SURFACE, width=2)),
+    ))
+    fig.update_layout(base_layout(
+        f"Unemployment vs Balloon Race players (r = {f'{r:+.2f}' if fits else 'undefined'})",
+        f'Each month: % of checks with a {LOBBY_PLAYERS}+ player server vs US unemployment rate (BLS)'
+        + ('' if fits else ' · needs 3 months to correlate')
+        + (f" · {(rate.index[-1] + pd.DateOffset(months=1)).strftime('%B')} rate out next month"
+           if len(rate) and len(monthly) and rate.index[-1] < monthly.index[-1] else ''),
+        variant=variant, showlegend=True, margin=dict(l=24, r=80, t=96, b=80),
+        legend=dict(orientation='h', x=0.02, y=-0.1, yanchor='top', bgcolor='rgba(0,0,0,0)'),
+        yaxis2=dict(overlaying='y', side='right', showgrid=False, zeroline=False, ticksuffix='%', tickformat='.1f', dtick=0.5,
+                    # A fixed ±1 point window so 0.1-point wobbles don't look like big swings
+                    range=[rate.min() - 1, rate.max() + 1] if len(rate) else None,
+                    title=dict(text='Unemployment rate', font=dict(color=SERIES[1])), tickfont=dict(color=SERIES[1])),
+    ))
+    if not len(monthly):
+        empty_state(fig)
+    fig.update_layout(yaxis=dict(title=dict(text=f'% of checks with {LOBBY_PLAYERS}+', font=dict(color=BAR)),
+                                 tickfont=dict(color=BAR), showgrid=True, gridcolor=GRID, zeroline=False,
+                                 ticksuffix='%', rangemode='tozero'))
+    fig.update_xaxes(showgrid=False, ticks='', tickformat='%b %Y', dtick='M1')
+    if len(monthly):
+        first = min(monthly.index[0], rate.index[0]) if len(rate) else monthly.index[0]
+        fig.update_xaxes(range=[first - pd.Timedelta(days=12), monthly.index[-1] + pd.Timedelta(days=12)])
+    save(fig, 'unemployment_correlation.png', variant)
 
 
 # US holidays plus a few unofficial gaming days and school-break periods
@@ -755,7 +773,7 @@ def top_server_stats(df, server_df):
         active = checks['ts'].isin(active_ts)
         busy = checks['ts'].isin(busy_ts)
         window = window_rates(checks, busy)
-        best = int(window['pct'].idxmax()) if busy.any() else None
+        best = top_windows(window, 1)[0] if busy.any() else None
         by_day = busy.groupby(checks['day_of_week'], observed=False).mean()
         stats.append({
             'addr': addr,
@@ -968,11 +986,13 @@ if __name__ == "__main__":
         ]
         for variant, df, servers in variants:
             generate_top_windows_plot(df, variant)
+            # Same days as the best times on the website, so the two agree
+            recent = recent_checks(df)
             generate_heatmap(
-                df, df['online_players'] >= LOBBY_PLAYERS,
+                recent, recent['online_players'] >= LOBBY_PLAYERS,
                 f'How often there is a busy lobby ({LOBBY_PLAYERS}+ players)',
                 f'% of days a server hit {LOBBY_PLAYERS}+ human players in each {HEATMAP_BLOCK_HOURS}-hour block, '
-                f'e.g. 75% = 3 of the 4 Saturdays checked · times in {TZ_LABEL}',
+                f'e.g. 75% = 3 of the 4 Saturdays · last {SCORECARD_RECENT_DAYS} days · times in {TZ_LABEL}',
                 'busy_heatmap.png', variant,
             )
             # One relay server under several addresses is one row in the table and one heatmap
