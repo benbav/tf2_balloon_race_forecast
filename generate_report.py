@@ -254,7 +254,7 @@ def forecast_history_row(forecast, date):
         return None
     a, o = e['all'], e['no_lobby_yet']
     return {'date': date.isoformat(), 'test_days': len(e['test_days']), 'days': forecast['days'],
-            'auc': a.get('auc'), 'log_loss': a['log_loss'], 'baseline_log_loss': a['baseline_log_loss'],
+            'auc': a.get('auc'), 'train_auc': e.get('train_auc'), 'log_loss': a['log_loss'], 'baseline_log_loss': a['baseline_log_loss'],
             'no_lobby_yet_auc': o.get('auc'), 'no_lobby_yet_log_loss': o.get('log_loss'),
             'no_lobby_yet_baseline_log_loss': o.get('baseline_log_loss')}
 
@@ -606,8 +606,8 @@ def generate_unemployment_correlation_plot(df, unemployment, variant=ALL_SERVERS
     month = df['ts'].dt.tz_localize(None).dt.to_period('M').dt.start_time
     monthly = ((df['online_players'] >= LOBBY_PLAYERS).groupby(month).mean() * 100).sort_index()
     pairs = pd.DataFrame({'lobby': monthly, 'rate': unemployment.reindex(monthly.index)}).dropna()
-    # The rate line also covers the months before logging started, for context
-    rate = unemployment[unemployment.index >= monthly.index[0] - pd.DateOffset(months=6)] if len(monthly) else unemployment
+    # The rate line only covers the months the tracker has been logging
+    rate = unemployment[unemployment.index >= monthly.index[0]] if len(monthly) else unemployment.iloc[:0]
     fits = len(pairs) >= 3 and pairs['lobby'].nunique() > 1 and pairs['rate'].nunique() > 1
     r = np.corrcoef(pairs['lobby'], pairs['rate'])[0, 1] if fits else None
 
@@ -641,8 +641,7 @@ def generate_unemployment_correlation_plot(df, unemployment, variant=ALL_SERVERS
                                  ticksuffix='%', rangemode='tozero'))
     fig.update_xaxes(showgrid=False, ticks='', tickformat='%b %Y', dtick='M1')
     if len(monthly):
-        first = min(monthly.index[0], rate.index[0]) if len(rate) else monthly.index[0]
-        fig.update_xaxes(range=[first - pd.Timedelta(days=12), monthly.index[-1] + pd.Timedelta(days=12)])
+        fig.update_xaxes(range=[monthly.index[0] - pd.Timedelta(days=12), monthly.index[-1] + pd.Timedelta(days=12)])
     save(fig, 'unemployment_correlation.png', variant)
 
 
