@@ -501,11 +501,18 @@ def generate_monthly_avg_plot(df, variant=ALL_SERVERS):
     fig = go.Figure(go.Bar(
         x=labels, y=monthly.values, marker_color=BAR,
         text=monthly.values, textposition='outside', cliponaxis=False,
-        textfont=dict(color=TEXT_PRIMARY),
+        textfont=dict(color=TEXT_PRIMARY), showlegend=False,
     ))
+    # A straight least-squares line through the monthly counts
+    if len(monthly) >= 2:
+        slope, intercept = np.polyfit(range(len(monthly)), monthly.values, 1)
+        fig.add_trace(go.Scatter(
+            x=labels, y=[intercept + slope * i for i in range(len(monthly))], mode='lines', name='Trend',
+            line=dict(color=SERIES[1], width=3, dash='dash'), hoverinfo='skip', showlegend=False,
+        ))
     fig.update_layout(base_layout(
         f'{LOBBY_PLAYERS}+ player lobbies by month',
-        f'A lobby = back-to-back 5-minute checks with a server at {LOBBY_PLAYERS}+ players',
+        f'A lobby = back-to-back 5-minute checks with a server at {LOBBY_PLAYERS}+ players · dashed = linear trend',
         barcornerradius=4, bargap=0.45,
         variant=variant,
     ))
