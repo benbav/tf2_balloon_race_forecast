@@ -281,7 +281,8 @@ def generate_forecast_history(history):
         '<b>AUC</b> · higher is better, 0.5 is a coin flip', '<b>Log loss</b> · lower is better'))
     fig.update_layout(base_layout(
         'Is the forecast getting better?',
-        'Each day, the last 14 days are each predicted by a model trained only on the days before',
+        'Each day, the last 14 days are each predicted by a model trained only on the days before; '
+        'dashed is how well those models score on their own training data',
         height=460, showlegend=True,
         legend=dict(orientation='h', x=0, y=-0.18, font=dict(size=13, color=TEXT_PRIMARY)),
     ))
@@ -294,7 +295,15 @@ def generate_forecast_history(history):
     line = lambda key, name, color, dash, legend=True: go.Scatter(
         x=dates, y=[r.get(key) for r in history], name=name, mode='lines+markers', showlegend=legend,
         line=dict(color=color, width=3, dash=dash), marker=dict(size=6), hoverinfo='skip')
+    # The same models scored on their own training data; the shaded gap down to the test line is the overfitting
+    fig.add_trace(line('train_auc', 'All checks, scored on its own training data', SERIES[0], 'dash'), row=1, col=1)
     fig.add_trace(line('auc', 'All checks', SERIES[0], 'solid'), row=1, col=1)
+    fig.data[-1].update(fill='tonexty', fillcolor='rgba(42, 120, 214, 0.12)')
+    gap = next((r for r in reversed(history) if r.get('train_auc') and r.get('auc')), None)
+    if gap:
+        fig.add_annotation(x=gap['date'], y=(gap['train_auc'] + gap['auc']) / 2, xanchor='right', xshift=-8,
+                           showarrow=False, text=f"overfitting gap {gap['train_auc'] - gap['auc']:.2f}",
+                           font=dict(size=12, color=TEXT_SECONDARY), row=1, col=1)
     fig.add_trace(line('no_lobby_yet_auc', 'Checks with no lobby up yet', SERIES[1], 'solid'), row=1, col=1)
     fig.add_trace(line('log_loss', 'All checks', SERIES[0], 'solid', False), row=1, col=2)
     fig.add_trace(line('no_lobby_yet_log_loss', 'No lobby yet', SERIES[1], 'solid', False), row=1, col=2)
@@ -428,21 +437,27 @@ def generate_heatmap(df, active, title, subtitle, filename, variant=ALL_SERVERS)
     save(fig, filename, variant)
 
 
-# How long a lobby keeps going once it fills up
-def generate_session_length_plot(df, variant=ALL_SERVERS):
-    active = (df.sort_values('ts')['online_players'] >= LOBBY_PLAYERS).values
-    ts = df.sort_values('ts')['ts'].values
-    sessions, run = [], 0
+# Each LOBBY_PLAYERS+ lobby as (start time, minutes): a run of back-to-back checks with a server at the threshold
+def lobby_sessions(df):
+    ordered = df.sort_values('ts')
+    active, ts = (ordered['online_players'] >= LOBBY_PLAYERS).values, ordered['ts'].values
+    sessions, run, start = [], 0, None
     for i, a in enumerate(active):
         contiguous = i > 0 and (ts[i] - ts[i - 1]) <= pd.Timedelta(minutes=CHECK_MINUTES + 2)
         if a and run and contiguous:
             run += 1
         else:
             if run:
-                sessions.append(run * CHECK_MINUTES)
-            run = 1 if a else 0
+                sessions.append((start, run * CHECK_MINUTES))
+            run, start = (1, ordered['ts'].iloc[i]) if a else (0, None)
     if run:
-        sessions.append(run * CHECK_MINUTES)
+        sessions.append((start, run * CHECK_MINUTES))
+    return sessions
+
+
+# How long a lobby keeps going once it fills up
+def generate_session_length_plot(df, variant=ALL_SERVERS):
+    sessions = [minutes for _, minutes in lobby_sessions(df)]
 
     buckets = [('Under 15 min', 0, 15), ('15–30 min', 15, 30), ('30–60 min', 30, 60),
                ('1–2 hours', 60, 120), ('2+ hours', 120, float('inf'))]
@@ -477,9 +492,10 @@ def weekly_lobby_share(df):
     return (grouped.mean() * 100)[keep]
 
 
-# Generate bar plot for monthly max
+# Lobbies counted by the month they started in; every logged month gets a bar, even with none
 def generate_monthly_avg_plot(df, variant=ALL_SERVERS):
-    monthly = df.groupby('month')['online_players'].max().sort_index()
+    starts = pd.Series([start.strftime('%Y-%m') for start, _ in lobby_sessions(df)], dtype=object)
+    monthly = starts.value_counts().reindex(sorted(df['month'].unique()), fill_value=0)
     labels = [pd.Timestamp(m + '-01').strftime('%b %Y') for m in monthly.index]
 
     fig = go.Figure(go.Bar(
@@ -488,12 +504,12 @@ def generate_monthly_avg_plot(df, variant=ALL_SERVERS):
         textfont=dict(color=TEXT_PRIMARY),
     ))
     fig.update_layout(base_layout(
-        'Max Balloon Race players by month',
-        'Most players seen at once on any server',
+        f'{LOBBY_PLAYERS}+ player lobbies by month',
+        f'A lobby = back-to-back 5-minute checks with a server at {LOBBY_PLAYERS}+ players',
         barcornerradius=4, bargap=0.45,
         variant=variant,
     ))
-    fig.update_yaxes(showgrid=True, gridcolor=GRID, zeroline=False, title='Players', rangemode='tozero')
+    fig.update_yaxes(showgrid=True, gridcolor=GRID, zeroline=False, title='Lobbies', rangemode='tozero')
     fig.update_xaxes(showgrid=False, ticks='')
     save(fig, 'monthly_avg.png', variant)
 

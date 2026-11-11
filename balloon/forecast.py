@@ -248,7 +248,7 @@ def calibration(y, probs):
 def rolling_evaluation(ts, X, y, players, threshold):
     dates = ts.dt.date.to_numpy()
     test_days = sorted(set(dates))[EVAL_MIN_TRAIN_DAYS:][-EVAL_MAX_DAYS:]
-    probs, guess, idx, used = [], [], [], []
+    probs, guess, idx, used, fit_probs, fit_y = [], [], [], [], [], []
     for day in test_days:
         start = pd.Timestamp(day).tz_localize(ts.dt.tz)
         train = (ts < start - pd.Timedelta(minutes=FORECAST_MINUTES)).to_numpy()
@@ -257,6 +257,9 @@ def rolling_evaluation(ts, X, y, players, threshold):
             continue
         model = new_forecast_model().fit(X[train], y[train])
         probs.append(model.predict_proba(X[test])[:, 1])
+        # The same model scored on the data it was fit on; its gap to the test score is the overfitting
+        fit_probs.append(model.predict_proba(X[train])[:, 1])
+        fit_y.append(y[train])
         guess.append(np.full(test.sum(), y[train].mean()))
         idx.append(np.flatnonzero(test))
         used.append(day.isoformat())
@@ -264,7 +267,9 @@ def rolling_evaluation(ts, X, y, players, threshold):
         return None
     probs, guess, idx = np.concatenate(probs), np.concatenate(guess), np.concatenate(idx)
     test_y, is_open = y[idx], players[idx] < threshold
-    return {'method': 'rolling by day', 'test_days': used, 'all': scores(test_y, probs, guess),
+    fit_y = np.concatenate(fit_y)
+    train_auc = round(float(roc_auc_score(fit_y, np.concatenate(fit_probs))), 3) if len(set(fit_y)) == 2 else None
+    return {'method': 'rolling by day', 'test_days': used, 'all': scores(test_y, probs, guess), 'train_auc': train_auc,
             'no_lobby_yet': scores(test_y[is_open], probs[is_open], guess[is_open]),
             'calibration': calibration(test_y, probs)}
 
