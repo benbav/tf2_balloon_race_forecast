@@ -1,0 +1,3368 @@
+{
+ "updated": "2026-11-14T06:05:17+00:00",
+ "lobby_players": 10,
+ "top_servers": {
+  "mt": {
+   "all": [
+    {
+     "name": "[TR]  Türk Ninjalar sunucusu",
+     "addr": "88.233.138.82:27017",
+     "best_time": "Sat · 9 AM – 11 AM MT",
+     "best_time_pct": 0.5,
+     "best_day": "Saturday",
+     "pct_busy": 0.006,
+     "pct_active": 0.007,
+     "avg_players": 14.2,
+     "peak": 24
+    },
+    {
+     "name": "shounic trenches (USA Chicago)",
+     "addr": "193.243.190.25:27015",
+     "best_time": "Sun · 9 PM – 11 PM MT",
+     "best_time_pct": 0.6,
+     "best_day": "Sunday",
+     "pct_busy": 0.003,
+     "pct_active": 0.007,
+     "avg_players": 30.5,
+     "peak": 98
+    },
+    {
+     "name": "[TR]  Türk Ninjalar sunucusu",
+     "addr": "78.181.34.157:27015",
+     "best_time": "Sun · 12 PM – 2 PM MT",
+     "best_time_pct": 0.333,
+     "best_day": "Sunday",
+     "pct_busy": 0.001,
+     "pct_active": 0.003,
+     "avg_players": 10.4,
+     "peak": 20
+    },
+    {
+     "name": "Aar's Server | Map Testing | Virginia",
+     "addr": "169.254.112.56:12184",
+     "best_time": "Sat · 2 PM – 4 PM MT",
+     "best_time_pct": 0.2,
+     "best_day": "Saturday",
+     "pct_busy": 0.001,
+     "pct_active": 0.001,
+     "avg_players": 24.7,
+     "peak": 26
+    },
+    {
+     "name": "Server hosted by Physgun.com",
+     "addr": "45.45.238.134:27105",
+     "best_time": "Fri · 6 PM – 8 PM MT",
+     "best_time_pct": 0.2,
+     "best_day": "Friday",
+     "pct_busy": 0.001,
+     "pct_active": 0.001,
+     "avg_players": 21.8,
+     "peak": 23
+    },
+    {
+     "name": "Server Testing",
+     "addr": "69.41.182.173:27015",
+     "best_time": "Sat · 6 PM – 8 PM MT",
+     "best_time_pct": 0.2,
+     "best_day": "Saturday",
+     "pct_busy": 0.0,
+     "pct_active": 0.001,
+     "avg_players": 4.8,
+     "peak": 12
+    },
+    {
+     "name": "Spanakopita",
+     "addr": "99.110.11.58:27015",
+     "best_time": "Mon · 9 PM – 11 PM MT",
+     "best_time_pct": 0.25,
+     "best_day": "Monday",
+     "pct_busy": 0.0,
+     "pct_active": 0.002,
+     "avg_players": 5.3,
+     "peak": 10
+    },
+    {
+     "name": "Balloon Race 24/7",
+     "addr": "45.88.229.19:27024",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.25,
+     "avg_players": 1.2,
+     "peak": 6
+    },
+    {
+     "name": "[EU] Zemiak | Funtazy",
+     "addr": "87.197.137.202:27019",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 2.7,
+     "peak": 3
+    },
+    {
+     "name": "[xG] Community Gamemodes - XenoGamers.com",
+     "addr": "74.91.119.153:27015",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.003,
+     "avg_players": 1.5,
+     "peak": 2
+    }
+   ],
+   "dedicated": [
+    {
+     "name": "Balloon Race 24/7",
+     "addr": "45.88.229.19:27024",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.25,
+     "avg_players": 1.2,
+     "peak": 6
+    },
+    {
+     "name": "Wacky Races + Balloon Race 24/7 [ratland]",
+     "addr": "24.163.130.153:27017",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.001,
+     "avg_players": 1.2,
+     "peak": 2
+    },
+    {
+     "name": "IdleServer.Com | BALLOON | BALLOON_01",
+     "addr": "108.181.244.76:48800",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.0,
+     "avg_players": 1.0,
+     "peak": 1
+    }
+   ],
+   "rotating": [
+    {
+     "name": "[TR]  Türk Ninjalar sunucusu",
+     "addr": "88.233.138.82:27017",
+     "best_time": "Sat · 9 AM – 11 AM MT",
+     "best_time_pct": 0.5,
+     "best_day": "Saturday",
+     "pct_busy": 0.006,
+     "pct_active": 0.007,
+     "avg_players": 14.2,
+     "peak": 24
+    },
+    {
+     "name": "shounic trenches (USA Chicago)",
+     "addr": "193.243.190.25:27015",
+     "best_time": "Sun · 9 PM – 11 PM MT",
+     "best_time_pct": 0.6,
+     "best_day": "Sunday",
+     "pct_busy": 0.003,
+     "pct_active": 0.007,
+     "avg_players": 30.5,
+     "peak": 98
+    },
+    {
+     "name": "[TR]  Türk Ninjalar sunucusu",
+     "addr": "78.181.34.157:27015",
+     "best_time": "Sun · 12 PM – 2 PM MT",
+     "best_time_pct": 0.333,
+     "best_day": "Sunday",
+     "pct_busy": 0.001,
+     "pct_active": 0.003,
+     "avg_players": 10.4,
+     "peak": 20
+    },
+    {
+     "name": "Aar's Server | Map Testing | Virginia",
+     "addr": "169.254.112.56:12184",
+     "best_time": "Sat · 2 PM – 4 PM MT",
+     "best_time_pct": 0.2,
+     "best_day": "Saturday",
+     "pct_busy": 0.001,
+     "pct_active": 0.001,
+     "avg_players": 24.7,
+     "peak": 26
+    },
+    {
+     "name": "Server hosted by Physgun.com",
+     "addr": "45.45.238.134:27105",
+     "best_time": "Fri · 6 PM – 8 PM MT",
+     "best_time_pct": 0.2,
+     "best_day": "Friday",
+     "pct_busy": 0.001,
+     "pct_active": 0.001,
+     "avg_players": 21.8,
+     "peak": 23
+    },
+    {
+     "name": "Server Testing",
+     "addr": "69.41.182.173:27015",
+     "best_time": "Sat · 6 PM – 8 PM MT",
+     "best_time_pct": 0.2,
+     "best_day": "Saturday",
+     "pct_busy": 0.0,
+     "pct_active": 0.001,
+     "avg_players": 4.8,
+     "peak": 12
+    },
+    {
+     "name": "Spanakopita",
+     "addr": "99.110.11.58:27015",
+     "best_time": "Mon · 9 PM – 11 PM MT",
+     "best_time_pct": 0.25,
+     "best_day": "Monday",
+     "pct_busy": 0.0,
+     "pct_active": 0.002,
+     "avg_players": 5.3,
+     "peak": 10
+    },
+    {
+     "name": "[EU] Zemiak | Funtazy",
+     "addr": "87.197.137.202:27019",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 2.7,
+     "peak": 3
+    },
+    {
+     "name": "[xG] Community Gamemodes - XenoGamers.com",
+     "addr": "74.91.119.153:27015",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.003,
+     "avg_players": 1.5,
+     "peak": 2
+    },
+    {
+     "name": "BUNNY'S TF2 ARCHIVE // TESTING",
+     "addr": "51.77.46.229:2700",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.002,
+     "avg_players": 2.2,
+     "peak": 3
+    }
+   ]
+  },
+  "et": {
+   "all": [
+    {
+     "name": "[TR]  Türk Ninjalar sunucusu",
+     "addr": "88.233.138.82:27017",
+     "best_time": "Sat · 11 AM – 1 PM ET",
+     "best_time_pct": 0.5,
+     "best_day": "Saturday",
+     "pct_busy": 0.006,
+     "pct_active": 0.007,
+     "avg_players": 14.2,
+     "peak": 24
+    },
+    {
+     "name": "shounic trenches (USA Chicago)",
+     "addr": "193.243.190.25:27015",
+     "best_time": "Sun · 11 PM – 1 AM ET",
+     "best_time_pct": 0.6,
+     "best_day": "Sunday",
+     "pct_busy": 0.003,
+     "pct_active": 0.007,
+     "avg_players": 30.5,
+     "peak": 98
+    },
+    {
+     "name": "[TR]  Türk Ninjalar sunucusu",
+     "addr": "78.181.34.157:27015",
+     "best_time": "Sun · 2 PM – 4 PM ET",
+     "best_time_pct": 0.333,
+     "best_day": "Sunday",
+     "pct_busy": 0.001,
+     "pct_active": 0.003,
+     "avg_players": 10.4,
+     "peak": 20
+    },
+    {
+     "name": "Aar's Server | Map Testing | Virginia",
+     "addr": "169.254.112.56:12184",
+     "best_time": "Sat · 4 PM – 6 PM ET",
+     "best_time_pct": 0.2,
+     "best_day": "Saturday",
+     "pct_busy": 0.001,
+     "pct_active": 0.001,
+     "avg_players": 24.7,
+     "peak": 26
+    },
+    {
+     "name": "Server hosted by Physgun.com",
+     "addr": "45.45.238.134:27105",
+     "best_time": "Fri · 8 PM – 10 PM ET",
+     "best_time_pct": 0.2,
+     "best_day": "Friday",
+     "pct_busy": 0.001,
+     "pct_active": 0.001,
+     "avg_players": 21.8,
+     "peak": 23
+    },
+    {
+     "name": "Server Testing",
+     "addr": "69.41.182.173:27015",
+     "best_time": "Sat · 8 PM – 10 PM ET",
+     "best_time_pct": 0.2,
+     "best_day": "Saturday",
+     "pct_busy": 0.0,
+     "pct_active": 0.001,
+     "avg_players": 4.8,
+     "peak": 12
+    },
+    {
+     "name": "Spanakopita",
+     "addr": "99.110.11.58:27015",
+     "best_time": "Mon · 11 PM – 1 AM ET",
+     "best_time_pct": 0.25,
+     "best_day": "Tuesday",
+     "pct_busy": 0.0,
+     "pct_active": 0.002,
+     "avg_players": 5.3,
+     "peak": 10
+    },
+    {
+     "name": "Balloon Race 24/7",
+     "addr": "45.88.229.19:27024",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.25,
+     "avg_players": 1.2,
+     "peak": 6
+    },
+    {
+     "name": "[EU] Zemiak | Funtazy",
+     "addr": "87.197.137.202:27019",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 2.7,
+     "peak": 3
+    },
+    {
+     "name": "[xG] Community Gamemodes - XenoGamers.com",
+     "addr": "74.91.119.153:27015",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.003,
+     "avg_players": 1.5,
+     "peak": 2
+    }
+   ],
+   "dedicated": [
+    {
+     "name": "Balloon Race 24/7",
+     "addr": "45.88.229.19:27024",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.25,
+     "avg_players": 1.2,
+     "peak": 6
+    },
+    {
+     "name": "Wacky Races + Balloon Race 24/7 [ratland]",
+     "addr": "24.163.130.153:27017",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.001,
+     "avg_players": 1.2,
+     "peak": 2
+    },
+    {
+     "name": "IdleServer.Com | BALLOON | BALLOON_01",
+     "addr": "108.181.244.76:48800",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.0,
+     "avg_players": 1.0,
+     "peak": 1
+    }
+   ],
+   "rotating": [
+    {
+     "name": "[TR]  Türk Ninjalar sunucusu",
+     "addr": "88.233.138.82:27017",
+     "best_time": "Sat · 11 AM – 1 PM ET",
+     "best_time_pct": 0.5,
+     "best_day": "Saturday",
+     "pct_busy": 0.006,
+     "pct_active": 0.007,
+     "avg_players": 14.2,
+     "peak": 24
+    },
+    {
+     "name": "shounic trenches (USA Chicago)",
+     "addr": "193.243.190.25:27015",
+     "best_time": "Sun · 11 PM – 1 AM ET",
+     "best_time_pct": 0.6,
+     "best_day": "Sunday",
+     "pct_busy": 0.003,
+     "pct_active": 0.007,
+     "avg_players": 30.5,
+     "peak": 98
+    },
+    {
+     "name": "[TR]  Türk Ninjalar sunucusu",
+     "addr": "78.181.34.157:27015",
+     "best_time": "Sun · 2 PM – 4 PM ET",
+     "best_time_pct": 0.333,
+     "best_day": "Sunday",
+     "pct_busy": 0.001,
+     "pct_active": 0.003,
+     "avg_players": 10.4,
+     "peak": 20
+    },
+    {
+     "name": "Aar's Server | Map Testing | Virginia",
+     "addr": "169.254.112.56:12184",
+     "best_time": "Sat · 4 PM – 6 PM ET",
+     "best_time_pct": 0.2,
+     "best_day": "Saturday",
+     "pct_busy": 0.001,
+     "pct_active": 0.001,
+     "avg_players": 24.7,
+     "peak": 26
+    },
+    {
+     "name": "Server hosted by Physgun.com",
+     "addr": "45.45.238.134:27105",
+     "best_time": "Fri · 8 PM – 10 PM ET",
+     "best_time_pct": 0.2,
+     "best_day": "Friday",
+     "pct_busy": 0.001,
+     "pct_active": 0.001,
+     "avg_players": 21.8,
+     "peak": 23
+    },
+    {
+     "name": "Server Testing",
+     "addr": "69.41.182.173:27015",
+     "best_time": "Sat · 8 PM – 10 PM ET",
+     "best_time_pct": 0.2,
+     "best_day": "Saturday",
+     "pct_busy": 0.0,
+     "pct_active": 0.001,
+     "avg_players": 4.8,
+     "peak": 12
+    },
+    {
+     "name": "Spanakopita",
+     "addr": "99.110.11.58:27015",
+     "best_time": "Mon · 11 PM – 1 AM ET",
+     "best_time_pct": 0.25,
+     "best_day": "Tuesday",
+     "pct_busy": 0.0,
+     "pct_active": 0.002,
+     "avg_players": 5.3,
+     "peak": 10
+    },
+    {
+     "name": "[EU] Zemiak | Funtazy",
+     "addr": "87.197.137.202:27019",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 2.7,
+     "peak": 3
+    },
+    {
+     "name": "[xG] Community Gamemodes - XenoGamers.com",
+     "addr": "74.91.119.153:27015",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.003,
+     "avg_players": 1.5,
+     "peak": 2
+    },
+    {
+     "name": "BUNNY'S TF2 ARCHIVE // TESTING",
+     "addr": "51.77.46.229:2700",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.002,
+     "avg_players": 2.2,
+     "peak": 3
+    }
+   ]
+  },
+  "ct": {
+   "all": [
+    {
+     "name": "[TR]  Türk Ninjalar sunucusu",
+     "addr": "88.233.138.82:27017",
+     "best_time": "Sat · 10 AM – 12 PM CT",
+     "best_time_pct": 0.5,
+     "best_day": "Saturday",
+     "pct_busy": 0.006,
+     "pct_active": 0.007,
+     "avg_players": 14.2,
+     "peak": 24
+    },
+    {
+     "name": "shounic trenches (USA Chicago)",
+     "addr": "193.243.190.25:27015",
+     "best_time": "Sun · 10 PM – 12 AM CT",
+     "best_time_pct": 0.6,
+     "best_day": "Sunday",
+     "pct_busy": 0.003,
+     "pct_active": 0.007,
+     "avg_players": 30.5,
+     "peak": 98
+    },
+    {
+     "name": "[TR]  Türk Ninjalar sunucusu",
+     "addr": "78.181.34.157:27015",
+     "best_time": "Sun · 1 PM – 3 PM CT",
+     "best_time_pct": 0.333,
+     "best_day": "Sunday",
+     "pct_busy": 0.001,
+     "pct_active": 0.003,
+     "avg_players": 10.4,
+     "peak": 20
+    },
+    {
+     "name": "Aar's Server | Map Testing | Virginia",
+     "addr": "169.254.112.56:12184",
+     "best_time": "Sat · 3 PM – 5 PM CT",
+     "best_time_pct": 0.2,
+     "best_day": "Saturday",
+     "pct_busy": 0.001,
+     "pct_active": 0.001,
+     "avg_players": 24.7,
+     "peak": 26
+    },
+    {
+     "name": "Server hosted by Physgun.com",
+     "addr": "45.45.238.134:27105",
+     "best_time": "Fri · 7 PM – 9 PM CT",
+     "best_time_pct": 0.2,
+     "best_day": "Friday",
+     "pct_busy": 0.001,
+     "pct_active": 0.001,
+     "avg_players": 21.8,
+     "peak": 23
+    },
+    {
+     "name": "Server Testing",
+     "addr": "69.41.182.173:27015",
+     "best_time": "Sat · 7 PM – 9 PM CT",
+     "best_time_pct": 0.2,
+     "best_day": "Saturday",
+     "pct_busy": 0.0,
+     "pct_active": 0.001,
+     "avg_players": 4.8,
+     "peak": 12
+    },
+    {
+     "name": "Spanakopita",
+     "addr": "99.110.11.58:27015",
+     "best_time": "Mon · 10 PM – 12 AM CT",
+     "best_time_pct": 0.25,
+     "best_day": "Monday",
+     "pct_busy": 0.0,
+     "pct_active": 0.002,
+     "avg_players": 5.3,
+     "peak": 10
+    },
+    {
+     "name": "Balloon Race 24/7",
+     "addr": "45.88.229.19:27024",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.25,
+     "avg_players": 1.2,
+     "peak": 6
+    },
+    {
+     "name": "[EU] Zemiak | Funtazy",
+     "addr": "87.197.137.202:27019",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 2.7,
+     "peak": 3
+    },
+    {
+     "name": "[xG] Community Gamemodes - XenoGamers.com",
+     "addr": "74.91.119.153:27015",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.003,
+     "avg_players": 1.5,
+     "peak": 2
+    }
+   ],
+   "dedicated": [
+    {
+     "name": "Balloon Race 24/7",
+     "addr": "45.88.229.19:27024",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.25,
+     "avg_players": 1.2,
+     "peak": 6
+    },
+    {
+     "name": "Wacky Races + Balloon Race 24/7 [ratland]",
+     "addr": "24.163.130.153:27017",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.001,
+     "avg_players": 1.2,
+     "peak": 2
+    },
+    {
+     "name": "IdleServer.Com | BALLOON | BALLOON_01",
+     "addr": "108.181.244.76:48800",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.0,
+     "avg_players": 1.0,
+     "peak": 1
+    }
+   ],
+   "rotating": [
+    {
+     "name": "[TR]  Türk Ninjalar sunucusu",
+     "addr": "88.233.138.82:27017",
+     "best_time": "Sat · 10 AM – 12 PM CT",
+     "best_time_pct": 0.5,
+     "best_day": "Saturday",
+     "pct_busy": 0.006,
+     "pct_active": 0.007,
+     "avg_players": 14.2,
+     "peak": 24
+    },
+    {
+     "name": "shounic trenches (USA Chicago)",
+     "addr": "193.243.190.25:27015",
+     "best_time": "Sun · 10 PM – 12 AM CT",
+     "best_time_pct": 0.6,
+     "best_day": "Sunday",
+     "pct_busy": 0.003,
+     "pct_active": 0.007,
+     "avg_players": 30.5,
+     "peak": 98
+    },
+    {
+     "name": "[TR]  Türk Ninjalar sunucusu",
+     "addr": "78.181.34.157:27015",
+     "best_time": "Sun · 1 PM – 3 PM CT",
+     "best_time_pct": 0.333,
+     "best_day": "Sunday",
+     "pct_busy": 0.001,
+     "pct_active": 0.003,
+     "avg_players": 10.4,
+     "peak": 20
+    },
+    {
+     "name": "Aar's Server | Map Testing | Virginia",
+     "addr": "169.254.112.56:12184",
+     "best_time": "Sat · 3 PM – 5 PM CT",
+     "best_time_pct": 0.2,
+     "best_day": "Saturday",
+     "pct_busy": 0.001,
+     "pct_active": 0.001,
+     "avg_players": 24.7,
+     "peak": 26
+    },
+    {
+     "name": "Server hosted by Physgun.com",
+     "addr": "45.45.238.134:27105",
+     "best_time": "Fri · 7 PM – 9 PM CT",
+     "best_time_pct": 0.2,
+     "best_day": "Friday",
+     "pct_busy": 0.001,
+     "pct_active": 0.001,
+     "avg_players": 21.8,
+     "peak": 23
+    },
+    {
+     "name": "Server Testing",
+     "addr": "69.41.182.173:27015",
+     "best_time": "Sat · 7 PM – 9 PM CT",
+     "best_time_pct": 0.2,
+     "best_day": "Saturday",
+     "pct_busy": 0.0,
+     "pct_active": 0.001,
+     "avg_players": 4.8,
+     "peak": 12
+    },
+    {
+     "name": "Spanakopita",
+     "addr": "99.110.11.58:27015",
+     "best_time": "Mon · 10 PM – 12 AM CT",
+     "best_time_pct": 0.25,
+     "best_day": "Monday",
+     "pct_busy": 0.0,
+     "pct_active": 0.002,
+     "avg_players": 5.3,
+     "peak": 10
+    },
+    {
+     "name": "[EU] Zemiak | Funtazy",
+     "addr": "87.197.137.202:27019",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 2.7,
+     "peak": 3
+    },
+    {
+     "name": "[xG] Community Gamemodes - XenoGamers.com",
+     "addr": "74.91.119.153:27015",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.003,
+     "avg_players": 1.5,
+     "peak": 2
+    },
+    {
+     "name": "BUNNY'S TF2 ARCHIVE // TESTING",
+     "addr": "51.77.46.229:2700",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.002,
+     "avg_players": 2.2,
+     "peak": 3
+    }
+   ]
+  },
+  "pt": {
+   "all": [
+    {
+     "name": "[TR]  Türk Ninjalar sunucusu",
+     "addr": "88.233.138.82:27017",
+     "best_time": "Sat · 8 AM – 10 AM PT",
+     "best_time_pct": 0.5,
+     "best_day": "Saturday",
+     "pct_busy": 0.006,
+     "pct_active": 0.007,
+     "avg_players": 14.2,
+     "peak": 24
+    },
+    {
+     "name": "shounic trenches (USA Chicago)",
+     "addr": "193.243.190.25:27015",
+     "best_time": "Sun · 8 PM – 10 PM PT",
+     "best_time_pct": 0.6,
+     "best_day": "Sunday",
+     "pct_busy": 0.003,
+     "pct_active": 0.007,
+     "avg_players": 30.5,
+     "peak": 98
+    },
+    {
+     "name": "[TR]  Türk Ninjalar sunucusu",
+     "addr": "78.181.34.157:27015",
+     "best_time": "Sun · 11 AM – 1 PM PT",
+     "best_time_pct": 0.333,
+     "best_day": "Sunday",
+     "pct_busy": 0.001,
+     "pct_active": 0.003,
+     "avg_players": 10.4,
+     "peak": 20
+    },
+    {
+     "name": "Aar's Server | Map Testing | Virginia",
+     "addr": "169.254.112.56:12184",
+     "best_time": "Sat · 1 PM – 3 PM PT",
+     "best_time_pct": 0.2,
+     "best_day": "Saturday",
+     "pct_busy": 0.001,
+     "pct_active": 0.001,
+     "avg_players": 24.7,
+     "peak": 26
+    },
+    {
+     "name": "Server hosted by Physgun.com",
+     "addr": "45.45.238.134:27105",
+     "best_time": "Fri · 5 PM – 7 PM PT",
+     "best_time_pct": 0.2,
+     "best_day": "Friday",
+     "pct_busy": 0.001,
+     "pct_active": 0.001,
+     "avg_players": 21.8,
+     "peak": 23
+    },
+    {
+     "name": "Server Testing",
+     "addr": "69.41.182.173:27015",
+     "best_time": "Sat · 5 PM – 7 PM PT",
+     "best_time_pct": 0.2,
+     "best_day": "Saturday",
+     "pct_busy": 0.0,
+     "pct_active": 0.001,
+     "avg_players": 4.8,
+     "peak": 12
+    },
+    {
+     "name": "Spanakopita",
+     "addr": "99.110.11.58:27015",
+     "best_time": "Mon · 8 PM – 10 PM PT",
+     "best_time_pct": 0.25,
+     "best_day": "Monday",
+     "pct_busy": 0.0,
+     "pct_active": 0.002,
+     "avg_players": 5.3,
+     "peak": 10
+    },
+    {
+     "name": "Balloon Race 24/7",
+     "addr": "45.88.229.19:27024",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.25,
+     "avg_players": 1.2,
+     "peak": 6
+    },
+    {
+     "name": "[EU] Zemiak | Funtazy",
+     "addr": "87.197.137.202:27019",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 2.7,
+     "peak": 3
+    },
+    {
+     "name": "[xG] Community Gamemodes - XenoGamers.com",
+     "addr": "74.91.119.153:27015",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.003,
+     "avg_players": 1.5,
+     "peak": 2
+    }
+   ],
+   "dedicated": [
+    {
+     "name": "Balloon Race 24/7",
+     "addr": "45.88.229.19:27024",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.25,
+     "avg_players": 1.2,
+     "peak": 6
+    },
+    {
+     "name": "Wacky Races + Balloon Race 24/7 [ratland]",
+     "addr": "24.163.130.153:27017",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.001,
+     "avg_players": 1.2,
+     "peak": 2
+    },
+    {
+     "name": "IdleServer.Com | BALLOON | BALLOON_01",
+     "addr": "108.181.244.76:48800",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.0,
+     "avg_players": 1.0,
+     "peak": 1
+    }
+   ],
+   "rotating": [
+    {
+     "name": "[TR]  Türk Ninjalar sunucusu",
+     "addr": "88.233.138.82:27017",
+     "best_time": "Sat · 8 AM – 10 AM PT",
+     "best_time_pct": 0.5,
+     "best_day": "Saturday",
+     "pct_busy": 0.006,
+     "pct_active": 0.007,
+     "avg_players": 14.2,
+     "peak": 24
+    },
+    {
+     "name": "shounic trenches (USA Chicago)",
+     "addr": "193.243.190.25:27015",
+     "best_time": "Sun · 8 PM – 10 PM PT",
+     "best_time_pct": 0.6,
+     "best_day": "Sunday",
+     "pct_busy": 0.003,
+     "pct_active": 0.007,
+     "avg_players": 30.5,
+     "peak": 98
+    },
+    {
+     "name": "[TR]  Türk Ninjalar sunucusu",
+     "addr": "78.181.34.157:27015",
+     "best_time": "Sun · 11 AM – 1 PM PT",
+     "best_time_pct": 0.333,
+     "best_day": "Sunday",
+     "pct_busy": 0.001,
+     "pct_active": 0.003,
+     "avg_players": 10.4,
+     "peak": 20
+    },
+    {
+     "name": "Aar's Server | Map Testing | Virginia",
+     "addr": "169.254.112.56:12184",
+     "best_time": "Sat · 1 PM – 3 PM PT",
+     "best_time_pct": 0.2,
+     "best_day": "Saturday",
+     "pct_busy": 0.001,
+     "pct_active": 0.001,
+     "avg_players": 24.7,
+     "peak": 26
+    },
+    {
+     "name": "Server hosted by Physgun.com",
+     "addr": "45.45.238.134:27105",
+     "best_time": "Fri · 5 PM – 7 PM PT",
+     "best_time_pct": 0.2,
+     "best_day": "Friday",
+     "pct_busy": 0.001,
+     "pct_active": 0.001,
+     "avg_players": 21.8,
+     "peak": 23
+    },
+    {
+     "name": "Server Testing",
+     "addr": "69.41.182.173:27015",
+     "best_time": "Sat · 5 PM – 7 PM PT",
+     "best_time_pct": 0.2,
+     "best_day": "Saturday",
+     "pct_busy": 0.0,
+     "pct_active": 0.001,
+     "avg_players": 4.8,
+     "peak": 12
+    },
+    {
+     "name": "Spanakopita",
+     "addr": "99.110.11.58:27015",
+     "best_time": "Mon · 8 PM – 10 PM PT",
+     "best_time_pct": 0.25,
+     "best_day": "Monday",
+     "pct_busy": 0.0,
+     "pct_active": 0.002,
+     "avg_players": 5.3,
+     "peak": 10
+    },
+    {
+     "name": "[EU] Zemiak | Funtazy",
+     "addr": "87.197.137.202:27019",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.004,
+     "avg_players": 2.7,
+     "peak": 3
+    },
+    {
+     "name": "[xG] Community Gamemodes - XenoGamers.com",
+     "addr": "74.91.119.153:27015",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.003,
+     "avg_players": 1.5,
+     "peak": 2
+    },
+    {
+     "name": "BUNNY'S TF2 ARCHIVE // TESTING",
+     "addr": "51.77.46.229:2700",
+     "best_time": null,
+     "best_time_pct": 0.0,
+     "best_day": null,
+     "pct_busy": 0.0,
+     "pct_active": 0.002,
+     "avg_players": 2.2,
+     "peak": 3
+    }
+   ]
+  }
+ },
+ "heatmap_servers": {
+  "all": [
+   {
+    "name": "[TR]  Türk Ninjalar sunucusu",
+    "addr": "88.233.138.82:27017"
+   },
+   {
+    "name": "shounic trenches (USA Chicago)",
+    "addr": "193.243.190.25:27015"
+   },
+   {
+    "name": "[TR]  Türk Ninjalar sunucusu",
+    "addr": "78.181.34.157:27015"
+   },
+   {
+    "name": "Aar's Server | Map Testing | Virginia",
+    "addr": "169.254.112.56:12184"
+   },
+   {
+    "name": "Server hosted by Physgun.com",
+    "addr": "45.45.238.134:27105"
+   },
+   {
+    "name": "Server Testing",
+    "addr": "69.41.182.173:27015"
+   },
+   {
+    "name": "Spanakopita",
+    "addr": "99.110.11.58:27015"
+   }
+  ],
+  "dedicated": [],
+  "rotating": [
+   {
+    "name": "[TR]  Türk Ninjalar sunucusu",
+    "addr": "88.233.138.82:27017"
+   },
+   {
+    "name": "shounic trenches (USA Chicago)",
+    "addr": "193.243.190.25:27015"
+   },
+   {
+    "name": "[TR]  Türk Ninjalar sunucusu",
+    "addr": "78.181.34.157:27015"
+   },
+   {
+    "name": "Aar's Server | Map Testing | Virginia",
+    "addr": "169.254.112.56:12184"
+   },
+   {
+    "name": "Server hosted by Physgun.com",
+    "addr": "45.45.238.134:27105"
+   },
+   {
+    "name": "Server Testing",
+    "addr": "69.41.182.173:27015"
+   },
+   {
+    "name": "Spanakopita",
+    "addr": "99.110.11.58:27015"
+   }
+  ]
+ },
+ "lobby_windows": {
+  "timezone": "America/Denver",
+  "recent_days": 28,
+  "all": [
+   {
+    "start": 133,
+    "pct": 0.75,
+    "days": 3,
+    "seen": 4
+   },
+   {
+    "start": 165,
+    "pct": 0.75,
+    "days": 3,
+    "seen": 4
+   },
+   {
+    "start": 129,
+    "pct": 0.5,
+    "days": 2,
+    "seen": 4
+   },
+   {
+    "start": 157,
+    "pct": 0.5,
+    "days": 2,
+    "seen": 4
+   },
+   {
+    "start": 22,
+    "pct": 0.5,
+    "days": 2,
+    "seen": 4
+   }
+  ],
+  "dedicated": [],
+  "rotating": [
+   {
+    "start": 133,
+    "pct": 0.75,
+    "days": 3,
+    "seen": 4
+   },
+   {
+    "start": 165,
+    "pct": 0.75,
+    "days": 3,
+    "seen": 4
+   },
+   {
+    "start": 129,
+    "pct": 0.5,
+    "days": 2,
+    "seen": 4
+   },
+   {
+    "start": 157,
+    "pct": 0.5,
+    "days": 2,
+    "seen": 4
+   },
+   {
+    "start": 22,
+    "pct": 0.5,
+    "days": 2,
+    "seen": 4
+   }
+  ]
+ },
+ "forecast": {
+  "model": "Logistic regression",
+  "horizon_minutes": 60,
+  "threshold": 10,
+  "timezone": "America/Denver",
+  "days": 35,
+  "examples": 10282,
+  "positives": 501,
+  "servers": [
+   "45.88.229.19:27024",
+   "88.233.138.82:27017",
+   "193.243.190.25:27015",
+   "74.91.119.153:27015"
+  ],
+  "uses_day_of_week": true,
+  "uses_holidays": true,
+  "uses_voters": true,
+  "uses_rotation": true,
+  "evaluation": {
+   "method": "rolling by day",
+   "test_days": [
+    "2026-10-31",
+    "2026-11-01",
+    "2026-11-02",
+    "2026-11-03",
+    "2026-11-04",
+    "2026-11-05",
+    "2026-11-06",
+    "2026-11-07",
+    "2026-11-08",
+    "2026-11-09",
+    "2026-11-10",
+    "2026-11-11",
+    "2026-11-12",
+    "2026-11-13"
+   ],
+   "all": {
+    "examples": 4023,
+    "positives": 134,
+    "lobbies": 10,
+    "log_loss": 0.1361,
+    "baseline_log_loss": 0.1511,
+    "brier": 0.0317,
+    "baseline_brier": 0.0327,
+    "auc": 0.758,
+    "gini": 0.516
+   },
+   "train_auc": 0.83,
+   "no_lobby_yet": {
+    "examples": 4001,
+    "positives": 122,
+    "lobbies": 10,
+    "log_loss": 0.1329,
+    "baseline_log_loss": 0.1431,
+    "brier": 0.0304,
+    "baseline_brier": 0.0301,
+    "auc": 0.736,
+    "gini": 0.472
+   },
+   "calibration": [
+    {
+     "from": 0.0,
+     "to": 0.1,
+     "checks": 3425,
+     "predicted": 0.036,
+     "actual": 0.026
+    },
+    {
+     "from": 0.1,
+     "to": 0.2,
+     "checks": 556,
+     "predicted": 0.14,
+     "actual": 0.058
+    },
+    {
+     "from": 0.2,
+     "to": 0.3,
+     "checks": 19,
+     "predicted": 0.21,
+     "actual": 0.0
+    },
+    {
+     "from": 0.3,
+     "to": 0.4,
+     "checks": 5,
+     "predicted": 0.368,
+     "actual": 0.4
+    },
+    {
+     "from": 0.4,
+     "to": 0.5,
+     "checks": 2,
+     "predicted": 0.483,
+     "actual": 0.0
+    },
+    {
+     "from": 0.5,
+     "to": 0.6,
+     "checks": 7,
+     "predicted": 0.557,
+     "actual": 0.714
+    },
+    {
+     "from": 0.6,
+     "to": 0.7,
+     "checks": 1,
+     "predicted": 0.637,
+     "actual": 1.0
+    },
+    {
+     "from": 0.7,
+     "to": 0.8,
+     "checks": 6,
+     "predicted": 0.712,
+     "actual": 0.5
+    },
+    {
+     "from": 0.8,
+     "to": 0.9,
+     "checks": 2,
+     "predicted": 0.822,
+     "actual": 0.5
+    }
+   ]
+  },
+  "top_features": [
+   {
+    "name": "Day of the week",
+    "weight": 0.693,
+    "direction": null
+   },
+   {
+    "name": "Time of day",
+    "weight": 0.322,
+    "direction": null
+   },
+   {
+    "name": "Time since the last lobby",
+    "weight": 0.273,
+    "direction": "up"
+   },
+   {
+    "name": "Players on rotating servers",
+    "weight": 0.262,
+    "direction": null
+   },
+   {
+    "name": "A lobby is already up",
+    "weight": 0.247,
+    "direction": "up"
+   },
+   {
+    "name": "Busiest server is Balloon Race 24/7",
+    "weight": 0.207,
+    "direction": "down"
+   }
+  ],
+  "ready": true,
+  "trained": "2026-11-14T06:05:10+00:00"
+ },
+ "hourly_history": {
+  "timezone": "America/Denver",
+  "recent_days": 28,
+  "all": [
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    2,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    2,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    2,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    2,
+    4
+   ],
+   [
+    2,
+    4
+   ],
+   [
+    0,
+    4
+   ]
+  ],
+  "dedicated": [
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ]
+  ],
+  "rotating": [
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    2,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    2,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    2,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    2,
+    4
+   ],
+   [
+    2,
+    4
+   ],
+   [
+    0,
+    4
+   ]
+  ]
+ }
+}
