@@ -18,11 +18,11 @@ Ranked by how often they have a lobby going (as many players as the Discord ping
 <!-- TOP_SERVERS_START -->
 | # | Server | Connect (paste in TF2 console) | Best time for a 10+ lobby | Best day | Has 10+ players | Has players | Avg players when on | Peak |
 |---|---|---|---|---|---|---|---|---|
-| 1 | Teekquel \| PLAY THE FUCKING TRACK | `connect 198.245.61.57:27015` | Fri · 6 PM – 8 PM MT (100%) | Friday | 1% of checks | 3% of checks | 7.3 | 16 |
+| 1 | Teekquel \| PLAY THE FUCKING TRACK | `connect 198.245.61.57:27015` | Fri · 6 PM – 8 PM MT (100%) | Friday | 1% of checks | 2% of checks | 7.3 | 16 |
 | 2 | [TR]  Türk Ninjalar sunucusu | `connect 88.233.138.82:27017` | Sat · 9 AM – 11 AM MT (33%) | Saturday | 0% of checks | 1% of checks | 14.2 | 24 |
 | 3 | na.serveme.tf #638220 | `connect 169.254.214.237:28976` | Mon · 9 PM – 11 PM MT (100%) | Monday | 0% of checks | 1% of checks | 9.6 | 11 |
-| 4 | shounic trenches (USA Chicago) | `connect 193.243.190.25:27015` | Sun · 9 PM – 11 PM MT (50%) | Sunday | 0% of checks | 1% of checks | 27.0 | 98 |
-| 5 | Bunny Archives // Vanilla+ | `connect 51.77.46.229:2501` | Sun · 2 PM – 4 PM MT (50%) | Sunday | 0% of checks | 0% of checks | 14.8 | 20 |
+| 4 | shounic trenches (USA Chicago) | `connect 193.243.190.25:27015` | Sun · 9 PM – 11 PM MT (43%) | Sunday | 0% of checks | 1% of checks | 26.5 | 98 |
+| 5 | Bunny Archives // Vanilla+ | `connect 51.77.46.229:2501` | Sun · 2 PM – 4 PM MT (33%) | Sunday | 0% of checks | 0% of checks | 14.8 | 20 |
 
 To favorite one: Steam → View → Game Servers → Favorites → **+** and paste the address.
 <!-- TOP_SERVERS_END -->
