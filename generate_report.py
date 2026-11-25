@@ -63,8 +63,6 @@ DISPLAY_TIMEZONE, TZ_LABEL, ZONE_SUFFIX = ZONES[0]
 
 # Scorecard needs at least this many days of checks before it names a winner
 MIN_DAYS_FOR_SCORECARD = 7
-# Scorecard looks at this many recent days so it follows changing habits
-SCORECARD_RECENT_DAYS = 28
 TOP_SERVER_COUNT = 5
 # The website's server heatmap has a dropdown with this many servers
 HEATMAP_SERVER_COUNT = 10
@@ -155,13 +153,17 @@ def base_layout(title, subtitle=None, variant=ALL_SERVERS, **kwargs):
     if variant[1]:
         text += f" <span style='color:{variant[2]}'><b>· {variant[1]}</b></span>"
     if subtitle:
-        text += f"<br><span style='font-size:14px;color:{TEXT_SECONDARY}'>{subtitle}</span>"
+        # Each '<br>'-separated line gets its own span so the styling carries to every line
+        text += ''.join(f"<br><span style='font-size:14px;color:{TEXT_SECONDARY}'>{line}</span>"
+                        for line in subtitle.split('<br>'))
+    extra_lines = subtitle.count('<br>') if subtitle else 0
     layout = dict(
         title=dict(text=text, x=0.02, xanchor='left', y=0.95, font=dict(size=22, color=TEXT_PRIMARY)),
         paper_bgcolor=SURFACE,
         plot_bgcolor=SURFACE,
         font=dict(family=FONT, size=13, color=TEXT_SECONDARY),
-        margin=dict(l=24, r=32, t=96, b=48),
+        # Room for each extra subtitle line
+        margin=dict(l=24, r=32, t=96 + 28 * extra_lines, b=48),
         width=1000,
         height=600,
         showlegend=False,
@@ -183,6 +185,16 @@ def save(fig, name, variant=ALL_SERVERS):
 
 def days_of_data(df):
     return (df['ts'].max() - df['ts'].min()).days if len(df) else 0
+
+
+# "All time: 267 days (~9 months) since Mar 3, 2026", for charts that use every check
+def all_time_label(df):
+    if not len(df):
+        return 'All time'
+    days, start = days_of_data(df), df['ts'].min()
+    months = round(days / 30.44)
+    span = f'{days} days' + (f' (~{months} month{"" if months == 1 else "s"})' if months >= 1 else '')
+    return f'All time: {span} since {start:%b} {start.day}, {start.year}'
 
 
 # For every 2-hour window of the week (wrapping Sunday night into Monday): the days `active` held at some point in
@@ -219,28 +231,21 @@ def top_windows(window, n):
     return picked
 
 
-# The last SCORECARD_RECENT_DAYS of checks, so the best times follow changing habits
-def recent_checks(df):
-    return df[df['ts'] >= df['ts'].max() - pd.Timedelta(days=SCORECARD_RECENT_DAYS)] if len(df) else df
-
-
 # The website's "next likely lobby" countdown: the best 2-hour windows for a LOBBY_PLAYERS+ lobby,
 # as hours of the week in the current DISPLAY_TIMEZONE
 def lobby_windows(df):
     if days_of_data(df) < MIN_DAYS_FOR_SCORECARD:
         return []
-    recent = recent_checks(df)
-    window = window_rates(recent, recent['online_players'] >= LOBBY_PLAYERS)
+    window = window_rates(df, df['online_players'] >= LOBBY_PLAYERS)
     return [{'start': p, 'pct': round(float(window.loc[p, 'pct']), 3),
              'days': int(window.loc[p, 'hit']), 'seen': int(window.loc[p, 'seen'])}
             for p in top_windows(window, LOBBY_WINDOW_COUNT)]
 
 
 # The website's hourly strip: for each hour of the week (Monday midnight = 0, in DISPLAY_TIMEZONE), how many of
-# the recent days had a LOBBY_PLAYERS+ server at some point in that hour, out of the days that hour was checked
+# the days had a LOBBY_PLAYERS+ server at some point in that hour, out of the days that hour was checked
 def hourly_history(df):
-    recent = recent_checks(df)
-    per_day = (recent.assign(busy=recent['online_players'] >= LOBBY_PLAYERS, date=recent['ts'].dt.date)
+    per_day = (df.assign(busy=df['online_players'] >= LOBBY_PLAYERS, date=df['ts'].dt.date)
                .groupby(['hour_of_week', 'date'])['busy'].any().groupby(level='hour_of_week'))
     hit = per_day.sum().reindex(range(168), fill_value=0)
     seen = per_day.size().reindex(range(168), fill_value=0)
@@ -355,10 +360,9 @@ def generate_forecast_regression(fit, threshold):
     save(fig, 'forecast_regression.png')
 
 
-# Ranked bars: the TOP_WINDOW_COUNT best non-overlapping 2-hour windows of the recent checks
+# Ranked bars: the TOP_WINDOW_COUNT best non-overlapping 2-hour windows of all checks
 def generate_top_windows_plot(df, variant=ALL_SERVERS):
-    recent = recent_checks(df)
-    window = window_rates(recent, recent['online_players'] >= LOBBY_PLAYERS)
+    window = window_rates(df, df['online_players'] >= LOBBY_PLAYERS)
     picked = top_windows(window, TOP_WINDOW_COUNT) if days_of_data(df) >= MIN_DAYS_FOR_SCORECARD else []
     picked = picked[::-1]
     pcts = [window.loc[p, 'pct'] * 100 for p in picked]
@@ -371,10 +375,12 @@ def generate_top_windows_plot(df, variant=ALL_SERVERS):
     fig.update_layout(base_layout(
         f'Top {TOP_WINDOW_COUNT} times to play',
         f'Best 2-hour windows (no overlaps) · % of weeks a server hit {LOBBY_PLAYERS}+ players in the window'
-        f' · last {SCORECARD_RECENT_DAYS} days',
+        f'<br>{all_time_label(df)}',
         height=340, barcornerradius=4, bargap=0.35,
         variant=variant,
     ))
+    # Short chart: pin the title to the top so the two subtitle lines don't push it off
+    fig.update_layout(title=dict(y=1, yanchor='top', pad=dict(t=20)))
     if not picked:
         empty_state(fig)
     fig.update_xaxes(showgrid=True, gridcolor=GRID, zeroline=False, ticksuffix='%', rangemode='tozero')
@@ -915,11 +921,11 @@ def write_buzzfeed_data():
 
 
 # Top servers for each timezone and filter on the website
-def write_site_data(stats_by_zone, windows, forecast, heatmap_servers, hourly):
+def write_site_data(stats_by_zone, windows, forecast, heatmap_servers, hourly, tracked):
     data = {'updated': dt.datetime.now(dt.timezone.utc).isoformat(timespec='seconds'), 'lobby_players': LOBBY_PLAYERS,
             'top_servers': {}, 'heatmap_servers': heatmap_servers,
-            'lobby_windows': {'timezone': ZONES[0][0], 'recent_days': SCORECARD_RECENT_DAYS, **windows}, 'forecast': forecast,
-            'hourly_history': {'timezone': ZONES[0][0], 'recent_days': SCORECARD_RECENT_DAYS, **hourly}}
+            'lobby_windows': {'timezone': ZONES[0][0], 'all_time': all_time_label(tracked), **windows}, 'forecast': forecast,
+            'hourly_history': {'timezone': ZONES[0][0], **hourly}}
     for (zone_key, key), (stats, label) in stats_by_zone.items():
         data['top_servers'].setdefault(zone_key, {})[key] = [{
             'name': s['name'],
@@ -1009,12 +1015,11 @@ if __name__ == "__main__":
         for variant, df, servers in variants:
             generate_top_windows_plot(df, variant)
             # Same days as the best times on the website, so the two agree
-            recent = recent_checks(df)
             generate_heatmap(
-                recent, recent['online_players'] >= LOBBY_PLAYERS,
+                df, df['online_players'] >= LOBBY_PLAYERS,
                 f'How often there is a busy lobby ({LOBBY_PLAYERS}+ players)',
                 f'% of days a server hit {LOBBY_PLAYERS}+ human players in each {HEATMAP_BLOCK_HOURS}-hour block, '
-                f'e.g. 75% = 3 of the 4 Saturdays · last {SCORECARD_RECENT_DAYS} days · times in {TZ_LABEL}',
+                f'e.g. 75% = 3 in every 4 Saturdays · times in {TZ_LABEL}<br>{all_time_label(df)}',
                 'busy_heatmap.png', variant,
             )
             # One relay server under several addresses is one row in the table and one heatmap
@@ -1043,7 +1048,7 @@ if __name__ == "__main__":
     if history_row:
         save_forecast_history(history_row)
     generate_forecast_history(read_forecast_history())
-    write_site_data(stats_by_zone, windows, forecast, heatmap_servers, hourly)
+    write_site_data(stats_by_zone, windows, forecast, heatmap_servers, hourly, graph_df)
     write_rotation_data()
     write_buzzfeed_data()
     if '--no-readme' not in sys.argv:

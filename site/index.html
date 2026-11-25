@@ -1782,7 +1782,7 @@
     const CHAOS_EMOJI = ['🎈', '🎈', '🎈', '🚨', '🔥', '💥', '🎉', '🫃', '🤰'];
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const PAGE_TITLE = document.title;
-    // Windows that had a lobby in under this share of recent weeks aren't "likely"; the best one is still shown
+    // Windows that had a lobby in under this share of weeks aren't "likely"; the best one is still shown
     const NEXT_LOBBY_MIN_PCT = 0.5;
     // The best time also names windows within this much of the best one, up to this many
     const BEST_TIME_TIE_PCT = 0.02;
@@ -2090,13 +2090,13 @@
       box.innerHTML = `${when}<br><span>A ${threshold}+ player server showed up in that window ${weeksNote(next.window)}</span>`;
     }
 
-    // "in 3 of the last 4 weeks": a window comes around once a week, so its days are weeks
+    // "in 3 of 4 weeks": a window comes around once a week, so its days are weeks
     function weeksNote(w) {
-      return w.seen ? `in ${w.days} of the last ${w.seen} week${w.seen === 1 ? '' : 's'}`
-        : `${Math.round(w.pct * 100)}% of recent weeks`;
+      return w.seen ? `in ${w.days} of ${w.seen} week${w.seen === 1 ? '' : 's'}`
+        : `${Math.round(w.pct * 100)}% of weeks`;
     }
 
-    // The best 2-hour window of the recent days in the chosen timezone, plus any within a near tie of it
+    // The best 2-hour window of all checks in the chosen timezone, plus any within a near tie of it
     function renderBestTime() {
       const box = $('#best-time');
       const data = siteData?.lobby_windows;
@@ -2118,7 +2118,7 @@
       const times = shown.map((n) => `<strong>${day(n.start)} ${hour(n.start)} – ${hour(n.start + 2 * HOUR_MS)} ${zone.toUpperCase()}</strong>`);
       box.innerHTML = `Statistical best time to get your fix: ${times.join(' or ')}`
         + ` · ${lobbyPlayers()}+ lobby ${weeksNote(best)}`;
-      box.title = `Weeks over the last ${data.recent_days} days with a ${lobbyPlayers()}+ player server at some point in the window`
+      box.title = `Weeks (${data.all_time ?? 'All time'}) with a ${lobbyPlayers()}+ player server at some point in the window`
         + (shown.length > 1 ? `, tied within ${Math.round(BEST_TIME_TIE_PCT * 100)} points` : '');
     }
 

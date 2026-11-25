@@ -105,4 +105,4 @@ The daily report pushes to GitHub, so the repo remote needs to use SSH (`git rem
 - `balloon/forecast.py`: `FORECAST_MINUTES` and the model's other settings
 - `rotation_tracker.py`: `CHECK_SECONDS`
 - `balloon/voters.py`: `MIN_BALLOON_CHANGES`, `PRIOR_CHANGES`, `VOTER_MIN_SCORE`, `LEADERBOARD_SIZE`
-- `generate_report.py`: `ZONES` (chart timezones; the first is the default), `MIN_DAYS_FOR_SCORECARD`, `SCORECARD_RECENT_DAYS`, `TOP_SERVER_COUNT`
+- `generate_report.py`: `ZONES` (chart timezones; the first is the default), `MIN_DAYS_FOR_SCORECARD`, `TOP_SERVER_COUNT`
