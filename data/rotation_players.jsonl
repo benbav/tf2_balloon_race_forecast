@@ -2084,3 +2084,4 @@
 {"ts": "2026-11-25 17:40:36", "addr": "193.243.190.25:27015", "from_map": "fr_frank_st1", "to_map": "cp_holyhell", "before": ["DustBowl", "Epicper", "The Gay Protogen", "Twitch.tv/Dusk_1984", "kistki"], "stayed": ["DustBowl", "The Gay Protogen", "Twitch.tv/Dusk_1984", "kistki"]}
 {"ts": "2026-11-25 17:55:36", "addr": "193.243.190.25:27015", "from_map": "cp_holyhell", "to_map": "pl_circle_st3", "before": ["killoubas", "kistki", "robaldoBR"], "stayed": ["killoubas", "kistki", "robaldoBR"]}
 {"ts": "2026-11-25 18:15:36", "addr": "193.243.190.25:27015", "from_map": "pl_circle_st3", "to_map": "pl_dbz_b5", "before": ["Magic_Mork", "killoubas", "kistki", "penguan", "robaldoBR"], "stayed": ["Magic_Mork", "killoubas", "kistki", "penguan", "robaldoBR"]}
+{"ts": "2026-11-25 18:55:36", "addr": "193.243.190.25:27015", "from_map": "pl_dbz_b5", "to_map": "ctf_doublecross_snowy", "before": ["killoubas", "kistki"], "stayed": ["killoubas"]}
