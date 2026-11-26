@@ -19423,3 +19423,161 @@
 2026-11-25 18:50:06 - INFO - No one playing balloon race :(
 2026-11-25 18:55:06 - INFO - No one playing balloon race :(
 2026-11-25 19:00:09 - INFO - No one playing balloon race :(
+2026-11-25 19:05:07 - INFO - No one playing balloon race :(
+2026-11-25 19:10:06 - INFO - No one playing balloon race :(
+2026-11-25 19:15:05 - INFO - No one playing balloon race :(
+2026-11-25 19:20:05 - INFO - No one playing balloon race :(
+2026-11-25 19:25:05 - INFO - No one playing balloon race :(
+2026-11-25 19:30:05 - INFO - No one playing balloon race :(
+2026-11-25 19:35:04 - INFO - No one playing balloon race :(
+2026-11-25 19:40:05 - INFO - No one playing balloon race :(
+2026-11-25 19:45:05 - INFO - No one playing balloon race :(
+2026-11-25 19:50:05 - INFO - No one playing balloon race :(
+2026-11-25 19:55:05 - INFO - No one playing balloon race :(
+2026-11-25 20:00:06 - INFO - No one playing balloon race :(
+2026-11-25 20:05:04 - INFO - No one playing balloon race :(
+2026-11-25 20:10:05 - INFO - No one playing balloon race :(
+2026-11-25 20:15:05 - INFO - No one playing balloon race :(
+2026-11-25 20:20:05 - INFO - No one playing balloon race :(
+2026-11-25 20:25:05 - INFO - Found people playing Balloon Race
+2026-11-25 20:25:05 - INFO - Balloon Race 24/7 : 1
+2026-11-25 20:25:05 - INFO - SERVER 205.178.182.27:27024 | Balloon Race 24/7 : 1
+2026-11-25 20:30:05 - INFO - No one playing balloon race :(
+2026-11-25 20:35:05 - INFO - No one playing balloon race :(
+2026-11-25 20:40:04 - INFO - No one playing balloon race :(
+2026-11-25 20:45:05 - INFO - No one playing balloon race :(
+2026-11-25 20:50:04 - INFO - No one playing balloon race :(
+2026-11-25 20:55:05 - INFO - No one playing balloon race :(
+2026-11-25 21:00:06 - INFO - No one playing balloon race :(
+2026-11-25 21:05:05 - INFO - Found people playing Balloon Race
+2026-11-25 21:05:05 - INFO - IdleServer.Com | BALLOON | BALLOON_01 : 2
+2026-11-25 21:05:05 - INFO - SERVER 108.181.244.76:48800 | IdleServer.Com | BALLOON | BALLOON_01 : 2
+2026-11-25 21:10:05 - INFO - Found people playing Balloon Race
+2026-11-25 21:10:05 - INFO - IdleServer.Com | BALLOON | BALLOON_01 : 2
+2026-11-25 21:10:05 - INFO - SERVER 108.181.244.76:48800 | IdleServer.Com | BALLOON | BALLOON_01 : 2
+2026-11-25 21:10:05 - INFO - SERVER 46.174.54.80:27016 | [RU] FunBox 24/7 : 1
+2026-11-25 21:15:05 - INFO - Found people playing Balloon Race
+2026-11-25 21:15:05 - INFO - IdleServer.Com | BALLOON | BALLOON_01 : 1
+2026-11-25 21:15:05 - INFO - SERVER 108.181.244.76:48800 | IdleServer.Com | BALLOON | BALLOON_01 : 1
+2026-11-25 21:20:04 - INFO - No one playing balloon race :(
+2026-11-25 21:25:05 - INFO - No one playing balloon race :(
+2026-11-25 21:30:06 - INFO - No one playing balloon race :(
+2026-11-25 21:35:05 - INFO - No one playing balloon race :(
+2026-11-25 21:40:05 - INFO - No one playing balloon race :(
+2026-11-25 21:45:05 - INFO - No one playing balloon race :(
+2026-11-25 21:50:05 - INFO - No one playing balloon race :(
+2026-11-25 21:55:05 - INFO - No one playing balloon race :(
+2026-11-25 22:00:05 - INFO - No one playing balloon race :(
+2026-11-25 22:05:05 - INFO - No one playing balloon race :(
+2026-11-25 22:10:05 - INFO - No one playing balloon race :(
+2026-11-25 22:15:05 - INFO - No one playing balloon race :(
+2026-11-25 22:20:05 - INFO - No one playing balloon race :(
+2026-11-25 22:25:05 - INFO - No one playing balloon race :(
+2026-11-25 22:30:06 - INFO - No one playing balloon race :(
+2026-11-25 22:35:05 - INFO - Found people playing Balloon Race
+2026-11-25 22:35:05 - INFO - tf2 tel-aviv : 1
+2026-11-25 22:35:05 - INFO - SERVER 177.50.207.31:27015 | tf2 tel-aviv : 1
+2026-11-25 22:40:05 - INFO - Found people playing Balloon Race
+2026-11-25 22:40:05 - INFO - tf2 tel-aviv : 1
+2026-11-25 22:40:05 - INFO - SERVER 177.50.207.31:27015 | tf2 tel-aviv : 1
+2026-11-25 22:40:05 - INFO - SERVER 45.235.99.105:27063 | Pan Sin Ketchup Multimaps : 1
+2026-11-25 22:45:05 - INFO - Found people playing Balloon Race
+2026-11-25 22:45:05 - INFO - tf2 tel-aviv : 3
+2026-11-25 22:45:05 - INFO - SERVER 177.50.207.31:27015 | tf2 tel-aviv : 3
+2026-11-25 22:50:05 - INFO - Found people playing Balloon Race
+2026-11-25 22:50:05 - INFO - tf2 tel-aviv : 3
+2026-11-25 22:50:05 - INFO - SERVER 177.50.207.31:27015 | tf2 tel-aviv : 3
+2026-11-25 22:55:05 - INFO - Found people playing Balloon Race
+2026-11-25 22:55:05 - INFO - tf2 tel-aviv : 3
+2026-11-25 22:55:05 - INFO - SERVER 177.50.207.31:27015 | tf2 tel-aviv : 3
+2026-11-25 23:00:05 - INFO - No one playing balloon race :(
+2026-11-25 23:05:05 - INFO - No one playing balloon race :(
+2026-11-25 23:10:05 - INFO - No one playing balloon race :(
+2026-11-25 23:15:05 - INFO - No one playing balloon race :(
+2026-11-25 23:20:05 - INFO - No one playing balloon race :(
+2026-11-25 23:25:05 - INFO - No one playing balloon race :(
+2026-11-25 23:30:05 - INFO - No one playing balloon race :(
+2026-11-25 23:35:05 - INFO - No one playing balloon race :(
+2026-11-25 23:40:05 - INFO - No one playing balloon race :(
+2026-11-25 23:45:05 - INFO - No one playing balloon race :(
+2026-11-25 23:50:05 - INFO - No one playing balloon race :(
+2026-11-25 23:55:05 - INFO - No one playing balloon race :(
+2026-11-26 00:00:07 - INFO - No one playing balloon race :(
+2026-11-26 00:05:05 - INFO - No one playing balloon race :(
+2026-11-26 00:10:05 - INFO - No one playing balloon race :(
+2026-11-26 00:15:05 - INFO - No one playing balloon race :(
+2026-11-26 00:20:05 - INFO - No one playing balloon race :(
+2026-11-26 00:25:05 - INFO - No one playing balloon race :(
+2026-11-26 00:30:05 - INFO - No one playing balloon race :(
+2026-11-26 00:35:05 - INFO - No one playing balloon race :(
+2026-11-26 00:40:06 - INFO - No one playing balloon race :(
+2026-11-26 00:45:05 - INFO - No one playing balloon race :(
+2026-11-26 00:50:05 - INFO - No one playing balloon race :(
+2026-11-26 00:55:06 - INFO - No one playing balloon race :(
+2026-11-26 01:00:06 - INFO - No one playing balloon race :(
+2026-11-26 01:05:04 - INFO - No one playing balloon race :(
+2026-11-26 01:10:05 - INFO - No one playing balloon race :(
+2026-11-26 01:15:06 - INFO - No one playing balloon race :(
+2026-11-26 01:20:05 - INFO - No one playing balloon race :(
+2026-11-26 01:25:05 - INFO - No one playing balloon race :(
+2026-11-26 01:30:05 - INFO - No one playing balloon race :(
+2026-11-26 01:35:05 - INFO - No one playing balloon race :(
+2026-11-26 01:40:05 - INFO - No one playing balloon race :(
+2026-11-26 01:45:05 - INFO - No one playing balloon race :(
+2026-11-26 01:50:04 - INFO - No one playing balloon race :(
+2026-11-26 01:55:05 - INFO - No one playing balloon race :(
+2026-11-26 02:00:05 - INFO - No one playing balloon race :(
+2026-11-26 02:05:04 - INFO - No one playing balloon race :(
+2026-11-26 02:10:05 - INFO - No one playing balloon race :(
+2026-11-26 02:15:05 - INFO - No one playing balloon race :(
+2026-11-26 02:20:05 - INFO - No one playing balloon race :(
+2026-11-26 02:25:05 - INFO - No one playing balloon race :(
+2026-11-26 02:30:05 - INFO - No one playing balloon race :(
+2026-11-26 02:35:05 - INFO - No one playing balloon race :(
+2026-11-26 02:40:05 - INFO - No one playing balloon race :(
+2026-11-26 02:45:05 - INFO - Found people playing Balloon Race
+2026-11-26 02:45:05 - INFO - shounic trenches (USA Chicago) : 77
+2026-11-26 02:45:05 - INFO - SERVER 193.243.190.25:27015 | shounic trenches (USA Chicago) : 77
+2026-11-26 02:45:05 - INFO - Sent Discord notification for shounic trenches (USA Chicago)
+2026-11-26 02:50:05 - INFO - Found people playing Balloon Race
+2026-11-26 02:50:05 - INFO - shounic trenches (USA Chicago) : 81
+2026-11-26 02:50:05 - INFO - SERVER 193.243.190.25:27015 | shounic trenches (USA Chicago) : 81
+2026-11-26 02:55:05 - INFO - No one playing balloon race :(
+2026-11-26 03:00:07 - INFO - No one playing balloon race :(
+2026-11-26 03:05:05 - INFO - No one playing balloon race :(
+2026-11-26 03:10:05 - INFO - No one playing balloon race :(
+2026-11-26 03:15:04 - INFO - No one playing balloon race :(
+2026-11-26 03:20:05 - INFO - No one playing balloon race :(
+2026-11-26 03:25:05 - INFO - No one playing balloon race :(
+2026-11-26 03:30:06 - INFO - No one playing balloon race :(
+2026-11-26 03:35:05 - INFO - No one playing balloon race :(
+2026-11-26 03:40:05 - INFO - No one playing balloon race :(
+2026-11-26 03:45:04 - INFO - No one playing balloon race :(
+2026-11-26 03:50:04 - INFO - No one playing balloon race :(
+2026-11-26 03:55:05 - INFO - No one playing balloon race :(
+2026-11-26 04:00:05 - INFO - No one playing balloon race :(
+2026-11-26 04:05:05 - INFO - No one playing balloon race :(
+2026-11-26 04:10:05 - INFO - No one playing balloon race :(
+2026-11-26 04:15:05 - INFO - No one playing balloon race :(
+2026-11-26 04:20:05 - INFO - No one playing balloon race :(
+2026-11-26 04:25:05 - INFO - No one playing balloon race :(
+2026-11-26 04:30:05 - INFO - No one playing balloon race :(
+2026-11-26 04:35:04 - INFO - No one playing balloon race :(
+2026-11-26 04:40:05 - INFO - No one playing balloon race :(
+2026-11-26 04:45:05 - INFO - No one playing balloon race :(
+2026-11-26 04:50:05 - INFO - No one playing balloon race :(
+2026-11-26 04:55:04 - INFO - No one playing balloon race :(
+2026-11-26 05:00:05 - INFO - No one playing balloon race :(
+2026-11-26 05:05:05 - INFO - No one playing balloon race :(
+2026-11-26 05:10:05 - INFO - No one playing balloon race :(
+2026-11-26 05:15:05 - INFO - No one playing balloon race :(
+2026-11-26 05:20:05 - INFO - No one playing balloon race :(
+2026-11-26 05:25:05 - INFO - No one playing balloon race :(
+2026-11-26 05:30:05 - INFO - No one playing balloon race :(
+2026-11-26 05:35:04 - INFO - No one playing balloon race :(
+2026-11-26 05:40:06 - INFO - No one playing balloon race :(
+2026-11-26 05:45:05 - INFO - No one playing balloon race :(
+2026-11-26 05:50:05 - INFO - No one playing balloon race :(
+2026-11-26 05:55:05 - INFO - No one playing balloon race :(
+2026-11-26 06:00:06 - INFO - No one playing balloon race :(
+2026-11-26 06:05:07 - INFO - No one playing balloon race :(
