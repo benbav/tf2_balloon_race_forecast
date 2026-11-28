@@ -1,0 +1,1953 @@
+{
+ "since": "2026-10-19T04:27:20+00:00",
+ "last_check": "2026-11-28T06:06:16+00:00",
+ "balloon_map": "balloon_race_v2b",
+ "min_repeats": 3,
+ "servers": [
+  {
+   "addr": "193.243.190.25:27015",
+   "name": "shounic trenches (USA Chicago)",
+   "checks": 14020,
+   "current": {
+    "map": "pl_cactuscanyon_st1",
+    "players": 90,
+    "next_map": "fr_gustav",
+    "as_of": "2026-11-28T06:01:45+00:00",
+    "since": "2026-11-28T05:45:45+00:00"
+   },
+   "visits": 29,
+   "before": [
+    [
+     "koth_trainsawlaser",
+     2
+    ],
+    [
+     "pl_cashworks_st1b",
+     2
+    ],
+    [
+     "cp_gravelpit",
+     1
+    ],
+    [
+     "plr_nightfall_final",
+     1
+    ],
+    [
+     "ctf_doublecross_snowy",
+     1
+    ],
+    [
+     "ctf_pressure",
+     1
+    ],
+    [
+     "pl_dustbowl_st5",
+     1
+    ],
+    [
+     "pd_watergate",
+     1
+    ],
+    [
+     "cp_mojave",
+     1
+    ],
+    [
+     "cp_snakewater_final1",
+     1
+    ],
+    [
+     "pl_circle_st3",
+     1
+    ],
+    [
+     "pl_badwater",
+     1
+    ],
+    [
+     "cp_badlands",
+     1
+    ],
+    [
+     "koth_nucleus",
+     1
+    ],
+    [
+     "koth_sawmill_event",
+     1
+    ],
+    [
+     "cp_steel",
+     1
+    ],
+    [
+     "cp_holyhell",
+     1
+    ],
+    [
+     "pl_borneo",
+     1
+    ],
+    [
+     "ctf_applejack",
+     1
+    ],
+    [
+     "cp_gorge_event",
+     1
+    ],
+    [
+     "pl_swiftwater_final1",
+     1
+    ],
+    [
+     "koth_shorelight",
+     1
+    ],
+    [
+     "koth_dusker",
+     1
+    ],
+    [
+     "koth_winter_ridge",
+     1
+    ],
+    [
+     "cp_hadal",
+     1
+    ],
+    [
+     "pl_upward",
+     1
+    ],
+    [
+     "plr_matterhorn",
+     1
+    ]
+   ],
+   "after": [
+    [
+     "cp_degrootkeep",
+     2
+    ],
+    [
+     "pl_upward",
+     2
+    ],
+    [
+     "cp_burghausen",
+     2
+    ],
+    [
+     "pl_frontier_final",
+     2
+    ],
+    [
+     "koth_rotunda",
+     1
+    ],
+    [
+     "koth_megalo",
+     1
+    ],
+    [
+     "ctf_applejack",
+     1
+    ],
+    [
+     "pl_dustbowl_st5",
+     1
+    ],
+    [
+     "koth_trainsawlaser",
+     1
+    ],
+    [
+     "cp_metalworks",
+     1
+    ],
+    [
+     "cp_holyhell",
+     1
+    ],
+    [
+     "cp_process_final",
+     1
+    ],
+    [
+     "koth_sawmill",
+     1
+    ],
+    [
+     "ctf_turbine_winter",
+     1
+    ],
+    [
+     "cp_degrootkeep_rats",
+     1
+    ],
+    [
+     "ctf_frosty",
+     1
+    ],
+    [
+     "cp_dustbowl",
+     1
+    ],
+    [
+     "cp_5gorge",
+     1
+    ],
+    [
+     "koth_demolition",
+     1
+    ],
+    [
+     "cp_darkmarsh",
+     1
+    ],
+    [
+     "koth_shorelight",
+     1
+    ],
+    [
+     "cp_gullywash_final1",
+     1
+    ],
+    [
+     "koth_suijin",
+     1
+    ],
+    [
+     "fr_frank_st1",
+     1
+    ],
+    [
+     "koth_boardwalk",
+     1
+    ]
+   ],
+   "gaps": [
+    {
+     "hours": 46.8,
+     "maps_between": 100
+    },
+    {
+     "hours": 11.2,
+     "maps_between": 17
+    },
+    {
+     "hours": 14.1,
+     "maps_between": 37
+    },
+    {
+     "hours": 60.2,
+     "maps_between": 124
+    },
+    {
+     "hours": 29.1,
+     "maps_between": 70
+    },
+    {
+     "hours": 9.5,
+     "maps_between": 19
+    }
+   ],
+   "verdict": "varies",
+   "verdict_text": "Not fixed: after koth_trainsawlaser 2 of 29 times",
+   "recent": [
+    {
+     "map": "fr_gustav",
+     "start": "2026-11-27T19:48:08+00:00",
+     "peak": 2,
+     "next_map": "plr_bananabay",
+     "minutes": 5
+    },
+    {
+     "map": "koth_slaughter_event",
+     "start": "2026-11-27T19:51:38+00:00",
+     "peak": 8,
+     "next_map": "plr_pipeline",
+     "minutes": 20
+    },
+    {
+     "map": "cp_gorge",
+     "start": "2026-11-27T20:10:38+00:00",
+     "peak": 7,
+     "next_map": "pl_rumford_event",
+     "minutes": 10
+    },
+    {
+     "map": "cp_hardwood_final",
+     "start": "2026-11-27T20:20:38+00:00",
+     "peak": 9,
+     "next_map": "koth_trainsawlaser",
+     "minutes": 16
+    },
+    {
+     "map": "koth_trainsawlaser",
+     "start": "2026-11-27T20:35:38+00:00",
+     "peak": 5,
+     "next_map": "pl_snowycoast",
+     "minutes": 10
+    },
+    {
+     "map": "pl_swiftwater_final1",
+     "start": "2026-11-27T20:45:38+00:00",
+     "peak": 8,
+     "next_map": "cp_degrootkeep",
+     "minutes": 26
+    },
+    {
+     "map": "cp_degrootkeep",
+     "start": "2026-11-27T21:10:38+00:00",
+     "peak": 12,
+     "next_map": "pl_enclosure_final",
+     "minutes": 10
+    },
+    {
+     "map": "pl_enclosure_final",
+     "start": "2026-11-27T21:20:38+00:00",
+     "peak": 22,
+     "next_map": "pl_dustbowl_st5",
+     "minutes": 32
+    },
+    {
+     "map": "pl_dustbowl_st5",
+     "start": "2026-11-27T21:50:38+00:00",
+     "peak": 28,
+     "next_map": "tc_hydro",
+     "minutes": 26
+    },
+    {
+     "map": "wacky_races_v2",
+     "start": "2026-11-27T22:15:38+00:00",
+     "peak": 29,
+     "next_map": "tc_hydro",
+     "minutes": 5
+    },
+    {
+     "map": "pl_circle_st3",
+     "start": "2026-11-27T22:20:38+00:00",
+     "peak": 47,
+     "next_map": "uw_dingo_pass",
+     "minutes": 21
+    },
+    {
+     "map": "uw_dingo_pass",
+     "start": "2026-11-27T22:40:38+00:00",
+     "peak": 70,
+     "next_map": "ctf_medi_evil",
+     "minutes": 25
+    },
+    {
+     "map": "pl_odyssey",
+     "start": "2026-11-27T23:05:42+00:00",
+     "peak": 78,
+     "next_map": "plr_bananabay",
+     "minutes": 21
+    },
+    {
+     "map": "plr_bananabay",
+     "start": "2026-11-27T23:25:42+00:00",
+     "peak": 79,
+     "next_map": "koth_trainsawlaser",
+     "minutes": 10
+    },
+    {
+     "map": "cp_snakewater_final1",
+     "start": "2026-11-27T23:35:42+00:00",
+     "peak": 99,
+     "next_map": "cp_mojave",
+     "minutes": 15
+    },
+    {
+     "map": "pl_rainbowride_st1b",
+     "start": "2026-11-27T23:50:42+00:00",
+     "peak": 100,
+     "next_map": "cp_carrier",
+     "minutes": 21
+    },
+    {
+     "map": "cp_carrier",
+     "start": "2026-11-28T00:10:42+00:00",
+     "peak": 100,
+     "next_map": "koth_harvest_event",
+     "minutes": 31
+    },
+    {
+     "map": "koth_harvest_event",
+     "start": "2026-11-28T00:40:42+00:00",
+     "peak": 99,
+     "next_map": "pl_aquarius",
+     "minutes": 15
+    },
+    {
+     "map": "pl_aquarius",
+     "start": "2026-11-28T00:55:42+00:00",
+     "peak": 100,
+     "next_map": "koth_suijin",
+     "minutes": 37
+    },
+    {
+     "map": "koth_suijin",
+     "start": "2026-11-28T01:30:42+00:00",
+     "peak": 86,
+     "next_map": "koth_shorelight",
+     "minutes": 10
+    },
+    {
+     "map": "pl_circle_st3",
+     "start": "2026-11-28T01:40:42+00:00",
+     "peak": 100,
+     "next_map": "uw_dingo_pass",
+     "minutes": 31
+    },
+    {
+     "map": "pl_dustbowl_st5",
+     "start": "2026-11-28T02:10:45+00:00",
+     "peak": 100,
+     "next_map": "fr_gustav",
+     "minutes": 46
+    },
+    {
+     "map": "pl_barnblitz_st1e",
+     "start": "2026-11-28T02:55:45+00:00",
+     "peak": 97,
+     "next_map": "pl_dbz_b5",
+     "minutes": 25
+    },
+    {
+     "map": "pl_dbz_b5",
+     "start": "2026-11-28T03:20:45+00:00",
+     "peak": 100,
+     "next_map": "wacky_races_v2",
+     "minutes": 36
+    },
+    {
+     "map": "pl_thundermountain",
+     "start": "2026-11-28T03:55:45+00:00",
+     "peak": 95,
+     "next_map": "ctf_2fort",
+     "minutes": 37
+    },
+    {
+     "map": "pl_snowycoast",
+     "start": "2026-11-28T04:30:45+00:00",
+     "peak": 100,
+     "next_map": "cp_holyhell",
+     "minutes": 20
+    },
+    {
+     "map": "cp_holyhell",
+     "start": "2026-11-28T04:50:45+00:00",
+     "peak": 96,
+     "next_map": "2koth_abbey",
+     "minutes": 21
+    },
+    {
+     "map": "pl_redwood",
+     "start": "2026-11-28T05:10:45+00:00",
+     "peak": 96,
+     "next_map": "cp_granary",
+     "minutes": 21
+    },
+    {
+     "map": "cp_granary",
+     "start": "2026-11-28T05:30:45+00:00",
+     "peak": 92,
+     "next_map": "ctf_sidewinder",
+     "minutes": 16
+    },
+    {
+     "map": "pl_cactuscanyon_st1",
+     "start": "2026-11-28T05:45:45+00:00",
+     "peak": 94,
+     "next_map": "fr_gustav",
+     "minutes": 21
+    }
+   ]
+  },
+  {
+   "addr": "88.233.138.82:27017",
+   "name": "[TR]  Türk Ninjalar sunucusu",
+   "checks": 12110,
+   "current": {
+    "map": "",
+    "players": 0,
+    "next_map": "",
+    "as_of": "2026-11-28T06:03:16+00:00",
+    "since": "2026-11-04T19:57:45+00:00"
+   },
+   "visits": 9,
+   "before": [
+    [
+     "jb_mlcastle_refurbished_v5",
+     4
+    ],
+    [
+     "vsh_natural_halestorm_v2",
+     1
+    ],
+    [
+     "dr_undertale_finished_v2fix2",
+     1
+    ],
+    [
+     "gm_construct_updated_v2",
+     1
+    ],
+    [
+     "ctf_minecraft_fakir_vs_zengin",
+     1
+    ],
+    [
+     "arena_mw2_highrise",
+     1
+    ]
+   ],
+   "after": [
+    [
+     "arena_mw2_highrise",
+     2
+    ],
+    [
+     "cp_degrootkeep",
+     2
+    ],
+    [
+     "minecraft_koth_rc3",
+     1
+    ],
+    [
+     "gm_construct_updated_v2",
+     1
+    ],
+    [
+     "vsh_natural_halestorm_v2",
+     1
+    ],
+    [
+     "wacky_races_v2",
+     1
+    ]
+   ],
+   "gaps": [
+    {
+     "hours": 1.6,
+     "maps_between": 5
+    },
+    {
+     "hours": 2.4,
+     "maps_between": 6
+    },
+    {
+     "hours": 3.5,
+     "maps_between": 8
+    },
+    {
+     "hours": 71.3,
+     "maps_between": 8
+    },
+    {
+     "hours": 1.5,
+     "maps_between": 3
+    },
+    {
+     "hours": 164.2,
+     "maps_between": 40
+    }
+   ],
+   "verdict": "varies",
+   "verdict_text": "Not fixed: after jb_mlcastle_refurbished_v5 4 of 9 times",
+   "recent": [
+    {
+     "map": "balloon_race_v2b",
+     "start": "2026-11-03T15:38:45+00:00",
+     "peak": 11,
+     "next_map": "",
+     "minutes": 46
+    },
+    {
+     "map": "cp_degrootkeep",
+     "start": "2026-11-03T16:20:45+00:00",
+     "peak": 10,
+     "next_map": "",
+     "minutes": 21
+    },
+    {
+     "map": "vsh_fnaf_v3",
+     "start": "2026-11-03T16:38:45+00:00",
+     "peak": 9,
+     "next_map": "",
+     "minutes": 36
+    },
+    {
+     "map": "dr_supermario64_v6b",
+     "start": "2026-11-03T17:15:15+00:00",
+     "peak": 12,
+     "next_map": "",
+     "minutes": 10
+    },
+    {
+     "map": "jb_minecraft_daylight_v8_fix",
+     "start": "2026-11-03T17:23:45+00:00",
+     "peak": 14,
+     "next_map": "",
+     "minutes": 105
+    },
+    {
+     "map": "vsh_natural_halestorm_v2",
+     "start": "2026-11-03T19:08:45+00:00",
+     "peak": 7,
+     "next_map": "",
+     "minutes": 32
+    },
+    {
+     "map": "",
+     "start": "2026-11-03T19:40:45+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 913
+    },
+    {
+     "map": "ctf_2fort",
+     "start": "2026-11-04T10:50:15+00:00",
+     "peak": 1,
+     "next_map": "",
+     "minutes": 20
+    },
+    {
+     "map": "",
+     "start": "2026-11-04T11:08:45+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 15
+    },
+    {
+     "map": "ctf_2fort",
+     "start": "2026-11-04T11:21:46+00:00",
+     "peak": 3,
+     "next_map": "",
+     "minutes": 15
+    },
+    {
+     "map": "vsh_hightower_roblox_v11",
+     "start": "2026-11-04T11:35:16+00:00",
+     "peak": 6,
+     "next_map": "",
+     "minutes": 26
+    },
+    {
+     "map": "vsh_fnaf_v3",
+     "start": "2026-11-04T11:57:45+00:00",
+     "peak": 11,
+     "next_map": "",
+     "minutes": 41
+    },
+    {
+     "map": "jb_minecraft_daylight_v8_fix",
+     "start": "2026-11-04T12:37:46+00:00",
+     "peak": 10,
+     "next_map": "",
+     "minutes": 26
+    },
+    {
+     "map": "dr_minecraft_land_v5c",
+     "start": "2026-11-04T13:03:16+00:00",
+     "peak": 7,
+     "next_map": "workshop/mge_training_v8_beta4b.ugc1996603816",
+     "minutes": 21
+    },
+    {
+     "map": "mge_training_v8_beta4b",
+     "start": "2026-11-04T13:21:16+00:00",
+     "peak": 5,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "dr_skibidi_toilet_v3b2",
+     "start": "2026-11-04T13:26:16+00:00",
+     "peak": 6,
+     "next_map": "",
+     "minutes": 16
+    },
+    {
+     "map": "mge_training_v8_beta4b",
+     "start": "2026-11-04T13:41:16+00:00",
+     "peak": 4,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "supercrazycar_v2",
+     "start": "2026-11-04T13:46:16+00:00",
+     "peak": 1,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "dr_supermario64_v6b",
+     "start": "2026-11-04T13:51:16+00:00",
+     "peak": 2,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "mge_training_v8_beta4b",
+     "start": "2026-11-04T13:56:16+00:00",
+     "peak": 1,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "ctf_minedesert_rc",
+     "start": "2026-11-04T14:01:16+00:00",
+     "peak": 3,
+     "next_map": "",
+     "minutes": 32
+    },
+    {
+     "map": "vsh_natural_halestorm_v2",
+     "start": "2026-11-04T14:31:16+00:00",
+     "peak": 5,
+     "next_map": "",
+     "minutes": 37
+    },
+    {
+     "map": "dr_undertale_finished_v2fix2",
+     "start": "2026-11-04T15:07:46+00:00",
+     "peak": 8,
+     "next_map": "workshop/ctf_minetest2.ugc3140160253",
+     "minutes": 20
+    },
+    {
+     "map": "ctf_minetest2",
+     "start": "2026-11-04T15:26:45+00:00",
+     "peak": 10,
+     "next_map": "",
+     "minutes": 26
+    },
+    {
+     "map": "vsh_natural_halestorm_v2",
+     "start": "2026-11-04T15:52:46+00:00",
+     "peak": 14,
+     "next_map": "",
+     "minutes": 63
+    },
+    {
+     "map": "jb_mlcastle_refurbished_v5",
+     "start": "2026-11-04T16:52:46+00:00",
+     "peak": 13,
+     "next_map": "",
+     "minutes": 84
+    },
+    {
+     "map": "ctf_minecraft_fakir_vs_zengin",
+     "start": "2026-11-04T18:12:46+00:00",
+     "peak": 7,
+     "next_map": "",
+     "minutes": 15
+    },
+    {
+     "map": "ctf_minedesert_rc",
+     "start": "2026-11-04T18:27:46+00:00",
+     "peak": 4,
+     "next_map": "",
+     "minutes": 31
+    },
+    {
+     "map": "dr_undertale_finished_v2fix2",
+     "start": "2026-11-04T18:54:46+00:00",
+     "peak": 1,
+     "next_map": "workshop/vsh_hightower_roblox_v11.ugc3576037995",
+     "minutes": 62
+    },
+    {
+     "map": "",
+     "start": "2026-11-04T19:57:45+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 33730
+    }
+   ]
+  },
+  {
+   "addr": "99.110.11.58:27015",
+   "name": "Spanakopita",
+   "checks": 10642,
+   "current": {
+    "map": "",
+    "players": 0,
+    "next_map": "",
+    "as_of": "2026-11-28T06:03:17+00:00",
+    "since": "2026-10-28T17:47:24+00:00"
+   },
+   "visits": 2,
+   "before": [],
+   "after": [],
+   "gaps": [
+    {
+     "hours": 17.6,
+     "maps_between": 0
+    }
+   ],
+   "verdict": "waiting",
+   "verdict_text": "Waiting to see which map comes before Balloon Race",
+   "recent": [
+    {
+     "map": "balloon_race_v2b",
+     "start": "2026-10-20T04:30:28+00:00",
+     "peak": 10,
+     "next_map": "",
+     "minutes": 1053
+    },
+    {
+     "map": "",
+     "start": "2026-10-20T22:05:29+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "balloon_race_v2b",
+     "start": "2026-10-20T22:05:59+00:00",
+     "peak": 1,
+     "next_map": "",
+     "minutes": 11262
+    },
+    {
+     "map": "",
+     "start": "2026-10-28T17:47:24+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 43940
+    }
+   ]
+  },
+  {
+   "addr": "198.245.61.57:27015",
+   "name": "Teekquel | get balcklisted fuckers",
+   "checks": 1972,
+   "current": {
+    "map": "cp_dustbowl_winter",
+    "players": 0,
+    "next_map": "workshop/plr_alberta_b2.ugc3830221012",
+    "as_of": "2026-11-28T06:04:45+00:00",
+    "since": "2026-11-28T04:23:45+00:00"
+   },
+   "visits": 0,
+   "before": [],
+   "after": [],
+   "gaps": [],
+   "verdict": "waiting",
+   "verdict_text": "Waiting for Balloon Race to come up",
+   "recent": [
+    {
+     "map": "",
+     "start": "2026-11-26T20:55:38+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "mario_kart",
+     "start": "2026-11-26T20:56:08+00:00",
+     "peak": 0,
+     "next_map": "cp_ambush_event",
+     "minutes": 5
+    },
+    {
+     "map": "",
+     "start": "2026-11-26T20:57:08+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "mario_kart",
+     "start": "2026-11-26T20:57:38+00:00",
+     "peak": 0,
+     "next_map": "cp_ambush_event",
+     "minutes": 5
+    },
+    {
+     "map": "",
+     "start": "2026-11-26T21:01:08+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 10
+    },
+    {
+     "map": "mario_kart",
+     "start": "2026-11-26T21:07:08+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "",
+     "start": "2026-11-26T21:08:08+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "mario_kart",
+     "start": "2026-11-26T21:09:38+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "",
+     "start": "2026-11-26T21:10:08+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "mario_kart",
+     "start": "2026-11-26T21:11:38+00:00",
+     "peak": 0,
+     "next_map": "cp_ambush_event",
+     "minutes": 10
+    },
+    {
+     "map": "",
+     "start": "2026-11-26T21:17:38+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "mario_kart",
+     "start": "2026-11-26T21:18:08+00:00",
+     "peak": 0,
+     "next_map": "cp_ambush_event",
+     "minutes": 5
+    },
+    {
+     "map": "",
+     "start": "2026-11-26T21:19:38+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "mario_kart",
+     "start": "2026-11-26T21:20:08+00:00",
+     "peak": 0,
+     "next_map": "cp_ambush_event",
+     "minutes": 5
+    },
+    {
+     "map": "",
+     "start": "2026-11-26T21:20:38+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "mario_kart",
+     "start": "2026-11-26T21:21:08+00:00",
+     "peak": 0,
+     "next_map": "cp_ambush_event",
+     "minutes": 5
+    },
+    {
+     "map": "",
+     "start": "2026-11-26T21:23:08+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "mario_kart",
+     "start": "2026-11-26T21:23:38+00:00",
+     "peak": 0,
+     "next_map": "cp_ambush_event",
+     "minutes": 5
+    },
+    {
+     "map": "cp_dustbowl",
+     "start": "2026-11-26T21:28:38+00:00",
+     "peak": 1,
+     "next_map": "cp_fortezza",
+     "minutes": 25
+    },
+    {
+     "map": "cp_fortezza",
+     "start": "2026-11-26T21:53:38+00:00",
+     "peak": 0,
+     "next_map": "cp_hadal",
+     "minutes": 1604
+    },
+    {
+     "map": "cp_junction",
+     "start": "2026-11-28T00:38:42+00:00",
+     "peak": 1,
+     "next_map": "cp_hadal",
+     "minutes": 5
+    },
+    {
+     "map": "cp_junction_final",
+     "start": "2026-11-28T00:43:42+00:00",
+     "peak": 10,
+     "next_map": "workshop/arena_rivet_rc2a.ugc2729694962",
+     "minutes": 57
+    },
+    {
+     "map": "plr_hysteria_b2",
+     "start": "2026-11-28T01:38:42+00:00",
+     "peak": 15,
+     "next_map": "workshop/arena_rivet_rc2a.ugc2729694962",
+     "minutes": 20
+    },
+    {
+     "map": "cp_werner_b6b_snowy",
+     "start": "2026-11-28T01:58:45+00:00",
+     "peak": 21,
+     "next_map": "cp_aqua",
+     "minutes": 20
+    },
+    {
+     "map": "koth_priory_winter_b2",
+     "start": "2026-11-28T02:18:45+00:00",
+     "peak": 24,
+     "next_map": "cp_steel_f12",
+     "minutes": 25
+    },
+    {
+     "map": "cp_steel_f12",
+     "start": "2026-11-28T02:43:45+00:00",
+     "peak": 21,
+     "next_map": "cp_hotelhell",
+     "minutes": 26
+    },
+    {
+     "map": "cp_hotelhell",
+     "start": "2026-11-28T03:08:45+00:00",
+     "peak": 20,
+     "next_map": "workshop/cp_brooklynn2_rc2.ugc1997391908",
+     "minutes": 26
+    },
+    {
+     "map": "ad_avanti",
+     "start": "2026-11-28T03:33:45+00:00",
+     "peak": 18,
+     "next_map": "dom_canalzone2_b4",
+     "minutes": 26
+    },
+    {
+     "map": "dom_canalzone2_b4",
+     "start": "2026-11-28T03:58:45+00:00",
+     "peak": 16,
+     "next_map": "cp_hotelhell",
+     "minutes": 26
+    },
+    {
+     "map": "cp_dustbowl_winter",
+     "start": "2026-11-28T04:23:45+00:00",
+     "peak": 0,
+     "next_map": "workshop/plr_alberta_b2.ugc3830221012",
+     "minutes": 106
+    }
+   ]
+  },
+  {
+   "addr": "45.45.238.134:27105",
+   "name": "Scrap Metal Server",
+   "checks": 10990,
+   "current": {
+    "map": "",
+    "players": 0,
+    "next_map": "",
+    "as_of": "2026-11-28T06:04:45+00:00",
+    "since": "2026-11-23T22:36:58+00:00"
+   },
+   "visits": 0,
+   "before": [],
+   "after": [],
+   "gaps": [],
+   "verdict": "waiting",
+   "verdict_text": "Waiting for Balloon Race to come up",
+   "recent": [
+    {
+     "map": "dr_pokemon",
+     "start": "2026-11-07T23:34:27+00:00",
+     "peak": 2,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 26
+    },
+    {
+     "map": "dr_tf2_museum_v5_fix",
+     "start": "2026-11-07T23:59:57+00:00",
+     "peak": 2,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 5
+    },
+    {
+     "map": "dr_squid_game_v2a",
+     "start": "2026-11-08T00:05:28+00:00",
+     "peak": 2,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 21
+    },
+    {
+     "map": "",
+     "start": "2026-11-08T00:25:57+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "cp_egypt_final",
+     "start": "2026-11-08T00:26:32+00:00",
+     "peak": 1,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 5
+    },
+    {
+     "map": "dr_luigis_mansion_v1",
+     "start": "2026-11-08T00:27:28+00:00",
+     "peak": 2,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 31
+    },
+    {
+     "map": "dr_playstation_final",
+     "start": "2026-11-08T00:54:58+00:00",
+     "peak": 3,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 25
+    },
+    {
+     "map": "dr_super_mario_bros_v2f2",
+     "start": "2026-11-08T01:19:58+00:00",
+     "peak": 2,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 20
+    },
+    {
+     "map": "dr_retroland_fix",
+     "start": "2026-11-08T01:37:58+00:00",
+     "peak": 3,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 16
+    },
+    {
+     "map": "dr_undertale_finished_v2fix2",
+     "start": "2026-11-08T01:49:58+00:00",
+     "peak": 4,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 16
+    },
+    {
+     "map": "dr_retroland_fix",
+     "start": "2026-11-08T02:03:57+00:00",
+     "peak": 4,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 21
+    },
+    {
+     "map": "dr_pokemon",
+     "start": "2026-11-08T02:21:27+00:00",
+     "peak": 4,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 103
+    },
+    {
+     "map": "cp_egypt_final",
+     "start": "2026-11-08T04:01:28+00:00",
+     "peak": 0,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 5
+    },
+    {
+     "map": "Vsh_Pumpkin_Fort_v3",
+     "start": "2026-11-08T04:06:28+00:00",
+     "peak": 1,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 5
+    },
+    {
+     "map": "vsh_kawa",
+     "start": "2026-11-08T04:08:27+00:00",
+     "peak": 1,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 5
+    },
+    {
+     "map": "",
+     "start": "2026-11-08T04:11:28+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "cp_egypt_final",
+     "start": "2026-11-08T04:11:58+00:00",
+     "peak": 0,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 26
+    },
+    {
+     "map": "",
+     "start": "2026-11-08T04:37:28+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "cp_egypt_final",
+     "start": "2026-11-08T04:37:58+00:00",
+     "peak": 20,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 2629
+    },
+    {
+     "map": "dr_pokemon",
+     "start": "2026-11-10T00:24:35+00:00",
+     "peak": 33,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 36
+    },
+    {
+     "map": "dr_squid_game_v2a",
+     "start": "2026-11-10T00:59:35+00:00",
+     "peak": 33,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 42
+    },
+    {
+     "map": "dr_luigis_mansion_v1",
+     "start": "2026-11-10T01:39:35+00:00",
+     "peak": 27,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 15
+    },
+    {
+     "map": "dr_super_mario_bros_v2f2",
+     "start": "2026-11-10T01:52:05+00:00",
+     "peak": 27,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 15
+    },
+    {
+     "map": "dr_retroland_fix",
+     "start": "2026-11-10T02:04:35+00:00",
+     "peak": 28,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 21
+    },
+    {
+     "map": "dr_undertale_finished_v2fix2",
+     "start": "2026-11-10T02:24:35+00:00",
+     "peak": 22,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 21
+    },
+    {
+     "map": "dr_playstation_final",
+     "start": "2026-11-10T02:44:35+00:00",
+     "peak": 20,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 15
+    },
+    {
+     "map": "",
+     "start": "2026-11-10T03:00:05+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 15565
+    },
+    {
+     "map": "cp_egypt_final",
+     "start": "2026-11-20T22:24:46+00:00",
+     "peak": 0,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 5
+    },
+    {
+     "map": "ww_outset_island",
+     "start": "2026-11-20T22:27:46+00:00",
+     "peak": 50,
+     "next_map": "cp_futura_rc1c",
+     "minutes": 4329
+    },
+    {
+     "map": "",
+     "start": "2026-11-23T22:36:58+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 6212
+    }
+   ]
+  },
+  {
+   "addr": "51.77.46.229:2501",
+   "name": "Bunny Archives [ Vanilla+ ] EU",
+   "checks": 3380,
+   "current": {
+    "map": "koth_garbage_day",
+    "players": 0,
+    "next_map": "ctf_doublecross",
+    "as_of": "2026-11-28T06:04:46+00:00",
+    "since": "2026-11-27T22:42:39+00:00"
+   },
+   "visits": 0,
+   "before": [],
+   "after": [],
+   "gaps": [],
+   "verdict": "waiting",
+   "verdict_text": "Waiting for Balloon Race to come up",
+   "recent": [
+    {
+     "map": "koth_windmilldogbreadsaw_b1",
+     "start": "2026-11-22T22:20:18+00:00",
+     "peak": 6,
+     "next_map": "cp_meatball_med_a5",
+     "minutes": 26
+    },
+    {
+     "map": "cp_meatball_med_a5",
+     "start": "2026-11-22T22:43:18+00:00",
+     "peak": 7,
+     "next_map": "cp_follower",
+     "minutes": 1209
+    },
+    {
+     "map": "trade_clocktown_v1a",
+     "start": "2026-11-23T18:50:28+00:00",
+     "peak": 3,
+     "next_map": "cp_follower",
+     "minutes": 26
+    },
+    {
+     "map": "koth_harvest_final",
+     "start": "2026-11-23T19:14:58+00:00",
+     "peak": 6,
+     "next_map": "cp_follower",
+     "minutes": 105
+    },
+    {
+     "map": "",
+     "start": "2026-11-23T21:00:28+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "harbl_hotel",
+     "start": "2026-11-23T21:00:58+00:00",
+     "peak": 0,
+     "next_map": "ctf_landfall",
+     "minutes": 100
+    },
+    {
+     "map": "",
+     "start": "2026-11-23T22:40:58+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 476
+    },
+    {
+     "map": "harbl_hotel",
+     "start": "2026-11-24T06:36:03+00:00",
+     "peak": 0,
+     "next_map": "ctf_landfall",
+     "minutes": 5
+    },
+    {
+     "map": "koth_roofon_fix",
+     "start": "2026-11-24T06:38:33+00:00",
+     "peak": 1,
+     "next_map": "ctf_landfall",
+     "minutes": 63
+    },
+    {
+     "map": "koth_sawmill",
+     "start": "2026-11-24T07:40:33+00:00",
+     "peak": 1,
+     "next_map": "ctf_landfall",
+     "minutes": 806
+    },
+    {
+     "map": "",
+     "start": "2026-11-24T21:07:04+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 629
+    },
+    {
+     "map": "harbl_hotel",
+     "start": "2026-11-25T07:35:07+00:00",
+     "peak": 0,
+     "next_map": "ctf_landfall",
+     "minutes": 5
+    },
+    {
+     "map": "koth_bagel_rc13",
+     "start": "2026-11-25T07:36:37+00:00",
+     "peak": 1,
+     "next_map": "ctf_landfall",
+     "minutes": 5
+    },
+    {
+     "map": "pl_goldrush",
+     "start": "2026-11-25T07:40:07+00:00",
+     "peak": 1,
+     "next_map": "ctf_landfall",
+     "minutes": 5
+    },
+    {
+     "map": "koth_rocktop_rc2",
+     "start": "2026-11-25T07:42:07+00:00",
+     "peak": 1,
+     "next_map": "ctf_landfall",
+     "minutes": 5
+    },
+    {
+     "map": "",
+     "start": "2026-11-25T07:47:37+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "koth_roofon_fix",
+     "start": "2026-11-25T07:48:07+00:00",
+     "peak": 1,
+     "next_map": "cp_dustbowl",
+     "minutes": 10
+    },
+    {
+     "map": "koth_rocktop_rc2",
+     "start": "2026-11-25T07:53:37+00:00",
+     "peak": 1,
+     "next_map": "cp_dustbowl",
+     "minutes": 5
+    },
+    {
+     "map": "koth_roofon_fix",
+     "start": "2026-11-25T07:58:07+00:00",
+     "peak": 1,
+     "next_map": "cp_dustbowl",
+     "minutes": 47
+    },
+    {
+     "map": "ctf_landfall",
+     "start": "2026-11-25T08:41:37+00:00",
+     "peak": 1,
+     "next_map": "cp_dustbowl",
+     "minutes": 5
+    },
+    {
+     "map": "koth_farmed_v2",
+     "start": "2026-11-25T08:43:07+00:00",
+     "peak": 1,
+     "next_map": "cp_dustbowl",
+     "minutes": 32
+    },
+    {
+     "map": "",
+     "start": "2026-11-25T09:12:37+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "koth_roofon_fix",
+     "start": "2026-11-25T09:13:37+00:00",
+     "peak": 0,
+     "next_map": "cp_dustbowl",
+     "minutes": 1015
+    },
+    {
+     "map": "",
+     "start": "2026-11-26T02:09:07+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 1155
+    },
+    {
+     "map": "koth_roofon_fix",
+     "start": "2026-11-26T21:23:39+00:00",
+     "peak": 2,
+     "next_map": "ctf_badlands_2006_rc1",
+     "minutes": 1397
+    },
+    {
+     "map": "cp_foundry",
+     "start": "2026-11-27T20:40:39+00:00",
+     "peak": 6,
+     "next_map": "ctf_badlands_2006_rc1",
+     "minutes": 26
+    },
+    {
+     "map": "pl_wutville_event",
+     "start": "2026-11-27T21:07:09+00:00",
+     "peak": 11,
+     "next_map": "ctf_badlands_2006_rc1",
+     "minutes": 21
+    },
+    {
+     "map": "koth_wubwubwub_remix_vip",
+     "start": "2026-11-27T21:27:39+00:00",
+     "peak": 15,
+     "next_map": "koth_garbage_day",
+     "minutes": 31
+    },
+    {
+     "map": "pl_cactuscanyon_redux_m_rc2",
+     "start": "2026-11-27T21:57:09+00:00",
+     "peak": 14,
+     "next_map": "ctf_doublecross",
+     "minutes": 47
+    },
+    {
+     "map": "koth_garbage_day",
+     "start": "2026-11-27T22:42:39+00:00",
+     "peak": 6,
+     "next_map": "ctf_doublecross",
+     "minutes": 447
+    }
+   ]
+  },
+  {
+   "addr": "69.41.182.173:27015",
+   "name": "Server Testing",
+   "checks": 10937,
+   "current": {
+    "map": "",
+    "players": 0,
+    "next_map": "",
+    "as_of": "2026-11-28T06:06:16+00:00",
+    "since": "2026-10-29T20:31:59+00:00"
+   },
+   "visits": 0,
+   "before": [],
+   "after": [],
+   "gaps": [],
+   "verdict": "waiting",
+   "verdict_text": "Waiting for Balloon Race to come up",
+   "recent": [
+    {
+     "map": "",
+     "start": "2026-10-19T04:27:20+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 12632
+    },
+    {
+     "map": "koth_harvest_final",
+     "start": "2026-10-27T22:56:23+00:00",
+     "peak": 0,
+     "next_map": "workshop/1103593090",
+     "minutes": 5
+    },
+    {
+     "map": "",
+     "start": "2026-10-27T23:01:23+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 10
+    },
+    {
+     "map": "koth_harvest_final",
+     "start": "2026-10-27T23:10:53+00:00",
+     "peak": 2,
+     "next_map": "workshop/cp_powerworks_final_v3_fix.ugc3153270599",
+     "minutes": 2721
+    },
+    {
+     "map": "",
+     "start": "2026-10-29T20:31:59+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 42339
+    }
+   ]
+  },
+  {
+   "addr": "78.181.34.157:27015",
+   "name": "[TR]  Türk Ninjalar sunucusu",
+   "checks": 4047,
+   "current": {
+    "map": "",
+    "players": 0,
+    "next_map": "",
+    "as_of": "2026-11-28T06:05:17+00:00",
+    "since": "2026-11-26T15:07:09+00:00"
+   },
+   "visits": 0,
+   "before": [],
+   "after": [],
+   "gaps": [],
+   "verdict": "waiting",
+   "verdict_text": "Waiting for Balloon Race to come up",
+   "recent": [
+    {
+     "map": "dr_skibidi_toilet_v3b2",
+     "start": "2026-11-23T16:20:59+00:00",
+     "peak": 13,
+     "next_map": "workshop/dr_undertale_finished_v2fix2.ugc739303996",
+     "minutes": 20
+    },
+    {
+     "map": "dr_undertale_finished_v2fix2",
+     "start": "2026-11-23T16:40:59+00:00",
+     "peak": 13,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "",
+     "start": "2026-11-23T16:42:28+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 1508
+    },
+    {
+     "map": "ctf_2fort",
+     "start": "2026-11-24T17:50:04+00:00",
+     "peak": 1,
+     "next_map": "workshop/trade_minecraft_smt_2018_v2.ugc2881184003",
+     "minutes": 21
+    },
+    {
+     "map": "",
+     "start": "2026-11-24T18:10:05+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 15
+    },
+    {
+     "map": "ctf_2fort",
+     "start": "2026-11-24T18:21:35+00:00",
+     "peak": 8,
+     "next_map": "workshop/trade_minecraft_smt_2018_v2.ugc2881184003",
+     "minutes": 47
+    },
+    {
+     "map": "arena_nucleus",
+     "start": "2026-11-24T19:08:35+00:00",
+     "peak": 6,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "jb_mlcastle_refurbished_v5",
+     "start": "2026-11-24T19:10:35+00:00",
+     "peak": 6,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "",
+     "start": "2026-11-24T19:13:04+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 1032
+    },
+    {
+     "map": "ctf_2fort",
+     "start": "2026-11-25T12:25:37+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "mario_kart_2_v30",
+     "start": "2026-11-25T12:29:08+00:00",
+     "peak": 4,
+     "next_map": "",
+     "minutes": 10
+    },
+    {
+     "map": "ctf_minedesert_rc",
+     "start": "2026-11-25T12:38:38+00:00",
+     "peak": 5,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "dr_undertale_finished_v2fix2",
+     "start": "2026-11-25T12:41:08+00:00",
+     "peak": 6,
+     "next_map": "",
+     "minutes": 15
+    },
+    {
+     "map": "ctf_2fort",
+     "start": "2026-11-25T12:51:38+00:00",
+     "peak": 8,
+     "next_map": "",
+     "minutes": 20
+    },
+    {
+     "map": "ctf_minetest2",
+     "start": "2026-11-25T13:08:38+00:00",
+     "peak": 8,
+     "next_map": "",
+     "minutes": 10
+    },
+    {
+     "map": "koth_suijin",
+     "start": "2026-11-25T13:15:38+00:00",
+     "peak": 8,
+     "next_map": "",
+     "minutes": 15
+    },
+    {
+     "map": "ctf_minecraft_fakir_vs_zengin",
+     "start": "2026-11-25T13:28:38+00:00",
+     "peak": 6,
+     "next_map": "",
+     "minutes": 5
+    },
+    {
+     "map": "vsh_fnaf_v3",
+     "start": "2026-11-25T13:30:38+00:00",
+     "peak": 7,
+     "next_map": "",
+     "minutes": 10
+    },
+    {
+     "map": "gm_construct_updated_v6",
+     "start": "2026-11-25T13:39:08+00:00",
+     "peak": 10,
+     "next_map": "",
+     "minutes": 47
+    },
+    {
+     "map": "supercrazycar_v2",
+     "start": "2026-11-25T14:23:38+00:00",
+     "peak": 12,
+     "next_map": "",
+     "minutes": 52
+    },
+    {
+     "map": "ctf_minedesert_rc",
+     "start": "2026-11-25T15:13:38+00:00",
+     "peak": 10,
+     "next_map": "",
+     "minutes": 10
+    },
+    {
+     "map": "",
+     "start": "2026-11-25T15:23:08+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 20
+    },
+    {
+     "map": "ctf_2fort",
+     "start": "2026-11-25T15:42:38+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 15
+    },
+    {
+     "map": "",
+     "start": "2026-11-25T15:54:08+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 1287
+    },
+    {
+     "map": "ctf_2fort",
+     "start": "2026-11-26T13:21:39+00:00",
+     "peak": 1,
+     "next_map": "",
+     "minutes": 21
+    },
+    {
+     "map": "dr_supermario64_v6b",
+     "start": "2026-11-26T13:38:39+00:00",
+     "peak": 2,
+     "next_map": "",
+     "minutes": 10
+    },
+    {
+     "map": "ctf_2fort_mvm_v4",
+     "start": "2026-11-26T13:44:09+00:00",
+     "peak": 8,
+     "next_map": "",
+     "minutes": 63
+    },
+    {
+     "map": "dr_minecraft_land_v5c",
+     "start": "2026-11-26T14:43:09+00:00",
+     "peak": 7,
+     "next_map": "workshop/jb_minecraft_daylight_v8_fix.ugc3803117554",
+     "minutes": 26
+    },
+    {
+     "map": "jb_minecraft_daylight_v8_fix",
+     "start": "2026-11-26T15:06:39+00:00",
+     "peak": 7,
+     "next_map": "workshop/mge_training_v8_beta4b.ugc1996603816",
+     "minutes": 5
+    },
+    {
+     "map": "",
+     "start": "2026-11-26T15:07:09+00:00",
+     "peak": 0,
+     "next_map": "",
+     "minutes": 2343
+    }
+   ]
+  }
+ ],
+ "voters": {
+  "changes": 2230,
+  "balloon_changes": 37,
+  "voters": 15,
+  "min_balloon_changes": 3,
+  "min_score": 3.0,
+  "top": [
+   {
+    "name": "Sledgehammer",
+    "score": 12.55,
+    "balloon_changes": 7,
+    "changes": 26
+   },
+   {
+    "name": "Supercharged Oreo",
+    "score": 7.2,
+    "balloon_changes": 6,
+    "changes": 44
+   },
+   {
+    "name": "ı.love.klown.30",
+    "score": 6.43,
+    "balloon_changes": 3,
+    "changes": 21
+   },
+   {
+    "name": "kabukcu",
+    "score": 6.4,
+    "balloon_changes": 4,
+    "changes": 31
+   },
+   {
+    "name": "chainsaw charlie",
+    "score": 5.86,
+    "balloon_changes": 3,
+    "changes": 24
+   },
+   {
+    "name": "Flakker",
+    "score": 5.86,
+    "balloon_changes": 3,
+    "changes": 24
+   },
+   {
+    "name": "alesteses",
+    "score": 5.39,
+    "balloon_changes": 3,
+    "changes": 27
+   },
+   {
+    "name": "EmiKyng",
+    "score": 4.86,
+    "balloon_changes": 3,
+    "changes": 31
+   },
+   {
+    "name": "(TR) xn9_pro",
+    "score": 4.37,
+    "balloon_changes": 4,
+    "changes": 50
+   },
+   {
+    "name": "Itchymongoose",
+    "score": 3.99,
+    "balloon_changes": 3,
+    "changes": 40
+   }
+  ]
+ },
+ "scorers": {
+  "games": 1306,
+  "players": 855,
+  "since": "2026-10-30 04:05:29",
+  "top": [
+   {
+    "name": "๖ۣۜLove",
+    "best": 85,
+    "best_server": "[TR]  Türk Ninjalar sunucusu",
+    "total": 85,
+    "games": 1
+   },
+   {
+    "name": "Potato69",
+    "best": 74,
+    "best_server": "[TR]  Türk Ninjalar sunucusu",
+    "total": 85,
+    "games": 2
+   },
+   {
+    "name": "TerminallyChill",
+    "best": 56,
+    "best_server": "Teekquel | chuck some VSH in there too",
+    "total": 56,
+    "games": 1
+   },
+   {
+    "name": "jacksere",
+    "best": 55,
+    "best_server": "Balloon Race 24/7",
+    "total": 55,
+    "games": 1
+   },
+   {
+    "name": "warm my cold hands",
+    "best": 49,
+    "best_server": "Bunny Archives // Vanilla+",
+    "total": 49,
+    "games": 1
+   },
+   {
+    "name": "Marrow",
+    "best": 48,
+    "best_server": "Teekquel | chuck some VSH in there too",
+    "total": 48,
+    "games": 1
+   },
+   {
+    "name": "Quote Wannabe",
+    "best": 46,
+    "best_server": "Bunny Archives // Vanilla+",
+    "total": 48,
+    "games": 2
+   },
+   {
+    "name": "Magic C. [R.O -PD]",
+    "best": 46,
+    "best_server": "[EU] Zemiak | Funtazy",
+    "total": 46,
+    "games": 1
+   },
+   {
+    "name": "Rafi",
+    "best": 45,
+    "best_server": "[TR]  Türk Ninjalar sunucusu",
+    "total": 45,
+    "games": 1
+   },
+   {
+    "name": "TheNefariousOne",
+    "best": 43,
+    "best_server": "Bunny Archives // Vanilla+",
+    "total": 43,
+    "games": 1
+   }
+  ]
+ },
+ "updated": "2026-11-28T06:06:30+00:00"
+}
